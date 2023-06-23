@@ -6,10 +6,7 @@ plugins {
 
 group = 'com.groupware'
 version = '0.0.1-SNAPSHOT'
-
-java {
-	sourceCompatibility = '11'
-}
+sourceCompatibility = '11'
 
 configurations {
 	compileOnly {
@@ -26,9 +23,17 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// Apache POI
+	implementation 'org.apache.poi:poi:4.1.2'
+	implementation 'org.apache.poi:poi-ooxml:4.1.2'
+	// ODF Toolkit
+	implementation 'org.apache.odftoolkit:incubator-odfdom-java:0.6.3-incubating'
+	implementation 'org.odftoolkit:simple-odf:0.6.6'
+	// iText
+	implementation 'com.itextpdf:itextpdf:5.5.13.2'
 }
 
 tasks.named('test') {

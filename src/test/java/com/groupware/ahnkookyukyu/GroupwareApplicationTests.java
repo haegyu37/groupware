@@ -1,4 +1,4 @@
-package com.groupware.groupware;
+package com.groupware.ahnkookyukyu;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
