@@ -31,7 +31,7 @@ public class LoginController {
                     userDetails, loginRequest.getPassword(), userDetails.getAuthorities());
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            return "redirect:/main";
+            return "redirect:/dashboard";
         } catch (Exception e) {
             // 로그인 실패 처리
             return "redirect:/login?error";
