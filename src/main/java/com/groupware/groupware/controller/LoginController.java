@@ -26,9 +26,9 @@ public class LoginController {
     @PostMapping("/login_proc")
     public String processLoginForm(@RequestBody LoginRequest loginRequest) {
         try {
-            UserDetails userDetails = usersDetailsService.loadUserByUsername(loginRequest.getUsername());
+            UserDetails userDetails = usersDetailsService.loadUserByUsername(loginRequest.getUserId());
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, loginRequest.getPassword(), userDetails.getAuthorities());
+                    userDetails, loginRequest.getUserPassword(), userDetails.getAuthorities());
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return "redirect:/dashboard";

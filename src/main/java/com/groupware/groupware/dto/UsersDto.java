@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class UsersDto {
     private int userNo;             // 사번
-    private Long userId;            // ID
+    private String userId;            // ID
     private String userPassword;    // 비밀번호
     private String userName;        // 이름
     private String usersDepId;       // 부서
