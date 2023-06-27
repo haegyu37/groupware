@@ -1,12 +1,9 @@
-package com.groupware.ahnkookyukyu.controller;
+package com.groupware.wimir.controller;
 
-import com.groupware.ahnkookyukyu.service.FileService;
-import org.springframework.http.HttpHeaders;
+import com.groupware.wimir.service.FileService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
 
 @RestController
 public class FileController {

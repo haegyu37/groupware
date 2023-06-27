@@ -1,12 +1,11 @@
-package com.groupware.ahnkookyukyu.controller;
+package com.groupware.wimir.controller;
 
-import com.groupware.ahnkookyukyu.entity.Template;
-import com.groupware.ahnkookyukyu.service.TemplateService;
+import com.groupware.wimir.entity.Template;
+import com.groupware.wimir.service.TemplateService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/templates")

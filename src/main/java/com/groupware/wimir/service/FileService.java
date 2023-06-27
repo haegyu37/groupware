@@ -1,4 +1,4 @@
-package com.groupware.ahnkookyukyu.service;
+package com.groupware.wimir.service;
 
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,7 +1,7 @@
-package com.groupware.ahnkookyukyu.service;
+package com.groupware.wimir.service;
 
-import com.groupware.ahnkookyukyu.entity.Document;
-import com.groupware.ahnkookyukyu.repository.DocumentRepository;
+import com.groupware.wimir.entity.Document;
+import com.groupware.wimir.repository.DocumentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

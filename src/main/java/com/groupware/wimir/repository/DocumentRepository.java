@@ -1,6 +1,6 @@
-package com.groupware.ahnkookyukyu.repository;
+package com.groupware.wimir.repository;
 
-import com.groupware.ahnkookyukyu.entity.Document;
+import com.groupware.wimir.entity.Document;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

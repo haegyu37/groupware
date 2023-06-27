@@ -1,4 +1,4 @@
-package com.groupware.ahnkookyukyu.dto;
+package com.groupware.wimir.dto;
 
 public class FileDTO {
     private Long id;

@@ -1,26 +1,28 @@
-package com.groupware.ahnkookyukyu.entity;
+package com.groupware.wimir.entity;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
-@Table(name = "tem")
+@Table(name = "file")
 @Getter
 @Setter
 @ToString
-public class Template {
+public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    private Date date;
+    private Long size;
 
-    private String category;
+    private String path;
+
+    @Column(name = "doc_id")
+    private Long doc;
 
 }

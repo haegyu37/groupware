@@ -1,4 +1,4 @@
-package com.groupware.ahnkookyukyu.entity;
+package com.groupware.wimir.entity;
 
 import lombok.Getter;
 import lombok.Setter;

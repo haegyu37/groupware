@@ -1,16 +1,10 @@
-package com.groupware.ahnkookyukyu.service;
+package com.groupware.wimir.service;
 
-import com.groupware.ahnkookyukyu.entity.Template;
-import com.groupware.ahnkookyukyu.repository.TemplateRepository;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
+import com.groupware.wimir.entity.Template;
+import com.groupware.wimir.repository.TemplateRepository;
 import org.springframework.stereotype.Service;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class TemplateService {

@@ -1,7 +1,7 @@
-package com.groupware.ahnkookyukyu.controller;
+package com.groupware.wimir.controller;
 
-import com.groupware.ahnkookyukyu.entity.Document;
-import com.groupware.ahnkookyukyu.service.DocumentService;
+import com.groupware.wimir.entity.Document;
+import com.groupware.wimir.service.DocumentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
