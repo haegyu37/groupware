@@ -16,24 +16,28 @@ public class DocumentController {
         this.documentService = documentService;
     }
 
+    // 문서 생성
     @PostMapping
     public ResponseEntity<Document> createDocument(@RequestBody Document document) {
         Document savedDocument = documentService.saveDocument(document);
         return ResponseEntity.ok(savedDocument);
     }
 
+    // 모든 문서 조회
     @GetMapping
     public ResponseEntity<List<Document>> getAllDocuments() {
         List<Document> documents = documentService.getAllDocuments();
         return ResponseEntity.ok(documents);
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Document> getDocumentById(@PathVariable Long id) {
-//        Document document = documentService.getDocumentById(id);
-//        return ResponseEntity.ok(document);
-//    }
+    // 해당 ID 문서 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<Document> getDocumentById(@PathVariable Long id) {
+        Document document = documentService.getDocumentById(id);
+        return ResponseEntity.ok(document);
+    }
 
+    // 해당 ID 문서 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
         documentService.deleteDocument(id);

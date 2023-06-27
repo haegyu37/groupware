@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/templates")
@@ -28,11 +29,11 @@ public class TemplateController {
         return ResponseEntity.ok(templates);
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Template> getTemplateById(@PathVariable Long id) {
-//        Template template = templateService.getTemplateById(id);
-//        return ResponseEntity.ok(template);
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<Template> getTemplateById(@PathVariable Long id) {
+        Template template = templateService.getTemplateById(id);
+        return ResponseEntity.ok(template);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTemplate(@PathVariable Long id) {
@@ -40,12 +41,12 @@ public class TemplateController {
         return ResponseEntity.noContent().build();
     }
 
-//    @PostMapping("/{templateId}/generate")
-//    public ResponseEntity<String> generateDocument(@PathVariable Long templateId, @RequestBody Map<String, Object> data,
-//                                                   @RequestParam("outputPath") String outputPath) {
-//        templateService.generateDocument(templateId, data, outputPath);
-//        return ResponseEntity.ok("Document generated successfully");
-//    }
+    @PostMapping("/{templateId}/generate")
+    public ResponseEntity<String> generateDocument(@PathVariable Long templateId, @RequestBody Map<String, Object> data,
+                                                   @RequestParam("outputPath") String outputPath) {
+        templateService.generateDocument(templateId, data, outputPath);
+        return ResponseEntity.ok("Document generated successfully");
+    }
 }
 
 

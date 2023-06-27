@@ -2,6 +2,7 @@ package com.groupware.wimir.service;
 
 import com.groupware.wimir.entity.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -48,7 +49,7 @@ public class ConvertService {
 
         Row row = sheet.createRow(0);   // 행 생성
         Cell cell = row.createCell(0);  // 셀 생성
-//        cell.setCellValue(document.getTitle()); // 데이터 쓰기
+        cell.setCellValue(document.getTitle()); // 데이터 쓰기
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(excelFilePath)) {
             workbook.write(fileOutputStream);
@@ -60,7 +61,7 @@ public class ConvertService {
         PdfWriter.getInstance(pdfDocument, new FileOutputStream(pdfFilePath));
 
         pdfDocument.open();
-//        pdfDocument.add(new Paragraph(document.getContent()));
+        pdfDocument.add(new Paragraph(document.getContent()));
         pdfDocument.close();
     }
 }
