@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 function DocumentComponent() {
     useEffect(() => {
         // 문서 생성
-        fetch('/documents', {
+        fetch('http://localhost:8080/api/documents', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -25,7 +25,7 @@ function DocumentComponent() {
             });
 
         // 문서 조회
-        fetch('/documents')
+        fetch('http://localhost:8080/api/documents')
             .then(response => response.json())
             .then(data => {
                 // 문서 조회 성공 시 처리 로직
@@ -37,7 +37,7 @@ function DocumentComponent() {
             });
 
         // 문서 수정
-        fetch('/documents/{id}')
+        fetch('http://localhost:8080/api/documents/{id}')
             .then(response => response.json())
             .then(data => {
                 // 문서 조회 성공 시 처리 로직
@@ -49,7 +49,7 @@ function DocumentComponent() {
             });
 
         // 문서 삭제
-        fetch('/documents/{id}', {
+        fetch('http://localhost:8080/api/documents/{id}', {
             method: 'DELETE'
         })
             .then(() => {
@@ -63,6 +63,7 @@ function DocumentComponent() {
     }, []);
 
     return <div>Document Component</div>;
+
 }
 
 export default DocumentComponent;
