@@ -1,15 +1,12 @@
 plugins {
-	id 'java'
 	id 'org.springframework.boot' version '2.7.12'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'java'
 }
 
 group = 'com.groupware'
 version = '0.0.1-SNAPSHOT'
-
-java {
-	sourceCompatibility = '11'
-}
+sourceCompatibility = '11'
 
 configurations {
 	compileOnly {
@@ -22,15 +19,43 @@ repositories {
 }
 
 dependencies {
+//	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//	implementation 'org.springframework.boot:spring-boot-starter-web'
+//	implementation 'org.projectlombok:lombok:1.18.26'
+//	compileOnly 'org.projectlombok:lombok'
+//	annotationProcessor 'org.projectlombok:lombok'
+//	implementation 'mysql:mysql-connector-java:8.0.27'
+//	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//	// 엑셀 파일
+	implementation group: 'org.apache.poi', name: 'poi', version: '5.2.2'
+	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.2'
+//	// pdf 파일
+	implementation 'com.itextpdf:itextpdf:5.5.13.3'
+	implementation 'com.itextpdf.tool:xmlworker:5.5.13.3'
+	implementation 'com.itextpdf:pdfa:7.2.3'
+	// odf toolkit
+	implementation 'org.odftoolkit:simple-odf:0.9.0'
+	// summernote
+	implementation 'org.webjars.npm:summernote:0.8.20'
+
+// https://mvnrepository.com/artifact/mysql/mysql-connector-java
+	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.27'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.withType(JavaCompile) {
+	options.compilerArgs << "-Xlint:deprecation"
+}
+

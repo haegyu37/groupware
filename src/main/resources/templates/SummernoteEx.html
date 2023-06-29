@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Summernote Example</title>
+  <!-- Summernote CSS 파일 -->
+  <link href="/webjars/summernote/0.8.18/dist/summernote.css" rel="stylesheet">
+</head>
+<body>
+<h1>Summernote Example</h1>
+
+<form method="post" th:action="@{/save}">
+  <!-- Summernote 에디터 -->
+  <textarea id="summernote" name="content"></textarea>
+
+  <button type="submit">Save</button>
+</form>
+
+<!-- Summernote JavaScript 파일 -->
+<script src="/webjars/summernote/0.8.18/dist/summernote.js"></script>
+
+<script>
+  // Summernote 초기화
+  $(document).ready(function() {
+    $('#summernote').summernote();
+  });
+</script>
+</body>
+</html>
