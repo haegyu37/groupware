@@ -10,7 +10,7 @@ import javax.persistence.*;
 @ToString
 @NoArgsConstructor
 @Getter @Setter
-public class app {
+public class App {
 
     @Id
     @GeneratedValue

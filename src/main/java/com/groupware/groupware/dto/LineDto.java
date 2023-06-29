@@ -5,7 +5,7 @@ import lombok.ToString;
 
 @AllArgsConstructor
 @ToString
-public class lineDto {
+public class LineDto {
 
     private String name; //결재라인명
 

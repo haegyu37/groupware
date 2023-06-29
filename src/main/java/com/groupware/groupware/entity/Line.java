@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class line {
+public class Line {
 
     @Id
     @GeneratedValue
