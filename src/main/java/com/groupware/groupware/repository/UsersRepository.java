@@ -2,9 +2,11 @@ package com.groupware.groupware.repository;
 
 import com.groupware.groupware.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.Optional;
 
-public interface UsersRepository extends JpaRepository<Users, String> {
-    Optional<Users> findByUserId(String userId);
-
+@Repository
+public interface UsersRepository extends JpaRepository<Users, Long> {
+    Optional<Users> findByUsersId(String usersId);
 }

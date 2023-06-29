@@ -1,31 +1,27 @@
 package com.groupware.groupware.dto;
 
+import com.groupware.groupware.users.Role;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+import javax.validation.constraints.NotBlank;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class LoginRequest {
-    private String userId;
-    private String userPassword;
-
-    public LoginRequest() {
-    }
-
-    public LoginRequest(String userId, String userPassword) {
-        this.userId = userId;
-        this.userPassword = userPassword;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
+    private Long usersno;
+    private String usersId;  // 수정된 필드 이름
+    private String usersPassword;
+    private String usersName;
+    private String usersDepId;
+    private String usersPositon;
+    private String usersPosition;
+    private String usersStatus;
+    private String role;
 }
