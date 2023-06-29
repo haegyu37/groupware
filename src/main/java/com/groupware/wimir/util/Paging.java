@@ -1,4 +1,4 @@
-package com.groupware.wimir.constant.util;
+package com.groupware.wimir.util;
 
 public class Paging {
     public String pageIndexList (int totalCnt, int current_page) {
