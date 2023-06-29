@@ -23,10 +23,10 @@ public class FileController {
         boolean isUploaded = fileService.uploadFile(file, documentId);
 
         if (isUploaded) {
-            return ResponseEntity.ok("File uploaded successfully");
+            return ResponseEntity.ok("첨부파일이 업로드되었습니다.");
         } else {
             // 파일 업로드 실패에 대한 처리
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("첨부파일 업로드를 실패했습니다.");
         }
     }
 
@@ -39,7 +39,7 @@ public class FileController {
         if (fileBytes != null) {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "filename.ext"); // 파일 이름과 확장자를 지정하세요
+            headers.setContentDispositionFormData("attachment", "filename.ext"); // 파일 이름과 확장자를 지정
 
             return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
         } else {
@@ -54,10 +54,10 @@ public class FileController {
         boolean isDeleted = fileService.deleteFile(fileId);
 
         if (isDeleted) {
-            return ResponseEntity.ok("File deleted successfully");
+            return ResponseEntity.ok("첨부파일이 삭제되었습니다.");
         } else {
             // 파일 삭제 실패에 대한 처리
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete file");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("첨부파일 삭제를 실패했습니다.");
         }
     }
 

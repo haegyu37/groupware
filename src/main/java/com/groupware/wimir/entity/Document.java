@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -14,17 +15,21 @@ import java.util.Date;
 @ToString
 public class Document {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "title")
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "writer")
     private String writer;
 
-    private Date writtenDate;
+    @Column(name = "written_date")
+    private LocalDateTime writtenDate;
 
     @Column(name = "tem_id")
     private Long tem;

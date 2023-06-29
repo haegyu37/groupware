@@ -6,18 +6,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class DocumentService {
-    private final DocumentRepository documentRepository;
-
-    public DocumentService(DocumentRepository documentRepository) {
-        this.documentRepository = documentRepository;
-    }
+    private DocumentRepository documentRepository;
 
     // 문서 저장
-    public Document saveDocument(Document document) {
+    public Document savedDocument(Document document) {
         return documentRepository.save(document);
     }
 
@@ -37,16 +35,17 @@ public class DocumentService {
         documentRepository.deleteById(id);
     }
 
-    // 문서 업데이트
+    // 문서 수정
     public Document updateDocument(Document updatedDocument) {
-        Document existingDocument = documentRepository.findById(updatedDocument.getId())
+        Document document = documentRepository.findById(updatedDocument.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "문서를 찾을 수 없습니다."));
 
         // 기존 문서의 필드들을 업데이트
-        existingDocument.setTitle(updatedDocument.getTitle());
-        existingDocument.setContent(updatedDocument.getContent());
-        existingDocument.setWriter(updatedDocument.getWriter());
+        document.setTitle(updatedDocument.getTitle());
+        document.setContent(updatedDocument.getContent());
+        document.setWriter(updatedDocument.getWriter());
 
-        return documentRepository.save(existingDocument);
+        return documentRepository.save(document);
     }
+
 }
