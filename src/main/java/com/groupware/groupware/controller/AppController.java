@@ -90,7 +90,7 @@ public class AppController {
 
     @ResponseBody
     @RequestMapping(value = "/apvListSearch", method = { RequestMethod.GET, RequestMethod.POST})
-    public Map<String, Object> apvListSearch(@RequestBody ApprovalVO params,HttpSession session, HttpServletRequest request) throws Exception {
+    public Map<String, Object> apvListSearch(@RequestBody App params,HttpSession session, HttpServletRequest request) throws Exception {
 
         logger.info("-------------start approvalListSearch [Connect IP : " + InetAddress.getLocalHost().getHostAddress() + "]");
 
@@ -142,14 +142,14 @@ public class AppController {
 
     @ResponseBody
     @RequestMapping(value = "/approvalRead", method = {RequestMethod.POST})
-    public ApprovalVO approvalRead(@RequestBody Map<String, Object> param,HttpSession session,HttpServletRequest request) throws Exception {
+    public App approvalRead(@RequestBody Map<String, Object> param,HttpSession session,HttpServletRequest request) throws Exception {
         logger.info("-------------start approvalRead [Connect IP : " + InetAddress.getLocalHost().getHostAddress() + "]");
 
         session = request.getSession(false);
 
         String stf_sq = null;
         stf_sq = (String)session.getAttribute("stf_sq");
-        ApprovalVO vo = new ApprovalVO();
+        App vo = new App();
         int admn_sq = service.stfAdmn(stf_sq);
         vo = service.read(param);
         vo.setStf_admn_sq(admn_sq);
@@ -175,7 +175,7 @@ public class AppController {
         logger.info("-------------start approvalOk [Connect IP : " + InetAddress.getLocalHost().getHostAddress() + "]");
 
         ResponseEntity<String> entity = null;
-        ApprovalVO vo = service.modify(param);
+        App vo = service.modify(param);
 
         entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
         logger.info("---------------end approvalOk [Connect IP : " + InetAddress.getLocalHost().getHostAddress() + "]");
@@ -191,7 +191,7 @@ public class AppController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String registPOST(ApprovalVO approval, RedirectAttributes rttr, MultipartFile file, HttpSession session, HttpServletRequest request) throws Exception {
+    public String registPOST(App approval, RedirectAttributes rttr, MultipartFile file, HttpSession session, HttpServletRequest request) throws Exception {
         logger.info("-------------start registPOST [Connect IP : " + InetAddress.getLocalHost().getHostAddress() + "]");
         logger.info("regist post ...........");
         logger.info("originalName : " + file.getOriginalFilename());	// 파일명.확장자
