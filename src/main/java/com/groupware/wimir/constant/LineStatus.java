@@ -1,4 +1,4 @@
-package com.groupware.groupware.constant;
+package com.groupware.wimir.constant;
 
 public enum LineStatus {
     approver, referrer

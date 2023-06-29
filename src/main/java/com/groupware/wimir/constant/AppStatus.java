@@ -1,4 +1,4 @@
-package com.groupware.groupware.constant;
+package com.groupware.wimir.constant;
 
 public enum AppStatus {
     before, approving, approved, returned, passed

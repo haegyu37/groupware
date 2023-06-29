@@ -1,11 +1,11 @@
-package com.groupware.groupware.dto;
+package com.groupware.wimir.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 
 @AllArgsConstructor
 @ToString
-public class LineDto {
+public class LineDTO {
 
     private String name; //결재라인명
 

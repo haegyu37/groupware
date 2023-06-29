@@ -1,6 +1,6 @@
-package com.groupware.groupware.repository;
+package com.groupware.wimir.repository;
 
-import com.groupware.groupware.entity.Line;
+import com.groupware.wimir.entity.Line;
 import org.springframework.data.repository.CrudRepository;
 
 public interface LineRepository extends CrudRepository <Line, Long> {

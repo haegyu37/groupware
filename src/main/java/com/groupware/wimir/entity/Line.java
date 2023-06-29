@@ -1,6 +1,6 @@
-package com.groupware.groupware.entity;
+package com.groupware.wimir.entity;
 
-import com.groupware.groupware.constant.AppStatus;
+import com.groupware.wimir.constant.AppStatus;
 import lombok.*;
 
 import javax.persistence.*;

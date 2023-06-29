@@ -1,6 +1,6 @@
-package com.groupware.groupware.repository;
+package com.groupware.wimir.repository;
 
-import com.groupware.groupware.entity.App;
+import com.groupware.wimir.entity.App;
 import org.springframework.data.repository.CrudRepository;
 
 public interface AppRepository extends CrudRepository <App, Long> {
