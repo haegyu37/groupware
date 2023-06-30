@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@RequestMapping("/attachments")
 public class FileController {
     private final FileService fileService;
 
@@ -29,7 +30,6 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("첨부파일 업로드를 실패했습니다.");
         }
     }
-
 
     // 첨부파일 다운로드
     @GetMapping("/files/{fileId}")
@@ -60,6 +60,4 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("첨부파일 삭제를 실패했습니다.");
         }
     }
-
 }
-

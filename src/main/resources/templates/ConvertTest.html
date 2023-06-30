@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>전자문서 변환</title>
+</head>
+<body>
+<h1>전자문서 변환</h1>
+
+<form id="convertForm">
+  <label for="title">제목:</label>
+  <input type="text" id="title" name="title" required><br>
+
+  <label for="content">내용:</label>
+  <textarea id="content" name="content" required></textarea><br>
+
+  <input type="button" value="PDF 변환" onclick="convertToPDF()">
+  <input type="button" value="엑셀 변환" onclick="convertToExcel()">
+</form>
+
+<script type="module">
+  function convertToPDF() {
+    var form = document.getElementById("convertForm");
+    var title = form.elements["title"].value;
+    var content = form.elements["content"].value;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "convert/pdf"); // URL을 "convert/pdf"로 업데이트
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          var downloadLink = response.downloadLink;
+          alert("PDF 파일이 저장되었습니다. 다운로드 링크: " + downloadLink);
+        } else {
+          alert("PDF 변환 중 오류가 발생했습니다.");
+        }
+      }
+    };
+    var data = {
+      title: title,
+      content: content
+    };
+    xhr.send(JSON.stringify(data));
+  }
+
+  function convertToExcel() {
+    var form = document.getElementById("convertForm");
+    var title = form.elements["title"].value;
+    var content = form.elements["content"].value;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "convert/excel"); // URL을 "convert/excel"로 업데이트
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          var downloadLink = response.downloadLink;
+          alert("엑셀 파일이 저장되었습니다. 다운로드 링크: " + downloadLink);
+        } else {
+          alert("엑셀 변환 중 오류가 발생했습니다.");
+        }
+      }
+    };
+    var data = {
+      title: title,
+      content: content
+    };
+    xhr.send(JSON.stringify(data));
+  }
+</script>
+</body>
+</html>

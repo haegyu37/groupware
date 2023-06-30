@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>API 테스트</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>API 테스트 페이지</h1>
+
+<form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="file" id="fileInput">
+    <input type="number" name="documentId" id="documentIdInput">
+    <button type="submit">업로드</button>
+</form>
+
+<div id="result"></div>
+
+<script>
+    // 첨부파일 업로드
+    $('#uploadForm').submit(function (e) {
+        e.preventDefault();
+
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: '/files/file',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                $('#result').text('첨부파일 업로드 성공');
+            },
+            error: function (xhr, status, error) {
+                $('#result').text('첨부파일 업로드 실패');
+            }
+        });
+    });
+</script>
+</body>
+</html>
