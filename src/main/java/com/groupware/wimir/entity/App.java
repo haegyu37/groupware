@@ -25,4 +25,6 @@ public class App {
     @Enumerated(EnumType.STRING)
     private AppStatus appStatus; //결재 전, 결재 중, 승인, 반려, 전결
 
+    private Line line;
+
 }

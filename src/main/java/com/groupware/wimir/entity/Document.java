@@ -34,4 +34,6 @@ public class Document {
     @Column(name = "tem_id")
     private Long tem;
 
+    private App app;
+
 }
