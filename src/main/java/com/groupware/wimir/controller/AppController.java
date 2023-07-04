@@ -36,8 +36,8 @@ public class AppController {
     public ResponseEntity<App> updateApproval(@PathVariable Long id, @RequestBody App updatedApp) {
         App app = appService.getApprovalById(id);
 
-        app.setDocId(updatedApp.getDocId());
-        app.setLineId(updatedApp.getLineId());
+        app.setDoc(updatedApp.getDoc());
+        app.setLine(updatedApp.getLine());
         app.setAppStatus(updatedApp.getAppStatus());
 
         App savedApp = appService.saveApproval(app);

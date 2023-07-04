@@ -136,6 +136,9 @@ public class AppServiceTest {
         AppRepository appRepository = Mockito.mock(AppRepository.class);
         DocumentRepository documentRepository = Mockito.mock(DocumentRepository.class);
 
+        // Mock the findById method of appRepository
+        when(appRepository.findById(1L)).thenReturn(Optional.empty());
+
         // Create an instance of AppService
         AppService appService = new AppService(appRepository, documentRepository, null);
 
@@ -176,7 +179,7 @@ public class AppServiceTest {
     }
 
     @Test
-    public void testApproveDocument_NotPendingStatus() {
+    public void testApproveDocument_NotApprovingStatus() {
         // Mock repository
         AppRepository appRepository = Mockito.mock(AppRepository.class);
 

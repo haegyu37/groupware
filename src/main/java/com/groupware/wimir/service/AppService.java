@@ -35,7 +35,7 @@ public class AppService {
     // 특정 ID의 결재 조회
     public App getApprovalById(Long id) {
         return appRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("App", "id", id)); //-> 여기서 오류가 생긴단다
+                .orElseThrow(() -> new ResourceNotFoundException("App", "id", id)); // -> 여기가 문제임
     }
 
     // 결재 삭제
@@ -43,6 +43,7 @@ public class AppService {
         appRepository.deleteById(id);
     }
 
+    // 문서 결재
     public void approveDocument(Long appId) {
         App app = getApprovalById(appId);
         if (app.getAppStatus() == AppStatus.approving) {
@@ -52,8 +53,8 @@ public class AppService {
 
             // 다음 결재자에게 문서를 넘기기
             int nextStep = line.getStep() + 1; // 다음 결재자(Step)로 넘김
-            Document document = documentRepository.findById(app.getDocId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Document", "id", app.getDocId()));
+            Document document = documentRepository.findById(app.getDoc().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Document", "id", app.getDoc().getId()));
             line.setStep(nextStep); // 다음 결재자 ID 설정
             documentRepository.save(document);
         } else {

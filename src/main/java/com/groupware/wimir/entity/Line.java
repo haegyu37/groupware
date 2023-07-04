@@ -15,7 +15,7 @@ public class Line {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private Long id; //결재라인 아이디
 
     @Column
     private String name; //결재라인명
@@ -23,8 +23,9 @@ public class Line {
     @Column
     private int step; //결제 단계 (1~N)
 
-    @Column
-    private Long usersId; //결재자
+    @OneToOne
+    @JoinColumn(name="users_id")
+    private Users users; //직원 아이디
 
     @Enumerated(EnumType.STRING)
     private AppStatus appStatus; //결재자, 참조자

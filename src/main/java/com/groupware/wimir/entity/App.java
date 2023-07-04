@@ -16,15 +16,15 @@ public class App {
     @GeneratedValue
     private Long id; //결재 아이디
 
-    @Column
-    private Long docId; //문서 아이디
-
-    @Column
-    private Long lineId; //결재자
+    @OneToOne
+    @JoinColumn(name="doc_id")
+    private Document doc; //문서 아이디
 
     @Enumerated(EnumType.STRING)
     private AppStatus appStatus; //결재 전, 결재 중, 승인, 반려, 전결
 
-    private Line line;
+    @OneToOne
+    @JoinColumn(name="line_id")
+    private Line line; //결재라인 아이디
 
 }

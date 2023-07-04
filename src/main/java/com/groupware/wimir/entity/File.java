@@ -14,15 +14,16 @@ import javax.persistence.*;
 public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; //파일 아이디
 
-    private String name;
+    private String name; //파일 이름
 
-    private Long size;
+    private Long size; //파일 크기
 
-    private String path;
+    private String path; //파일 경로
 
-    @Column(name = "doc_id")
-    private Long doc;
+    @OneToOne
+    @JoinColumn(name = "doc_id")
+    private Document doc; //문서 아이디
 
 }

@@ -14,13 +14,16 @@ import java.util.Date;
 @ToString
 public class Template {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id; //양식 아이디
 
-    private String name;
+    @Column
+    private String name; //양식명
 
-    private Date date;
+    @Column
+    private Date date; //양식 등록일
 
-    private String category;
+    @Column
+    private String category; //양식 카테고리
 
 }
