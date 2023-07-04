@@ -16,30 +16,33 @@ import javax.persistence.*;
 public class Users {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id; //직원 아이디
 
-    @Column
+    @Column(name = "name")
     private String name; //직원 이름
 
-    @Column
+    @Column(name = "com_id")
     private Long comId; //직원 사번
 
-    @Column
+    @Column(name = "password")
     private String password; //직원 비밀번호
 
     @OneToOne
     @JoinColumn(name="part_id")
     private Part part; //직원 부서
 
-    @Column
+    @Column(name = "position")
     private String position; //직원 직책
 
+    @Column(name = "user_status")
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus; //활성화, 비활성화
 
+    @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private Role role; //마스터, 일반 계정
+    private Role role; //마스터, 일반계정
 
 
 }

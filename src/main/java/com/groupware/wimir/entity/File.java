@@ -13,13 +13,17 @@ import javax.persistence.*;
 @ToString
 public class File {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id; //파일 아이디
 
+    @Column(name = "name")
     private String name; //파일 이름
 
+    @Column(name = "size")
     private Long size; //파일 크기
 
+    @Column(name = "path")
     private String path; //파일 경로
 
     @OneToOne

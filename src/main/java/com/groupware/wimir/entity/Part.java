@@ -2,10 +2,7 @@ package com.groupware.wimir.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @AllArgsConstructor
@@ -16,10 +13,11 @@ import javax.persistence.Id;
 public class Part {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id; //본부 아이디
 
-    @Column
+    @Column(name = "name")
     private String name; //본부명
 
 }

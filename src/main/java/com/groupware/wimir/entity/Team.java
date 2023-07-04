@@ -13,10 +13,11 @@ import javax.persistence.*;
 public class Team {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id; //팀 아이디
 
-    @Column
+    @Column(name = "name")
     private String name; //팀명
 
     @OneToOne
