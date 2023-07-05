@@ -1,8 +1,7 @@
 package com.groupware.wimir.entity;
 
-import com.groupware.wimir.constant.AppStatus;
 import com.groupware.wimir.constant.Role;
-import com.groupware.wimir.constant.UserStatus;
+import com.groupware.wimir.constant.MemberStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter @Setter
 @Table(name = "users")
-public class Users {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,7 +36,7 @@ public class Users {
 
     @Column(name = "user_status")
     @Enumerated(EnumType.STRING)
-    private UserStatus userStatus; //활성화, 비활성화
+    private MemberStatus userStatus; //활성화, 비활성화
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
@@ -46,6 +45,10 @@ public class Users {
     @OneToOne
     @JoinColumn(name="part_id")
     private Part part; //직원 부서
+
+    @OneToOne
+    @JoinColumn(name="team_id")
+    private Team team; //직원 부서
 
     @OneToOne
     @JoinColumn(name="img_id")

@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -40,7 +39,7 @@ public class Document {
 
     @OneToOne
     @JoinColumn(name="users_id")
-    private Users users; //직원(작성자) 아이디
+    private Member users; //직원(작성자) 아이디
 
 
 }

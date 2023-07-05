@@ -1,6 +1,5 @@
 package com.groupware.wimir.entity;
 
-import com.groupware.wimir.constant.AppStatus;
 import com.groupware.wimir.constant.LineStatus;
 import lombok.*;
 
@@ -31,6 +30,6 @@ public class Line {
 
     @OneToOne
     @JoinColumn(name="users_id")
-    private Users users; //직원 아이디
+    private Member users; //직원 아이디
 
 }

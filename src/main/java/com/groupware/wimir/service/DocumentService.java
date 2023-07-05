@@ -43,7 +43,7 @@ public class DocumentService {
         // 기존 문서의 필드들을 업데이트
         document.setTitle(updatedDocument.getTitle());
         document.setContent(updatedDocument.getContent());
-        document.setWriter(updatedDocument.getWriter());
+        document.setUsers(updatedDocument.getUsers());
 
         return documentRepository.save(document);
     }

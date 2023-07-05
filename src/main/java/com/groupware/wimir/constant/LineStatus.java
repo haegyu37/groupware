@@ -1,6 +1,7 @@
 package com.groupware.wimir.constant;
 
 public enum LineStatus {
-    approver, referrer
+
+    APPORVER, REFERRER
 //    결재자, 참조자
 }

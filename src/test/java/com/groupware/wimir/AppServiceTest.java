@@ -146,7 +146,7 @@ public class AppServiceTest {
         App app = new App();
         app.setId(1L);
         app.setAppStatus(AppStatus.approving);
-        app.setDocId(1L);
+//        app.setDocId(1L);
 
         // Create a Document object
         Document document = new Document();
