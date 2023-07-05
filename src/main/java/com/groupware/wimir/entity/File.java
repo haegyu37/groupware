@@ -1,16 +1,15 @@
 package com.groupware.wimir.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "file")
-@Getter
-@Setter
+@AllArgsConstructor
 @ToString
+@NoArgsConstructor
+@Getter @Setter
+@Table(name = "file")
 public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -11,8 +11,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @ToString
 @NoArgsConstructor
-@Getter
-@Setter
+@Getter @Setter
+@Table(name = "users")
 public class Users {
 
     @Id
@@ -29,9 +29,8 @@ public class Users {
     @Column(name = "password")
     private String password; //직원 비밀번호
 
-    @OneToOne
-    @JoinColumn(name="part_id")
-    private Part part; //직원 부서
+    @Column(name = "phone")
+    private Long phone; //직원 연락처
 
     @Column(name = "position")
     private String position; //직원 직책
@@ -43,6 +42,14 @@ public class Users {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role; //마스터, 일반계정
+
+    @OneToOne
+    @JoinColumn(name="part_id")
+    private Part part; //직원 부서
+
+    @OneToOne
+    @JoinColumn(name="img_id")
+    private UsersImg usersImg; //직원이미지 아이디
 
 
 }

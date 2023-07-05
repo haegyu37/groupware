@@ -8,8 +8,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @ToString
 @NoArgsConstructor
-@Getter
-@Setter
+@Getter @Setter
+@Table(name = "part")
 public class Part {
 
     @Id

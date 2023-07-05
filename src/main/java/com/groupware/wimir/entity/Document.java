@@ -1,18 +1,17 @@
 package com.groupware.wimir.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@Table(name = "doc")
-@Getter
-@Setter
+@AllArgsConstructor
 @ToString
+@NoArgsConstructor
+@Getter @Setter
+@Table(name = "doc")
 public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

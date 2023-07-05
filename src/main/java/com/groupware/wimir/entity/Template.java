@@ -1,17 +1,16 @@
 package com.groupware.wimir.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tem")
-@Getter
-@Setter
+@AllArgsConstructor
 @ToString
+@NoArgsConstructor
+@Getter @Setter
+@Table(name = "tem")
 public class Template {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

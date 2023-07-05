@@ -10,8 +10,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @ToString
 @NoArgsConstructor
-@Getter
-@Setter
+@Getter @Setter
+@Table(name = "line")
 public class Line {
 
     @Id
@@ -25,13 +25,12 @@ public class Line {
     @Column(name = "step")
     private int step; //결제 단계 (1~N)
 
-    @OneToOne
-    @JoinColumn(name="users_id")
-    private Users users; //직원 아이디
-
     @Column(name = "line_status")
     @Enumerated(EnumType.STRING)
     private LineStatus lineStatus; //결재자, 참조자
 
+    @OneToOne
+    @JoinColumn(name="users_id")
+    private Users users; //직원 아이디
 
 }
