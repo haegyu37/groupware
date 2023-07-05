@@ -1,8 +1,6 @@
 package com.groupware.wimir.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -10,23 +8,23 @@ import javax.persistence.*;
 @Table(name = "file")
 @Getter
 @Setter
-@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "size")
+    @Column(name = "size", nullable = false)
     private Long size;
 
-    @Column(name = "path")
+    @Column(name = "path", nullable = false)
     private String path;
 
     @Column(name = "doc_id")
-    private Long doc;
+    private Long docId;
 
 }

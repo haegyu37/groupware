@@ -22,7 +22,7 @@ public class ConvertController {
 
     @GetMapping("/convert")
     public String showConvertForm() {
-        return "convert-form"; // 변환을 요청할 수 있는 폼 페이지를 반환
+        return "convert"; // 변환을 요청할 수 있는 폼 페이지를 반환
     }
 
     @PostMapping("/convert/pdf")
@@ -32,7 +32,7 @@ public class ConvertController {
                                Model model) {
         String downloadLink = convertService.convertDocument(file, title, path, "pdf");
         model.addAttribute("downloadLink", downloadLink);
-        return "pdf-download"; // PDF 변환 후 다운로드 링크를 보여주는 페이지를 반환
+        return "pdf"; // PDF 변환 후 다운로드 링크를 보여주는 페이지를 반환
     }
 
     @PostMapping("/convert/excel")
@@ -42,6 +42,6 @@ public class ConvertController {
                                  Model model) {
         String downloadLink = convertService.convertDocument(file, title, path,"excel");
         model.addAttribute("downloadLink", downloadLink);
-        return "excel-download"; // 엑셀 변환 후 다운로드 링크를 보여주는 페이지를 반환
+        return "excel"; // 엑셀 변환 후 다운로드 링크를 보여주는 페이지를 반환
     }
 }

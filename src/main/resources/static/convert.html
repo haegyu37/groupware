@@ -6,27 +6,29 @@
 </head>
 <body>
 <h1>전자문서 변환</h1>
-
 <form id="convertForm">
   <label for="title">제목:</label>
   <input type="text" id="title" name="title" required><br>
-
-  <label for="content">내용:</label>
-  <textarea id="content" name="content" required></textarea><br>
+  <label for="file">파일:</label>
+  <input type="file" id="file" name="file" required><br> <!-- 파일 업로드를 위한 input 추가 -->
 
   <input type="button" value="PDF 변환" onclick="convertToPDF()">
   <input type="button" value="엑셀 변환" onclick="convertToExcel()">
 </form>
-
-<script type="module">
+<script>
   function convertToPDF() {
     var form = document.getElementById("convertForm");
     var title = form.elements["title"].value;
-    var content = form.elements["content"].value;
+    var file = form.elements["file"].files[0]; // 업로드된 파일 가져오기
+
+    var formData = new FormData();
+    formData.append("file", file); // 파일을 FormData에 추가
+    formData.append("title", title);
+    formData.append("path", null);
+    formData.append("format", "pdf");
 
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "convert/pdf"); // URL을 "convert/pdf"로 업데이트
-    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.open("POST", "/convert/pdf");
     xhr.onreadystatechange = function() {
       if (xhr.readyState === XMLHttpRequest.DONE) {
         if (xhr.status === 200) {
@@ -38,21 +40,22 @@
         }
       }
     };
-    var data = {
-      title: title,
-      content: content
-    };
-    xhr.send(JSON.stringify(data));
+    xhr.send(formData);
   }
 
   function convertToExcel() {
     var form = document.getElementById("convertForm");
     var title = form.elements["title"].value;
-    var content = form.elements["content"].value;
+    var file = form.elements["file"].files[0]; // 업로드된 파일 가져오기
+
+    var formData = new FormData();
+    formData.append("file", file); // 파일을 FormData에 추가
+    formData.append("title", title);
+    formData.append("path", null);
+    formData.append("format", "excel");
 
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "convert/excel"); // URL을 "convert/excel"로 업데이트
-    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.open("POST", "/convert/excel");
     xhr.onreadystatechange = function() {
       if (xhr.readyState === XMLHttpRequest.DONE) {
         if (xhr.status === 200) {
@@ -64,11 +67,7 @@
         }
       }
     };
-    var data = {
-      title: title,
-      content: content
-    };
-    xhr.send(JSON.stringify(data));
+    xhr.send(formData);
   }
 </script>
 </body>

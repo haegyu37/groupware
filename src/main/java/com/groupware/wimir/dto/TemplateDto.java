@@ -2,7 +2,7 @@ package com.groupware.wimir.dto;
 
 import java.util.Date;
 
-public class TemplateDTO {
+public class TemplateDto {
     private Long id;
     private String name;
     private Date date;

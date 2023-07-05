@@ -40,7 +40,7 @@ public class DocumentController {
     }
 
     // 모든 문서 조회
-    @GetMapping("/all")
+    @GetMapping("/list")
     public ResponseEntity<List<Document>> getAllDocuments() {
         List<Document> documents = documentService.getAllDocuments();
         return ResponseEntity.ok(documents);

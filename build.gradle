@@ -48,6 +48,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	implementation 'org.apache.tomcat:tomcat-jasper:9.0.21'
+
 
 }
 

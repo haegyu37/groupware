@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>API 테스트</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>첨부파일 테스트 페이지</h1>
+
+<form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="file" id="fileInput">
+    <button type="button" id="uploadButton">업로드</button>
+</form>
+
+<div id="result"></div>
+
+<div id="downloadDiv" style="display: none;">
+    <h2>다운로드</h2>
+    <button type="button" id="downloadButton">다운로드</button>
+    <div id="downloadResult"></div>
+</div>
+
+<div id="deleteDiv" style="display: none;">
+    <h2>삭제</h2>
+    <button type="button" id="deleteButton">삭제</button>
+    <div id="deleteResult"></div>
+</div>
+
+<script>
+    let id;
+
+    // 첨부파일 업로드
+    $('#uploadButton').click(function () {
+        let form = document.getElementById("uploadForm");
+        let file = form.elements["file"].files[0]; // 업로드된 파일 가져오기
+
+        let formData = new FormData();
+        formData.append("file", file); // 파일을 FormData에 추가
+        formData.append("documentId", 123); // 임의의 documentId 설정 (테스트용)
+
+        fetch('/files/upload', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('첨부파일 업로드 실패');
+                }
+            })
+            .then(data => {
+                $('#result').text('첨부파일 업로드 성공');
+                $('#downloadDiv').show(); // 다운로드 섹션 표시
+                $('#deleteDiv').show(); // 삭제 섹션 표시
+            })
+            .catch(error => {
+                console.error(error);
+                $('#result').text('첨부파일 업로드 실패');
+            });
+    });
+
+
+</script>
+</body>
+</html>

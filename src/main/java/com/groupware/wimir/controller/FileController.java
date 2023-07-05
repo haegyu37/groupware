@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/attachments")
+@RequestMapping("/files")
 public class FileController {
     private final FileService fileService;
 
@@ -18,7 +18,7 @@ public class FileController {
     }
 
     // 첨부파일 업로드
-    @PostMapping("/files")
+    @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,
                                              @RequestParam("documentId") Long documentId) {
         boolean isUploaded = fileService.uploadFile(file, documentId);
@@ -31,15 +31,18 @@ public class FileController {
         }
     }
 
+
     // 첨부파일 다운로드
-    @GetMapping("/files/{fileId}")
+    @GetMapping("/download/{fileId}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable("fileId") Long fileId) {
         byte[] fileBytes = fileService.downloadFile(fileId);
 
         if (fileBytes != null) {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "filename.ext"); // 파일 이름과 확장자를 지정
+
+            String fileName = fileService.getFileNameById(fileId); // 파일 이름과 확장자를 가져온다
+            headers.setContentDispositionFormData("attachment", fileName);
 
             return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
         } else {
@@ -49,7 +52,7 @@ public class FileController {
     }
 
     // 첨부파일 삭제
-    @DeleteMapping("/files/{fileId}")
+    @DeleteMapping("/delete/{fileId}")
     public ResponseEntity<String> deleteFile(@PathVariable("fileId") Long fileId) {
         boolean isDeleted = fileService.deleteFile(fileId);
 
