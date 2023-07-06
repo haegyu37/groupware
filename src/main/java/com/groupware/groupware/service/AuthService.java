@@ -26,7 +26,7 @@ public class AuthService {
 
     //signup 회원가입 메소드
     public MemberResponseDto signup(MemberRequestDto requestDto) {
-        if (memberRepository.existsByEmail(requestDto.getEmail())) {
+        if (memberRepository.existsByNo(requestDto.getNo())) {
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
 

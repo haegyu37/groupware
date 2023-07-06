@@ -17,20 +17,27 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @NoArgsConstructor
 @Builder
 public class MemberRequestDto {
-    private String email;
+    //private String email;
+    private String no;
     private String password;
-    private String nickname;
+    private String name;
+    private String position;
+    private String part;
 
     public Member toMember(PasswordEncoder passwordEncoder) {
         return Member.builder()
-                .email(email)
+                //.email(email)
+                .no(no)
                 .password(passwordEncoder.encode(password))
-                .nickname(nickname)
+                .name(name)
+                .position(position)
+                .part(part)
                 .authority(Authority.ROLE_USER)
+                //.authority(Authority.ROLE_ADMIN)
                 .build();
     }
 
     public UsernamePasswordAuthenticationToken toAuthentication() {
-        return new UsernamePasswordAuthenticationToken(email, password);
+        return new UsernamePasswordAuthenticationToken(no, password);
     }
 }
