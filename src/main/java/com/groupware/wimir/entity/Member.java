@@ -1,7 +1,7 @@
 package com.groupware.wimir.entity;
 
 import com.groupware.wimir.constant.Role;
-import com.groupware.wimir.constant.MemberStatus;
+//import com.groupware.wimir.constant.MemberStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,7 +23,7 @@ public class Member {
     private String name; //직원 이름
 
     @Column(name = "com_id")
-    private Long comId; //직원 사번
+    private Long comId; //직원 사번(로그인)
 
     @Column(name = "password")
     private String password; //직원 비밀번호
@@ -31,28 +31,24 @@ public class Member {
     @Column(name = "phone")
     private Long phone; //직원 연락처
 
-    @Column(name = "position")
-    private String position; //직원 직책
-
-    @Column(name = "user_status")
-    @Enumerated(EnumType.STRING)
-    private MemberStatus userStatus; //활성화, 비활성화
-
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private Role role; //마스터, 일반계정
+    private Role role; //마스터, 일반, 차단 계정
 
     @OneToOne
     @JoinColumn(name="part_id")
-    private Part part; //직원 부서
+    private Part part; //직원 본부
 
     @OneToOne
     @JoinColumn(name="team_id")
-    private Team team; //직원 부서
+    private Team team; //직원 팀
 
     @OneToOne
     @JoinColumn(name="img_id")
     private UsersImg usersImg; //직원이미지 아이디
 
+    @OneToOne
+    @JoinColumn(name="position_id")
+    private Position position; //직급 아이디
 
 }

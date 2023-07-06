@@ -22,7 +22,7 @@ public class Line {
     private String name; //결재라인명
 
     @Column(name = "step")
-    private int step; //결제 단계 (1~N)
+    private int step; //결재순서 (1~N)
 
     @Column(name = "line_status")
     @Enumerated(EnumType.STRING)

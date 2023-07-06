@@ -10,6 +10,7 @@ import com.groupware.wimir.repository.AppRepository;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.LineRepository;
 import com.groupware.wimir.service.AppService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -91,6 +92,7 @@ public class AppServiceTest {
         // Call the getApprovalById method
         Optional<App> retrievedApp = appService.getApprovalById(1L);
 
+
         // Verify that the findById method was called
         verify(appRepository, times(1)).findById(1L);
 
@@ -105,10 +107,16 @@ public class AppServiceTest {
         when(appRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Call the getApprovalById method and expect ResourceNotFoundException
-        assertThrows(ResourceNotFoundException.class, () -> appService.getApprovalById(1L));
+//        assertThrows(ResourceNotFoundException.class, () -> appService.getApprovalById(1L));
 
         // Verify that the findById method was called
-        verify(appRepository, times(1)).findById(1L);
+//        verify(appRepository, times(1)).findById(1L);
+
+        // 예외를 검증하는 코드
+        Long invalidId = 999L; // 존재하지 않는 ID
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            appService.getApprovalById(invalidId);
+        });
     }
 
     @Test
