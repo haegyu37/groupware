@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,9 +33,9 @@ public class AppService {
     }
 
     // 특정 ID의 결재 조회
-    public App getApprovalById(Long id) {
-        return appRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("App", "id", id));
+
+    public Optional<App> getApprovalById(Long id) {
+        return appRepository.findById(id);
     }
 
     // 결재 삭제
@@ -44,37 +45,58 @@ public class AppService {
 
     // 문서 결재
     public void approveDocument(Long appId) {
-        App app = getApprovalById(appId);
-        if (app.getAppStatus() == AppStatus.APPROVING) {
-            // 결재 상태를 승인으로 변경
-            app.setAppStatus(AppStatus.APPROVED);
-            appRepository.save(app);
+        Optional<App> optionalApp = appRepository.findById(appId); // 수정된 부분
 
-            // 다음 결재자에게 문서를 넘기기
-            int nextStep = app.getLine().getStep() + 1; // 다음 결재자(Step)로 넘김
-            Document document = documentRepository.findById(app.getDoc().getId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Document", "id", app.getDoc().getId()));
-            Line line = lineRepository.findByStep(nextStep);
-            if (line == null) {
-                // 다음 결재자가 없는 경우 처리 로직
-                throw new IllegalStateException("There is no next approver for the document.");
+        if (optionalApp.isPresent()) {
+            App app = optionalApp.get();
+
+            AppStatus currentStatus = app.getAppStatus();
+
+            if (currentStatus == AppStatus.BEFORE) {
+                app.setAppStatus(currentStatus.approve()); // 결재 상태를 승인으로 변경
+                appRepository.save(app);
+
+                Line line = app.getLine();
+                int nextStep = line.getStep() + 1;
+                Line nextApprover = lineRepository.findByStep(nextStep);
+
+                if (nextApprover == null) {
+                    // 다음 결재자가 없는 경우 처리 로직
+                    app.setAppStatus(AppStatus.PASSED); // 모든 결재자 승인 완료 상태로 변경
+                    appRepository.save(app);
+                } else {
+                    // 다음 결재자가 있는 경우 처리 로직
+                    app.setLine(nextApprover); // 다음 결재자 설정
+                    documentRepository.save(app.getDoc());
+                }
+            } else if (currentStatus == AppStatus.APPROVING) {
+                throw new IllegalStateException("The document is already being approved.");
+            } else {
+                throw new IllegalStateException("The document is not in a valid status for approval.");
             }
-            app.setLine(line); // 다음 결재자 설정
-            documentRepository.save(document);
+
         } else {
-            throw new IllegalStateException("The document is not in pending status for approval.");
+            throw new IllegalStateException("The document with the given ID does not exist.");
         }
     }
 
     // 문서 반려
     public void returnedDocument(Long appId) {
-        App app = getApprovalById(appId);
-        if (app.getAppStatus() == AppStatus.APPROVING) {
-            // 결재 상태를 반려로 변경
-            app.setAppStatus(AppStatus.RETURNED);
-            appRepository.save(app);
+        Optional<App> optionalApp = appRepository.findById(appId); // 수정된 부분
+
+        if (optionalApp.isPresent()) {
+            App app = optionalApp.get();
+
+            AppStatus currentStatus = app.getAppStatus();
+
+            if (currentStatus == AppStatus.APPROVING) {
+                app.setAppStatus(currentStatus.reject()); // 결재 상태를 반려로 변경
+                appRepository.save(app);
+            } else {
+                throw new IllegalStateException("The document is not in a valid status for rejection.");
+            }
         } else {
-            throw new IllegalStateException("The document is not in pending status for approval.");
+            throw new IllegalStateException("The document with the given ID does not exist.");
         }
     }
 }
