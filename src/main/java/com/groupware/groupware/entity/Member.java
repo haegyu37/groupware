@@ -37,12 +37,15 @@ public class Member {
     @Column(name="part_id")
     private String part;
 
+    @Column(name="status")
+    private String status;      //재직 or 퇴사
+
     public void setPassword(String password){
     this.password = password;}
 
 
     @Builder
-    public Member(Long id, String no, String password, String name, String position,Authority authority, String part) {
+    public Member(Long id, String no, String password, String name, String position,Authority authority, String part, String status) {
         this.id = id;
         //this.email = email;
         this.no = no;
@@ -51,5 +54,6 @@ public class Member {
         this.position = position;
         this.authority = authority;
         this.part = part;
+        this.status =status;
     }
 }

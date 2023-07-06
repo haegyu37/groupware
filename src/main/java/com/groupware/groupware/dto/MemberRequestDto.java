@@ -23,6 +23,7 @@ public class MemberRequestDto {
     private String name;
     private String position;
     private String part;
+    private String status;
 
     public Member toMember(PasswordEncoder passwordEncoder) {
         return Member.builder()
@@ -32,6 +33,7 @@ public class MemberRequestDto {
                 .name(name)
                 .position(position)
                 .part(part)
+                .status(status)
                 .authority(Authority.ROLE_USER)
                 //.authority(Authority.ROLE_ADMIN)
                 .build();

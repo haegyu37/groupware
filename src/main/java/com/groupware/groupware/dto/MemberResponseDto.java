@@ -14,6 +14,7 @@ public class MemberResponseDto {
     private String name;
     private String position;
     private String part;
+    private String status;
 
     public static MemberResponseDto of(Member member) {
         return MemberResponseDto.builder()
@@ -22,6 +23,7 @@ public class MemberResponseDto {
                 .name(member.getName())
                 .position(member.getPosition())
                 .part(member.getPart())
+                .status(member.getStatus())
                 .build();
     }
 }
