@@ -39,21 +39,21 @@ import org.springframework.web.bind.annotation.RestController;
             document.setContent(documentDTO.getContent());
             documentRepository.save(document);
 
-            // 결재 라인 선택
-            Line line = lineRepository.findById(documentDTO.getLine().getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid line ID"));
-            line.setDocument(document);
-            lineRepository.save(line);
+//            // 결재 라인 선택
+//            Line line = lineRepository.findById(documentDTO.getLine().getId())
+//                    .orElseThrow(() -> new IllegalArgumentException("Invalid line ID"));
+//            line.setDocument(document);
+//            lineRepository.save(line);
 
-            // 결재 상태 초기화
-            App app = new App();
-            app.setAppStatus(AppStatus.BEFORE);
-            app.setDoc(document);
-            app.setLine(line);
-            appRepository.save(app);
-
+//            // 결재 상태 초기화
+//            App app = new App();
+//            app.setAppStatus(AppStatus.BEFORE);
+//            app.setDoc(document);
+//            app.setLine(line);
+//            appRepository.save(app);
+//
 //            app.updateStatus();
-            appRepository.save(app);
+//            appRepository.save(app);
 
             return ResponseEntity.ok("Document created and approval line selected successfully.");
         }

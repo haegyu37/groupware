@@ -33,7 +33,7 @@ public class DocumentController {
 
         document.setTitle(updatedDocument.getTitle());
         document.setContent(updatedDocument.getContent());
-        document.setUsers(updatedDocument.getUsers());
+        document.setMember(updatedDocument.getMember());
         document.setTem(updatedDocument.getTem());
 
         Document savedDocument = documentService.savedDocument(document);
