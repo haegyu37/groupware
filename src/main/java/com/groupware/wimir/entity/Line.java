@@ -1,6 +1,5 @@
 package com.groupware.wimir.entity;
 
-import com.groupware.wimir.constant.AppStatus;
 import com.groupware.wimir.constant.LineStatus;
 import lombok.*;
 

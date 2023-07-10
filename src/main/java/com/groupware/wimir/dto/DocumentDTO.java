@@ -18,13 +18,13 @@ public class DocumentDTO {
         return tem;
     }
 
-    public String getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String writer) {
-        this.writer = writer;
-    }
+//    public String getWriter() {
+//        return writer;
+//    }
+//
+//    public void setWriter(String writer) {
+//        this.writer = writer;
+//    }
 
     public String getContent() {
         return content;
