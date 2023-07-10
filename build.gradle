@@ -5,16 +5,16 @@ buildscript {
 	}
 }
 
+
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.7.11'
+	id 'org.springframework.boot' version '2.7.12'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'java'
 }
 
-group = 'GyuBoard'
+group = 'com.groupware'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
-
 
 configurations {
 	compileOnly {
@@ -27,26 +27,35 @@ repositories {
 }
 
 dependencies {
+//	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//	implementation 'org.springframework.boot:spring-boot-starter-web'
+//	implementation 'org.projectlombok:lombok:1.18.26'
+//	compileOnly 'org.projectlombok:lombok'
+//	annotationProcessor 'org.projectlombok:lombok'
+//	implementation 'mysql:mysql-connector-java:8.0.27'
+//	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//	// 엑셀 파일
+	implementation group: 'org.apache.poi', name: 'poi', version: '5.2.2'
+	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.2'
+//	// pdf 파일
+	implementation 'com.itextpdf:itextpdf:5.5.13.3'
+	implementation 'com.itextpdf.tool:xmlworker:5.5.13.3'
+	implementation 'com.itextpdf:pdfa:7.2.3'
+	// odf toolkit
+	implementation 'org.odftoolkit:simple-odf:0.9.0'
+	// summernote
+	implementation 'org.webjars.npm:summernote:0.8.20'
+
+// https://mvnrepository.com/artifact/mysql/mysql-connector-java
+	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.27'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-
-
-	testImplementation 'junit:junit:4.13.1'
-	testImplementation 'org.projectlombok:lombok:1.18.26'
-
-
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
-	implementation 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'
-	testCompileOnly 'org.projectlombok:lombok'
-	testAnnotationProcessor 'org.projectlombok:lombok'
-	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
 
-	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 
 	annotationProcessor(
 
@@ -57,48 +66,28 @@ dependencies {
 			"com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
 
 
-	implementation 'org.modelmapper:modelmapper:3.1.0'
-
-	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
-
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-
-	implementation 'net.coobird:thumbnailator:0.4.16'
-
-
-	implementation 'com.google.code.gson:gson:2.9.0'
-
-	implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.7.1")
-
 
 	// Spring Security 추가
-   	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-
-
-	//롬복 추가
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
 
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
-	dependencies {
-		// SLF4J API
-		implementation 'org.slf4j:slf4j-api:1.7.32'
-		// SLF4J 로그 바인딩 (예: Logback)
-		implementation 'ch.qos.logback:logback-classic:1.2.6'
-	}
+	// SLF4J API
+	implementation 'org.slf4j:slf4j-api:1.7.32'
+	// SLF4J 로그 바인딩 (예: Logback)
+	implementation 'ch.qos.logback:logback-classic:1.2.6'
+
 }
 
-/*tasks.named('test') {
-    useJUnitPlatform()
-}*/
-
-test {
+tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+	options.compilerArgs << "-Xlint:deprecation"
 }
 
 sourceSets {
