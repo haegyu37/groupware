@@ -1,6 +1,6 @@
 package com.groupware.wimir.entity;
 
-import com.groupware.wimir.constant.Role;
+import com.groupware.wimir.constant.Authority;
 //import com.groupware.wimir.constant.MemberStatus;
 import lombok.*;
 
@@ -22,18 +22,15 @@ public class Member {
     @Column(name = "name")
     private String name; //직원 이름
 
-    @Column(name = "com_id")
-    private Long comId; //직원 사번(로그인)
+    @Column(name = "no")
+    private Long no; //직원 사번(로그인)
 
     @Column(name = "password")
     private String password; //직원 비밀번호
 
-    @Column(name = "phone")
-    private Long phone; //직원 연락처
-
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private Role role; //마스터, 일반, 차단 계정
+    private Authority authority;
 
     @OneToOne
     @JoinColumn(name="part_id")

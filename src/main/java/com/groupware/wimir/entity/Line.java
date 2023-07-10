@@ -29,7 +29,12 @@ public class Line {
     private LineStatus lineStatus; //결재자, 참조자
 
     @OneToOne
-    @JoinColumn(name="users_id")
-    private Member users; //직원 아이디
+    @JoinColumn(name="member_id")
+    private Member member; //직원 아이디
+
+    @OneToOne
+    @JoinColumn(name = "doc_id")
+    private Document document; // 문서 아이디
+
 
 }
