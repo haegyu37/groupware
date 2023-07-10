@@ -1,6 +1,5 @@
 package com.groupware.wimir.entity;
 
-import com.groupware.wimir.constant.AppStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,8 +28,8 @@ public class UsersImg {
     private String path; //직원이미지 경로
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id")
-    private Users users; //직원 아이디
+    @JoinColumn(name = "member_id")
+    private Member member; //직원 아이디
 
 
 }

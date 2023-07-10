@@ -9,18 +9,15 @@ import javax.persistence.*;
 @ToString
 @NoArgsConstructor
 @Getter @Setter
-@Table(name = "part")
-public class Part {
+@Table(name = "position")
+public class Position {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private Long id; //본부 아이디
+    private Long id; //직급 아이디
 
     @Column(name = "name")
-    private String name; //본부명
-
-    @Column(name = "division")
-    private String division; //식별자
+    private String name; //직급명
 
 }
