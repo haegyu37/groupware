@@ -1,6 +1,5 @@
 package com.groupware.wimir.entity;
 
-import com.groupware.wimir.constant.AppStatus;
 import com.groupware.wimir.constant.LineStatus;
 import lombok.*;
 
@@ -23,14 +22,19 @@ public class Line {
     private String name; //결재라인명
 
     @Column(name = "step")
-    private int step; //결제 단계 (1~N)
+    private int step; //결재순서 (1~N)
 
     @Column(name = "line_status")
     @Enumerated(EnumType.STRING)
     private LineStatus lineStatus; //결재자, 참조자
 
     @OneToOne
-    @JoinColumn(name="users_id")
-    private Users users; //직원 아이디
+    @JoinColumn(name="member_id")
+    private Member member; //직원 아이디
+
+    @OneToOne
+    @JoinColumn(name = "doc_id")
+    private Document document; // 문서 아이디
+
 
 }
