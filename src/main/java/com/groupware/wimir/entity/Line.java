@@ -1,3 +1,4 @@
+//
 //package com.groupware.wimir.entity;
 //
 //import com.groupware.wimir.constant.LineStatus;
@@ -36,9 +37,6 @@
 //    @JoinColumn(name = "doc_id")
 //    private Document document; // 문서 아이디
 //
-//    public void setDocument(Document document) {
-//        this.document = document;
-//        document.setLine(this);
-//    }
+//
 //
 //}

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //package com.groupware.wimir.dto;
 //
 //import java.util.Date;
@@ -51,3 +52,34 @@
 //    }
 //}
 //
+=======
+package com.groupware.wimir.dto;
+
+
+import com.groupware.wimir.entity.Line;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.util.Date;
+
+@AllArgsConstructor
+@ToString
+@Getter @Setter
+
+public class DocumentDTO {
+    private Long id;
+    private String title;
+    private String content;
+    private String writer;
+    private Date writtenDate;
+    private Long tem;
+
+    private Line line;
+
+
+
+}
+
+>>>>>>> d210e306cbd058c79f80ea7fb5090b2384db43f4
