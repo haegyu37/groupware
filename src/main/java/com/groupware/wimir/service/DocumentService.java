@@ -1,7 +1,13 @@
 package com.groupware.wimir.service;
 
+import com.groupware.wimir.entity.App;
 import com.groupware.wimir.entity.Document;
+import com.groupware.wimir.entity.Member;
+import com.groupware.wimir.entity.Template;
+import com.groupware.wimir.repository.AppRepository;
 import com.groupware.wimir.repository.DocumentRepository;
+import com.groupware.wimir.repository.MemberRepository;
+import com.groupware.wimir.repository.TemplateRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,27 +18,21 @@ import java.util.List;
 @Service
 @Transactional
 public class DocumentService {
-    private DocumentRepository documentRepository;
+    private final DocumentRepository documentRepository;
+    private final MemberRepository memberRepository;
+    private final TemplateRepository templateRepository;
+    private final AppRepository appRepository;
 
-    // 문서 저장
-    public Document savedDocument(Document document) {
+    public DocumentService(DocumentRepository documentRepository, MemberRepository memberRepository, TemplateRepository templateRepository, AppRepository appRepository) {
+        this.documentRepository = documentRepository;
+        this.memberRepository = memberRepository;
+        this.templateRepository = templateRepository;
+        this.appRepository = appRepository;
+    }
+
+    // 문서 작성
+    public Document createDocument(Document document) {
         return documentRepository.save(document);
-    }
-
-    // 모든 문서 조회
-    public List<Document> getAllDocuments() {
-        return documentRepository.findAll();
-    }
-
-    // 문서 조회
-    public Document getDocumentById(Long id) {
-        return documentRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "문서를 찾을 수 없습니다."));
-    }
-
-    // 문서 삭제
-    public void deleteDocument(Long id) {
-        documentRepository.deleteById(id);
     }
 
     // 문서 수정
@@ -43,9 +43,40 @@ public class DocumentService {
         // 기존 문서의 필드들을 업데이트
         document.setTitle(updatedDocument.getTitle());
         document.setContent(updatedDocument.getContent());
-        document.setMember(updatedDocument.getMember());
+        document.setApp(updatedDocument.getApp());
+
+        // memberId에 해당하는 Member 객체를 가져옵니다.
+        Member member = memberRepository.findById(updatedDocument.getMember().getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "직원을 찾을 수 없습니다."));
+        document.setMember(member);
+
+        // appId에 해당하는 App 객체를 가져옵니다.
+        App app = appRepository.findById(updatedDocument.getApp().getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "결재를 찾을 수 없습니다."));
+        document.setApp(app);
+
+        // temId에 해당하는 Template 객체를 가져옵니다.
+        Template tem = templateRepository.findById(updatedDocument.getTem().getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "문서 양식을 찾을 수 없습니다."));
+        document.setTem(tem);
 
         return documentRepository.save(document);
+    }
+
+    // 문서 삭제
+    public void deleteDocument(Long id) {
+        documentRepository.deleteById(id);
+    }
+
+    // 문서 조회
+    public Document getDocumentById(Long id) {
+        return documentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "문서를 찾을 수 없습니다."));
+    }
+
+    // 문서 리스트 조회
+    public List<Document> getAllDocuments() {
+        return documentRepository.findAll();
     }
 
 }

@@ -1,30 +1,15 @@
 package com.groupware.wimir.dto;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class DocumentDTO {
     private Long id;
     private String title;
     private String content;
-    private String writer;
-    private Date writtenDate;
-    private Long tem;
-
-    public void setTem(Long tem) {
-        this.tem = tem;
-    }
-
-    public Long getTem() {
-        return tem;
-    }
-
-    public String getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String writer) {
-        this.writer = writer;
-    }
+    private LocalDateTime writtenDate;
+    private Long memberId;
+    private Long temId;
+    private Long appId;
 
     public String getContent() {
         return content;
@@ -49,5 +34,38 @@ public class DocumentDTO {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public LocalDateTime getWrittenDate() {
+        return writtenDate;
+    }
+
+    public void setWrittenDate(LocalDateTime writtenDate) {
+        this.writtenDate = writtenDate;
+    }
+
+    public Long getMemberId() {
+        return this.memberId;
+    }
+
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
+    }
+
+    public Long getAppId() {
+        return this.appId;
+    }
+
+    public void setAppId(Long appId) {
+        this.appId = appId;
+    }
+
+    public Long getTemId() {
+        return this.temId;
+    }
+
+    public void setTemId(Long temId) {
+        this.temId = temId;
+    }
+
 }
 

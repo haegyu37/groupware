@@ -47,5 +47,6 @@ public class Member {
     @OneToOne
     @JoinColumn(name="position_id")
     private Position position; //직급 아이디
+    private Long memberId;
 
 }

@@ -23,9 +23,6 @@ public class Document {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content; //문서 내용
 
-//    @Column(name = "writer")
-//    private String writer; //문서 작성자
-
     @Column(name = "written_date")
     private LocalDateTime writtenDate; //문서 작성일
 
@@ -40,8 +37,5 @@ public class Document {
     @OneToOne
     @JoinColumn(name="member_id")
     private Member member; //직원(작성자) 아이디
-
-
-
 
 }

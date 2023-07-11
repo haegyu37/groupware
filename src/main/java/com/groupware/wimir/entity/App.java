@@ -29,8 +29,6 @@ public class App {
     @OneToOne
     @JoinColumn(name="line_id")
     private Line line; //결재라인 아이디
-
-
-
+    private Long appId;
 
 }
