@@ -1,5 +1,6 @@
 package com.groupware.wimir.dto;
 
+import com.groupware.wimir.constant.Authority;
 import com.groupware.wimir.entity.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,38 +16,28 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MemberRequestDto {
-    //private String email;
-    private String no;
-    private String password;
-    private String name;
-    private Long positionId; // 직급 아이디
-    private Long partId; // 본부 아이디
-    private Long teamId; // 팀 아이디
-    private String status;
+public class MemberRequestDTO {
+    private Long id; //직원 아이디
+    private Long no; //직원 사번
+    private String password; //직원 비밀번호
+    private String name; //이름
+    private Position position; //직급
+    private Part part; //부서
+    private Team team; //팀
+    private Authority authority; //권한
+    private UsersImg usersImg; //사진
 
     public Member toMember(PasswordEncoder passwordEncoder) {
-        Position position = new Position();
-        position.setId(positionId);
-
-        Part part = new Part();
-        part.setId(partId);
-
-        Team team = new Team();
-        team.setId(teamId);
-
-
-
         return Member.builder()
-                //.email(email)
+                .id(id)
                 .no(no)
                 .password(passwordEncoder.encode(password))
                 .name(name)
                 .position(position)
-                .authority(Authority.ROLE_ADMIN)
                 .part(part)
                 .team(team)
-                .status(status)
+//                .authority(Authority.ROLE_USER)
+                .authority(Authority.ROLE_ADMIN)
                 .build();
     }
     public UsernamePasswordAuthenticationToken toAuthentication() {

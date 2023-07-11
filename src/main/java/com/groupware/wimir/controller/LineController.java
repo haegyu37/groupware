@@ -1,4 +1,3 @@
-
 package com.groupware.wimir.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;

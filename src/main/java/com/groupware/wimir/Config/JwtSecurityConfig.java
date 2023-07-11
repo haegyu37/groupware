@@ -1,4 +1,4 @@
-package com.groupware.wimir.Config;
+package com.groupware.wimir.config;
 
 import com.groupware.wimir.jwt.JwtFilter;
 import com.groupware.wimir.jwt.TokenProvider;

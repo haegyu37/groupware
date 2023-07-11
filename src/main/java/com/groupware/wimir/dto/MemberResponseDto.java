@@ -1,9 +1,7 @@
 package com.groupware.wimir.dto;
 
-import com.groupware.wimir.entity.Member;
-import com.groupware.wimir.entity.Part;
-import com.groupware.wimir.entity.Position;
-import com.groupware.wimir.entity.Team;
+import com.groupware.wimir.constant.Authority;
+import com.groupware.wimir.entity.*;
 import lombok.*;
 
 
@@ -12,23 +10,24 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MemberResponseDto {
-    private String no;
+public class MemberResponseDTO {
+    private Long id;
+    private Long no;
     private String name;
     private Position position;
     private Part part;
     private Team team;
-    private String status;
+    private Authority authority;
+    private UsersImg usersImg;
 
-    public static MemberResponseDto of(Member member) {
-        return MemberResponseDto.builder()
-                //.email(member.getEmail())
+    public static MemberResponseDTO of(Member member) {
+        return MemberResponseDTO.builder()
                 .no(member.getNo())
                 .name(member.getName())
                 .position(member.getPosition())
                 .part(member.getPart())
                 .team(member.getTeam())
-                .status(member.getStatus())
+                .authority(member.getAuthority())
                 .build();
     }
 }

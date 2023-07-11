@@ -1,9 +1,9 @@
 package com.groupware.wimir;
 
-
 import com.groupware.wimir.controller.PartController;
 import com.groupware.wimir.entity.Part;
 import com.groupware.wimir.entity.Team;
+import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.PartRepository;
 import com.groupware.wimir.repository.TeamRepository;
 import org.junit.jupiter.api.Test;
@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -37,7 +38,11 @@ public class PartControllerTest {
     @MockBean
     private TeamRepository teamRepository;
 
+    @MockBean
+    private MemberRepository memberRepository;
+
     @Test
+    @WithMockUser // 인증된 사용자로 테스트 실행
     public void testGetPartById() throws Exception {
         Long partId = 1L;
         Part part = new Part();
@@ -53,6 +58,7 @@ public class PartControllerTest {
     }
 
     @Test
+    @WithMockUser // 인증된 사용자로 테스트 실행
     public void testGetTeamsByPartId() throws Exception {
         Long partId = 1L;
         Part part = new Part();
@@ -76,7 +82,7 @@ public class PartControllerTest {
         when(partRepository.findById(anyLong())).thenReturn(Optional.of(part));
         when(teamRepository.findByPart(part)).thenReturn(teams);
 
-        mockMvc.perform(get("/part/{partId}/teams", partId))
+        mockMvc.perform(get("/part/{partId}/team", partId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1L))
                 .andExpect(jsonPath("$[0].name").value("Team 1"))

@@ -1,6 +1,6 @@
 package com.groupware.wimir.jwt;
 
-import com.groupware.wimir.dto.TokenDto;
+import com.groupware.wimir.dto.TokenDTO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
+import java.util.Base64;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -33,11 +34,15 @@ public class TokenProvider {
     // 이후 의존성이 주입된 key의 값으로 정한다
     public TokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+        secretKey = "your_secret_key";
+        String encodedKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        System.out.println(encodedKey);
     }
     // 토큰 생성 Authentication 인터페이스를 확장한 매개변수를 받아서 그 값을 string으로 변환
     // 이후 현재시각과 만료시각을 만든 후 jwts의 builder를 이용하여 token을 생성한 다음 tokendto에 생성한 token의 정보를 넣는다
-    public TokenDto generateTokenDto(Authentication authentication) {
+    public TokenDTO generateTokenDto(Authentication authentication) {
 
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -57,7 +62,7 @@ public class TokenProvider {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
-        return TokenDto.builder()
+        return TokenDTO.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
                 .tokenExpiresIn(tokenExpiresIn.getTime())

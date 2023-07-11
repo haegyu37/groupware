@@ -1,4 +1,4 @@
-package com.groupware.wimir.Config;
+package com.groupware.wimir.config;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

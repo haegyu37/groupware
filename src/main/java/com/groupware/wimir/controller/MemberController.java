@@ -1,7 +1,7 @@
 package com.groupware.wimir.controller;
 
 //import com.groupware.groupware.dto.ChangePasswordRequestDto;
-import com.groupware.wimir.dto.MemberResponseDto;
+import com.groupware.wimir.dto.MemberResponseDTO;
 import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +15,8 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponseDto> getMyMemberInfo() {
-        MemberResponseDto myInfoBySecurity = memberService.getMyInfoBySecurity();
+    public ResponseEntity<MemberResponseDTO> getMyMemberInfo() {
+        MemberResponseDTO myInfoBySecurity = memberService.getMyInfoBySecurity();
         System.out.println(myInfoBySecurity.getName());
         return ResponseEntity.ok((myInfoBySecurity));
         // return ResponseEntity.ok(memberService.getMyInfoBySecurity());
