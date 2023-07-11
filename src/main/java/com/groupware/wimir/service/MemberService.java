@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -35,4 +37,28 @@ public class MemberService {
         member.setPassword(passwordEncoder.encode((newPassword)));
         return MemberResponseDTO.of(memberRepository.save(member));
     }
+
+    public Member getMemberByUsername(String username) {
+        return memberRepository.findByName(username)
+                .orElseThrow(() -> new RuntimeException("Member not found with username: " + username));
+    }
+
+    public Member updateMember(Member member) {
+        Member existingMember = getMemberById(member.getId());
+        if (existingMember != null) {
+            Member updatedMember = existingMember.updateMember(member);
+            return memberRepository.save(updatedMember);
+        } else {
+            throw new IllegalArgumentException("Member not found with ID: " + member.getId());
+        }
+    }
+
+    public Member getMemberById(Long memberId) {
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        return optionalMember.orElse(null);
+    }
+
+
+
+
 }

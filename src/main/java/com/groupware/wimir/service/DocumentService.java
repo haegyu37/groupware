@@ -2,6 +2,7 @@ package com.groupware.wimir.service;
 
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.repository.DocumentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,7 +13,12 @@ import java.util.List;
 @Service
 @Transactional
 public class DocumentService {
+
+    @Autowired
     private DocumentRepository documentRepository;
+
+    @Autowired
+    private LineService lineService;
 
     // 문서 저장
     public Document savedDocument(Document document) {
@@ -47,5 +53,7 @@ public class DocumentService {
 
         return documentRepository.save(document);
     }
+
+
 
 }

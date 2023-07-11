@@ -38,7 +38,9 @@ public class Document {
     @JoinColumn(name="member_id")
     private Member member; //직원(작성자) 아이디
 
-
+    @OneToOne
+    @JoinColumn(name = "line_id")
+    private Line line; //결재라인 아이디
 
 
 }

@@ -11,7 +11,7 @@ import javax.persistence.*;
 @ToString
 @NoArgsConstructor
 @Getter @Setter
-@Table(name = "users")
+@Table(name = "member")
 @Builder
 public class Member {
 
@@ -49,4 +49,24 @@ public class Member {
     @JoinColumn(name="position_id")
     private Position position; //직급 아이디
 
+    @OneToOne
+    @JoinColumn(name="line_id")
+    private Line line; //결재라인 아이디
+
+    public Member updateMember(Member updatedMember) {
+        // 업데이트할 멤버 정보를 설정합니다.
+        this.setName(updatedMember.getName());
+        this.setNo(updatedMember.getNo());
+        this.setPassword(updatedMember.getPassword());
+        this.setAuthority(updatedMember.getAuthority());
+        this.setPart(updatedMember.getPart());
+        this.setTeam(updatedMember.getTeam());
+        this.setUsersImg(updatedMember.getUsersImg());
+        this.setPosition(updatedMember.getPosition());
+        this.setLine(updatedMember.getLine());
+
+        // 여기서 필요한 추가적인 로직을 구현할 수 있습니다.
+
+        return this;
+    }
 }

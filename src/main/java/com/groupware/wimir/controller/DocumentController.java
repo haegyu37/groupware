@@ -16,8 +16,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/documents")
+@RequestMapping("/document")
 public class DocumentController {
+
     private final DocumentService documentService;
     private final AppService appService;
     private final LineService lineService;
@@ -71,29 +72,19 @@ public class DocumentController {
         return ResponseEntity.noContent().build();
     }
 
-    //결재 생성
-    @PostMapping("/{documentId}/app")
-    public ResponseEntity<App> createApp(@PathVariable("documentId") Long documentId, @RequestBody App app) {
-        Document document = documentService.getDocumentById(documentId);
+    //결재라인 지정
+    @PutMapping("/{id}/line")
+    public ResponseEntity<Document> assignLineToDocument(@PathVariable Long id, @RequestBody Line line) {
+        // 문서에 결재라인 할당 로직 구현
+        Document document = documentService.getDocumentById(id);
         if (document != null) {
-            app.setDoc(document);
-            App createdApp = appService.createApp(app);
-            return new ResponseEntity<>(createdApp, HttpStatus.CREATED);
+            Line assignedLine = lineService.assignLineToDocument(line, document);
+            document.setLine(assignedLine);
+            Document updatedDocument = documentService.updateDocument(document);
+            return ResponseEntity.ok(updatedDocument);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
-    //결재라인 생성
-    @PostMapping("/{documentId}/line")
-    public ResponseEntity<Line> createLine(@PathVariable("documentId") Long documentId, @RequestBody Line line) {
-        Document document = documentService.getDocumentById(documentId);
-        if (document != null) {
-            line.setDocument(document);
-            Line createdLine = lineService.createLine(line);
-            return new ResponseEntity<>(createdLine, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
 }

@@ -20,4 +20,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     boolean existsByNo(Long no);
 
+
+
 }
