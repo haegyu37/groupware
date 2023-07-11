@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>전자문서 변환</title>
+</head>
+<body>
+<h1>전자문서 변환</h1>
+<form id="convertForm">
+  <label for="title">제목:</label>
+  <input type="text" id="title" name="title" required><br>
+  <label for="file">파일:</label>
+  <input type="file" id="file" name="file" required><br> <!-- 파일 업로드를 위한 input 추가 -->
+
+  <input type="button" value="PDF 변환" onclick="convertToPDF()">
+  <input type="button" value="엑셀 변환" onclick="convertToExcel()">
+</form>
+<script>
+  function convertToPDF() {
+    var form = document.getElementById("convertForm");
+    var title = form.elements["title"].value;
+    var file = form.elements["file"].files[0]; // 업로드된 파일 가져오기
+
+    var formData = new FormData();
+    formData.append("file", file); // 파일을 FormData에 추가
+    formData.append("title", title);
+    formData.append("path", null);
+    formData.append("format", "pdf");
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/convert/pdf");
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          var downloadLink = response.downloadLink;
+          alert("PDF 파일이 저장되었습니다. 다운로드 링크: " + downloadLink);
+        } else {
+          alert("PDF 변환 중 오류가 발생했습니다.");
+        }
+      }
+    };
+    xhr.send(formData);
+  }
+
+  function convertToExcel() {
+    var form = document.getElementById("convertForm");
+    var title = form.elements["title"].value;
+    var file = form.elements["file"].files[0]; // 업로드된 파일 가져오기
+
+    var formData = new FormData();
+    formData.append("file", file); // 파일을 FormData에 추가
+    formData.append("title", title);
+    formData.append("path", null);
+    formData.append("format", "excel");
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/convert/excel");
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          var downloadLink = response.downloadLink;
+          alert("엑셀 파일이 저장되었습니다. 다운로드 링크: " + downloadLink);
+        } else {
+          alert("엑셀 변환 중 오류가 발생했습니다.");
+        }
+      }
+    };
+    xhr.send(formData);
+  }
+</script>
+</body>
+</html>
