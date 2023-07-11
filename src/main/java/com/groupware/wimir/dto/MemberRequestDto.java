@@ -20,23 +20,33 @@ public class MemberRequestDto {
     private String no;
     private String password;
     private String name;
-    private Position position;
-    private Part part;
-    private Team team;
+    private Long positionId; // 직급 아이디
+    private Long partId; // 본부 아이디
+    private Long teamId; // 팀 아이디
     private String status;
 
     public Member toMember(PasswordEncoder passwordEncoder) {
+        Position position = new Position();
+        position.setId(positionId);
+
+        Part part = new Part();
+        part.setId(partId);
+
+        Team team = new Team();
+        team.setId(teamId);
+
+
+
         return Member.builder()
                 //.email(email)
                 .no(no)
                 .password(passwordEncoder.encode(password))
                 .name(name)
                 .position(position)
+                .authority(Authority.ROLE_ADMIN)
                 .part(part)
                 .team(team)
                 .status(status)
-                //.authority(Authority.ROLE_USER)
-                .authority(Authority.ROLE_ADMIN)
                 .build();
     }
     public UsernamePasswordAuthenticationToken toAuthentication() {
