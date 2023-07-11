@@ -1,3 +1,11 @@
+// 스프링 2.6.0 이상에 dsl 사용시 버전 확인 (5.0.0)
+buildscript {
+	ext {
+		queryDslVersion = "5.0.0"
+	}
+}
+
+
 plugins {
 	id 'org.springframework.boot' version '2.7.12'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
@@ -19,14 +27,16 @@ repositories {
 }
 
 dependencies {
+
 //	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 //	implementation 'org.springframework.boot:spring-boot-starter-web'
-//	implementation 'org.projectlombok:lombok:1.18.26'
+	implementation 'org.projectlombok:lombok:1.18.26'
 //	compileOnly 'org.projectlombok:lombok'
 //	annotationProcessor 'org.projectlombok:lombok'
 //	implementation 'mysql:mysql-connector-java:8.0.27'
 //	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
 //	// 엑셀 파일
 	implementation group: 'org.apache.poi', name: 'poi', version: '5.2.2'
 	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.2'
@@ -51,6 +61,29 @@ dependencies {
 	implementation 'org.apache.tomcat:tomcat-jasper:9.0.21'
 
 
+	annotationProcessor(
+
+			"javax.persistence:javax.persistence-api",
+
+			"javax.annotation:javax.annotation-api",
+
+			"com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
+
+
+
+	// Spring Security 추가
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+
+	// SLF4J API
+	implementation 'org.slf4j:slf4j-api:1.7.32'
+	// SLF4J 로그 바인딩 (예: Logback)
+	implementation 'ch.qos.logback:logback-classic:1.2.6'
+
 }
 
 tasks.named('test') {
@@ -61,3 +94,10 @@ tasks.withType(JavaCompile) {
 	options.compilerArgs << "-Xlint:deprecation"
 }
 
+sourceSets {
+	main {
+		java {
+			srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
+		}
+	}
+}

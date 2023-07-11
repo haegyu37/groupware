@@ -1,7 +1,7 @@
 package com.groupware.wimir.entity;
 
-import com.groupware.wimir.constant.Authority;
 //import com.groupware.wimir.constant.MemberStatus;
+import com.groupware.wimir.constant.Authority;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,6 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter @Setter
 @Table(name = "users")
+@Builder
 public class Member {
 
     @Id
@@ -28,7 +29,7 @@ public class Member {
     @Column(name = "password")
     private String password; //직원 비밀번호
 
-    @Column(name = "role")
+    @Column(name = "authority")
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
