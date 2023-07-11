@@ -1,6 +1,7 @@
 package com.groupware.wimir.entity;
 
-//import com.groupware.wimir.constant.MemberStatus;
+
+import com.groupware.wimir.constant.Authority;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,12 +20,15 @@ public class Member {
     private Long id; //직원 아이디
 
 
+    @Column(name = "name")
+    private String name; //직원 이름
+
     @Column(name = "no")
-    private String no; //직원 사번(로그인)
+    private Long no; //직원 사번(로그인)
+
 
     @Column(name = "password")
     private String password; //직원 비밀번호
-
 
 
     @Column(name = "name")
@@ -34,8 +38,10 @@ public class Member {
     @JoinColumn(name="position_id")
     private Position position; //직급 아이디
 
+    @Column(name = "authority")
     @Enumerated(EnumType.STRING)
-    private Authority authority;    //직원 권한
+    private Authority authority;
+
 
     @OneToOne
     @JoinColumn(name="part_id")
@@ -71,3 +77,5 @@ public class Member {
         this.status =status;
     }
 }
+
+

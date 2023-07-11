@@ -1,5 +1,6 @@
 package com.groupware.wimir.service;
 
+
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.dto.MemberResponseDto;
 import com.groupware.wimir.entity.Member;
@@ -36,3 +37,4 @@ public class MemberService {
         return MemberResponseDto.of(memberRepository.save(member));
     }
 }
+
