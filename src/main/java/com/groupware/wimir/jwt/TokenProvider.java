@@ -1,6 +1,6 @@
 package com.groupware.wimir.jwt;
 
-import com.groupware.wimir.dto.TokenDTO;
+import com.groupware.wimir.DTO.TokenDTO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

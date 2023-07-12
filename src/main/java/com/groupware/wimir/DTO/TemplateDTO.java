@@ -1,19 +1,20 @@
-package com.groupware.wimir.dto;
+package com.groupware.wimir.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @ToString
 @Getter @Setter
 
-public class FileDTO {
+public class TemplateDTO {
     private Long id;
     private String name;
-    private Long size;
-    private String path;
-    private Long documentId;
-
+    private Date date;
+    private String category;
 }
+

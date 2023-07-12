@@ -1,4 +1,4 @@
-package com.groupware.wimir.dto;
+package com.groupware.wimir.DTO;
 
 import com.groupware.wimir.constant.Authority;
 import com.groupware.wimir.entity.*;
