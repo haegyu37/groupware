@@ -11,42 +11,32 @@ import javax.persistence.*;
 @ToString
 @NoArgsConstructor
 @Getter @Setter
-@Table(name = "users")
+@Table(name = "members")
 @Builder
 public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
     private Long id; //직원 아이디
 
-    @Column(name = "name")
     private String name; //직원 이름
 
-    @Column(name = "no")
     private Long no; //직원 사번(로그인)
 
-    @Column(name = "password")
     private String password; //직원 비밀번호
 
-    @Column(name = "authority")
     @Enumerated(EnumType.STRING)
-    private Authority authority;
+    private Authority authority; //직원 권한
 
-    @OneToOne
-    @JoinColumn(name="part_id")
-    private Part part; //직원 본부
+    private String part; //직원 본부
 
-    @OneToOne
-    @JoinColumn(name="team_id")
-    private Team team; //직원 팀
+    private String team; //직원 팀
 
-    @OneToOne
-    @JoinColumn(name="img_id")
-    private UsersImg usersImg; //직원이미지 아이디
+    private String usersImg; //직원이미지
 
-    @OneToOne
-    @JoinColumn(name="position_id")
-    private Position position; //직급 아이디
+    private String position; //직급
+
+
+
 
 }
