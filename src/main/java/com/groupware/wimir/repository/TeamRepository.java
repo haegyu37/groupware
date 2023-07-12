@@ -1,8 +1,6 @@
 package com.groupware.wimir.repository;
 
 
-import com.groupware.wimir.entity.Part;
-import com.groupware.wimir.entity.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

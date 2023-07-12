@@ -1,9 +1,6 @@
 package com.groupware.wimir.dto;
 
 import com.groupware.wimir.entity.Member;
-import com.groupware.wimir.entity.Part;
-import com.groupware.wimir.entity.Position;
-import com.groupware.wimir.entity.Team;
 import lombok.*;
 
 
@@ -15,20 +12,17 @@ import lombok.*;
 public class MemberResponseDTO {
     private String no;
     private String name;
-    private Position position;
-    private Part part;
-    private Team team;
-    private String status;
+    private String position;
+    private String part;
+    private String team;
 
     public static MemberResponseDTO of(Member member) {
         return MemberResponseDTO.builder()
-                //.email(member.getEmail())
                 .no(member.getNo())
                 .name(member.getName())
                 .position(member.getPosition())
                 .part(member.getPart())
                 .team(member.getTeam())
-                .status(member.getStatus())
                 .build();
     }
 }

@@ -21,25 +21,14 @@ public class MemberRequestDTO {
     private String no;
     private String password;
     private String name;
-    private Long positionId; // 직급 아이디
-    private Long partId; // 본부 아이디
-    private Long teamId; // 팀 아이디
+    private String position; // 직급 이름
+    private String part; // 본부 이름
+    private String team; // 팀 이름
     private String status;
 
     public Member toMember(PasswordEncoder passwordEncoder) {
-        Position position = new Position();
-        position.setId(positionId);
-
-        Part part = new Part();
-        part.setId(partId);
-
-        Team team = new Team();
-        team.setId(teamId);
-
-
 
         return Member.builder()
-                //.email(email)
                 .no(no)
                 .password(passwordEncoder.encode(password))
                 .name(name)
@@ -47,10 +36,12 @@ public class MemberRequestDTO {
                 .authority(Authority.ROLE_ADMIN)
                 .part(part)
                 .team(team)
-                .status(status)
                 .build();
     }
     public UsernamePasswordAuthenticationToken toAuthentication() {
         return new UsernamePasswordAuthenticationToken(no, password);
     }
+
+
+
 }

@@ -31,47 +31,29 @@ public class Member {
     @Column(name = "name")
     private String name; //직원 이름
 
-
-//    @Transient
-//    private Long positionId;
-
-    @OneToOne
-    @JoinColumn(name="position_id")
-    private Position position; //직급 아이디
+    @Column(name="position_id")
+    private String position; //직급 아이디
 
     @Enumerated(EnumType.STRING)
     private Authority authority;    //직원 권한
 
-//    @Transient
-//    private Long partId;
+    @Column(name="part_id")
+    private String part; //직원 본부
 
-    @OneToOne
-    @JoinColumn(name="part_id")
-    private Part part; //직원 본부
-
-
-//    @Transient
-//    private Long teamId;
-
-
-    @OneToOne
-    @JoinColumn(name="team_id")
-    private Team team; //직원 팀
+    @Column(name="team_id")
+    private String team; //직원 팀
 
     @OneToOne
     @JoinColumn(name="img_id")
     private UsersImg usersImg; //직원이미지 아이디
 
 
-    @Column(name="status")
-    private String status;      //재직 or 퇴사
-
     public void setPassword(String password){
         this.password = password;}
 
 
     @Builder
-    public Member(Long id, String no, String password, String name, Position position, Authority authority, Part part, Team team, String status) {
+    public Member(Long id, String no, String password, String name, String position, Authority authority, String part, String team) {
         this.id = id;
         this.no = no;
         this.password = password;
@@ -80,6 +62,5 @@ public class Member {
         this.authority = authority;
         this.part = part;
         this.team = team;
-        this.status = status;
     }
 }
