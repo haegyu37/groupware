@@ -45,17 +45,17 @@ public class DocumentController {
         // memberId에 해당하는 Member 객체를 가져옵니다.
         Member member = memberRepository.findById(documentDTO.getMemberId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "직원을 찾을 수 없습니다."));
-        newDocument.setMember(member);
+//        newDocument.setMember(member);
 
         // appId에 해당하는 App 객체를 가져옵니다.
         App app = appRepository.findById(documentDTO.getAppId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "결재를 찾을 수 없습니다."));
-        newDocument.setApp(app);
+//        newDocument.setApp(app);
 
         // temId에 해당하는 Template 객체를 가져옵니다.
         Template template = templateRepository.findById(documentDTO.getTemId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "문서 양식을 찾을 수 없습니다."));
-        newDocument.setTemplate(template);
+//        newDocument.setTemplate(template);
 
         Document savedDocument = documentService.createDocument(newDocument);
         return ResponseEntity.ok(savedDocument);
@@ -63,18 +63,18 @@ public class DocumentController {
     }
 
     // 문서 수정
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Document> updateDocument(@PathVariable Long id, @RequestBody Document updatedDocument) {
-        Document document = documentService.getDocumentById(id);
-
-        document.setTitle(updatedDocument.getTitle());
-        document.setContent(updatedDocument.getContent());
-        document.setApp(updatedDocument.getApp());
-
-        Document savedDocument = documentService.updateDocument(document); // 수정된 부분
-        return ResponseEntity.ok(savedDocument);
-//        return "/documents/viewForm";
-    }
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<Document> updateDocument(@PathVariable Long id, @RequestBody Document updatedDocument) {
+//        Document document = documentService.getDocumentById(id);
+//
+//        document.setTitle(updatedDocument.getTitle());
+//        document.setContent(updatedDocument.getContent());
+//        document.setApp(updatedDocument.getApp());
+//
+//        Document savedDocument = documentService.updateDocument(document); // 수정된 부분
+//        return ResponseEntity.ok(savedDocument);
+////        return "/documents/viewForm";
+//    }
 
     // 문서 리스트 조회
     @GetMapping("/list")
