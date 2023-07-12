@@ -21,26 +21,26 @@ public class MemberRequestDTO {
     private Long no; //직원 사번
     private String password; //직원 비밀번호
     private String name; //이름
-    private Position position; //직급
-    private Part part; //부서
-    private Team team; //팀
     private Authority authority; //권한
-    private UsersImg usersImg; //사진
 
-    public Member toMember(PasswordEncoder passwordEncoder) {
-        return Member.builder()
-                .id(id)
-                .no(no)
-                .password(passwordEncoder.encode(password))
-                .name(name)
-                .position(position)
-                .part(part)
-                .team(team)
-//                .authority(Authority.ROLE_USER)
-                .authority(Authority.ROLE_ADMIN)
-                .build();
-    }
+//    public Member toMember(PasswordEncoder passwordEncoder) {
+//        return Member.builder()
+//                .id(id)
+//                .no(no)
+//                .password(passwordEncoder.encode(password))
+//                .name(name)
+//                .position(position)
+////                .part(part)
+//                .team(team)
+////                .authority(Authority.ROLE_USER)
+//                .authority(Authority.ROLE_ADMIN)
+//                .build();
+//    }
     public UsernamePasswordAuthenticationToken toAuthentication() {
         return new UsernamePasswordAuthenticationToken(no, password);
     }
+
+//    public Member toEntity() {
+//        return new Member(null, name, no, password, authority, team, position);
+//    }
 }

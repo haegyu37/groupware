@@ -17,8 +17,6 @@ public class DocumentService {
     @Autowired
     private DocumentRepository documentRepository;
 
-    @Autowired
-    private LineService lineService;
 
     // 문서 저장
     public Document savedDocument(Document document) {
@@ -42,17 +40,17 @@ public class DocumentService {
     }
 
     // 문서 수정
-    public Document updateDocument(Document updatedDocument) {
-        Document document = documentRepository.findById(updatedDocument.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "문서를 찾을 수 없습니다."));
-
-        // 기존 문서의 필드들을 업데이트
-        document.setTitle(updatedDocument.getTitle());
-        document.setContent(updatedDocument.getContent());
-        document.setMember(updatedDocument.getMember());
-
-        return documentRepository.save(document);
-    }
+//    public Document updateDocument(Document updatedDocument) {
+//        Document document = documentRepository.findById(updatedDocument.getId())
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "문서를 찾을 수 없습니다."));
+//
+//        // 기존 문서의 필드들을 업데이트
+//        document.setTitle(updatedDocument.getTitle());
+//        document.setContent(updatedDocument.getContent());
+//        document.setMember(updatedDocument.getMember());
+//
+//        return documentRepository.save(document);
+//    }
 
 
 
