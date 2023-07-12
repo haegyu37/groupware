@@ -19,24 +19,44 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id; //직원 아이디
 
-    private String name; //직원 이름
 
-    private Long no; //직원 사번(로그인)
+    @Column(name = "no")
+    private String no; //직원 사번(로그인)
 
     private String password; //직원 비밀번호
 
-    @Enumerated(EnumType.STRING)
-    private Authority authority; //직원 권한
 
+
+    @Column(name = "name")
+    private String name; //직원 이름
+
+    @Column(name="position_id")
+    private String position; //직급 아이디
+
+    @Enumerated(EnumType.STRING)
+    private Authority authority;    //직원 권한
+
+    @Column(name="part_id")
     private String part; //직원 본부
 
+    @Column(name="team_id")
     private String team; //직원 팀
 
-    private String usersImg; //직원이미지
-
-    private String position; //직급
 
 
+    public void setPassword(String password){
+        this.password = password;}
 
 
+    @Builder
+    public Member(Long id, String no, String password, String name, String position, Authority authority, String part, String team) {
+        this.id = id;
+        this.no = no;
+        this.password = password;
+        this.name = name;
+        this.position = position;
+        this.authority = authority;
+        this.part = part;
+        this.team = team;
+    }
 }

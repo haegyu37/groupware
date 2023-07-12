@@ -2,6 +2,9 @@ package com.groupware.wimir.dto;
 
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
+@ToString
+@Getter @Setter
 public class DocumentDTO {
     private Long id;
     private String title;
