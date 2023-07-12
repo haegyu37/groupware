@@ -56,9 +56,9 @@ public class DocumentService {
         document.setApp(app);
 
         // temId에 해당하는 Template 객체를 가져옵니다.
-        Template tem = templateRepository.findById(updatedDocument.getTem().getId())
+        Template template = templateRepository.findById(updatedDocument.getTemplate().getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "문서 양식을 찾을 수 없습니다."));
-        document.setTem(tem);
+        document.setTemplate(template);
 
         return documentRepository.save(document);
     }

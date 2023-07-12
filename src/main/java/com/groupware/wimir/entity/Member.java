@@ -1,7 +1,7 @@
 package com.groupware.wimir.entity;
 
-import com.groupware.wimir.constant.Authority;
 //import com.groupware.wimir.constant.MemberStatus;
+import com.groupware.wimir.constant.Authority;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +11,8 @@ import javax.persistence.*;
 @ToString
 @NoArgsConstructor
 @Getter @Setter
-@Table(name = "users")
+@Table(name = "userst")
+@Builder
 public class Member {
 
     @Id
@@ -28,25 +29,25 @@ public class Member {
     @Column(name = "password")
     private String password; //직원 비밀번호
 
-    @Column(name = "role")
+    @Column(name = "authority")
     @Enumerated(EnumType.STRING)
     private Authority authority;
-
-    @OneToOne
-    @JoinColumn(name="part_id")
-    private Part part; //직원 본부
-
-    @OneToOne
-    @JoinColumn(name="team_id")
-    private Team team; //직원 팀
-
-    @OneToOne
-    @JoinColumn(name="img_id")
-    private UsersImg usersImg; //직원이미지 아이디
-
-    @OneToOne
-    @JoinColumn(name="position_id")
-    private Position position; //직급 아이디
-    private Long memberId;
+//
+//    @OneToOne
+//    @JoinColumn(name="part_id")
+//    private Part part; //직원 본부
+//
+//    @OneToOne
+//    @JoinColumn(name="team_id")
+//    private Team team; //직원 팀
+//
+//    @OneToOne
+//    @JoinColumn(name="img_id")
+//    private UsersImg usersImg; //직원이미지 아이디
+//
+//    @OneToOne
+//    @JoinColumn(name="position_id")
+//    private Position position; //직급 아이디
+//    private Long memberId;
 
 }

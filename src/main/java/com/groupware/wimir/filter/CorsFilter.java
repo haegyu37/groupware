@@ -1,4 +1,4 @@
-package com.groupware.wimir.Filter;
+package com.groupware.wimir.filter;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

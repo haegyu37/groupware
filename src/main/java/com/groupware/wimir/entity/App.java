@@ -10,7 +10,7 @@ import javax.persistence.*;
 @ToString
 @NoArgsConstructor
 @Getter @Setter
-@Table(name = "app")
+@Table(name = "appt")
 public class App {
 
     @Id
@@ -22,12 +22,11 @@ public class App {
     @Enumerated(EnumType.STRING)
     private AppStatus appStatus; //결재 전, 결재 중, 승인, 반려, 전결
 
-    @OneToOne
-    @JoinColumn(name="doc_id")
-    private Document doc; //문서 아이디
+//    @OneToOne
+//    @JoinColumn(name="doc_id")
+//    private Document doc; //문서 아이디
 
-    @OneToOne
-    @JoinColumn(name="line_id")
+
     private Line line; //결재라인 아이디
     private Long appId;
 

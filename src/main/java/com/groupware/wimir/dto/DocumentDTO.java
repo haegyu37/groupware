@@ -35,37 +35,23 @@ public class DocumentDTO {
         this.id = id;
     }
 
-    public LocalDateTime getWrittenDate() {
-        return writtenDate;
-    }
+    public LocalDateTime getWrittenDate() {return writtenDate;}
 
-    public void setWrittenDate(LocalDateTime writtenDate) {
-        this.writtenDate = writtenDate;
-    }
+    public void setWrittenDate(LocalDateTime writtenDate) {this.writtenDate = writtenDate;}
 
-    public Long getMemberId() {
-        return this.memberId;
-    }
+    public Long getMemberId() {return this.memberId;}
 
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
-    }
+    public void setMemberId(Long memberId) {this.memberId = memberId;}
 
     public Long getAppId() {
         return this.appId;
     }
 
-    public void setAppId(Long appId) {
-        this.appId = appId;
-    }
+    public void setAppId(Long appId) {this.appId = appId;}
 
-    public Long getTemId() {
-        return this.temId;
-    }
+    public Long getTemId() {return this.temId;}
 
-    public void setTemId(Long temId) {
-        this.temId = temId;
-    }
+    public void setTemId(Long temId) {this.temId = temId;}
 
 }
 

@@ -10,7 +10,7 @@ import javax.persistence.*;
 @ToString
 @NoArgsConstructor
 @Getter @Setter
-@Table(name = "line")
+@Table(name = "linet")
 public class Line {
 
     @Id
@@ -24,17 +24,11 @@ public class Line {
     @Column(name = "step")
     private int step; //결재순서 (1~N)
 
-    @Column(name = "line_status")
-    @Enumerated(EnumType.STRING)
-    private LineStatus lineStatus; //결재자, 참조자
+    private String lineStatus; //결재자, 참조자
 
-    @OneToOne
-    @JoinColumn(name="member_id")
-    private Member member; //직원 아이디
+    private String member; //직원 아이디
 
-    @OneToOne
-    @JoinColumn(name = "doc_id")
-    private Document document; // 문서 아이디
+    private Long document; // 문서 아이디
 
 
 }
