@@ -13,10 +13,9 @@ import java.util.List;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
 
-    Optional<Member> findByName(String name);
+    Optional<Member> findByNo(String no);
 
-
-    boolean existsByNo(Long no);
+    boolean existsByNo(String no);
 
     List<Member> findByPositionIn(String[] positions);
 

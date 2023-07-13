@@ -10,7 +10,7 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @Getter @Setter
-@Table(name = "tem")
+@Table(name = "temt")
 public class Template {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
