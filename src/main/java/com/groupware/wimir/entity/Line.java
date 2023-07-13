@@ -3,6 +3,8 @@ package com.groupware.wimir.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -14,14 +16,25 @@ public class Line {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id; //결재라인 아이디
+    private Long id; // 결재라인 ID
 
-    private String name; //결재라인명
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "document_id")
+    private Document document; // 결재 대상 문서
 
-    private Long memberId; //결재자 아이디
+    private String lineName; // 결재라인 이름
 
-    private int isApp; //결재자 참조자 구분 (0: 결재자, 1: 참조자)
+    private int step; // 결재 순서
 
-    private int step; //결재순서 (1~N)
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL)
+    private List<Approval> approvals = new ArrayList<>(); // 결재자들의 승인 정보
+
+    @ManyToMany
+    @JoinTable(
+            name = "approval_line_viewer",
+            joinColumns = @JoinColumn(name = "approval_line_id"),
+            inverseJoinColumns = @JoinColumn(name = "viewer_id")
+    )
+    private List<Member> viewers = new ArrayList<>(); // 참조자 목록
 
 }

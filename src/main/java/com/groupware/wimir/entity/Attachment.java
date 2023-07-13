@@ -13,23 +13,17 @@ import javax.persistence.*;
 public class Attachment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    private Long id; //첨부파일 아이디
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    private String name; //첨부파일 이름
 
-    @Column(name = "size", nullable = false)
-    private Long size;
+    private Long size; //첨부파일 크기
 
-    @Column(name = "path")
-    private String path;
+    private String path; //첨부파일 경로
 
-    @Column(name = "doc_id")
-    private Long docId;
+    private Long docId; //첨부파일이 담긴 문서 아이디
 
-    @Column(name = "writter")
-    private String writter;
+    private String writter; //문서작성자 아이디
 
     @Transient
     private String attachmentLocation;

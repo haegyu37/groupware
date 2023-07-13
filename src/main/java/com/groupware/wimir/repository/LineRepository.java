@@ -1,6 +1,5 @@
 package com.groupware.wimir.repository;
 
-import com.groupware.wimir.entity.App;
 import com.groupware.wimir.entity.Line;
 import org.springframework.data.repository.CrudRepository;
 

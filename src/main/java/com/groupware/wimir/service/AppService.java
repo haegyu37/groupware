@@ -1,10 +1,15 @@
-    package com.groupware.wimir.service;
+package com.groupware.wimir.service;
 
-    import com.groupware.wimir.entity.App;
+import com.groupware.wimir.entity.Line;
+import com.groupware.wimir.entity.Member;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-    public interface AppService {
-        App createApp(App app);
-        App updateApp(App app);
-        void deleteApp(Long appId);
-        App getAppById(Long appId);
-    }
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+@Service
+public class AppService {
+
+}

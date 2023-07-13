@@ -18,6 +18,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     boolean existsByNo(Long no);
 
+    List<Member> findByPositionIn(String[] positions);
 
 
 }
