@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @Service
 public class LineService {
 
@@ -21,20 +22,6 @@ public class LineService {
     @Autowired
     private MemberRepository memberRepository;
 
-    public void selectApproversForApprovalLine(List<Employee> organizationChart, List<String> selectedEmployees) {
-        List<String> approvalLine = new ArrayList<>();
-
-        // 선택된 결재자들의 이름을 결재라인에 추가
-        for (String employeeName : selectedEmployees) {
-            Employee selectedEmployee = findEmployeeByName(organizationChart, employeeName);
-            if (selectedEmployee != null) {
-                approvalLine.add(selectedEmployee.getName());
-            }
-        }
-
-        // 결재라인을 저장하거나 필요한 처리를 수행
-        saveApprovalLine(approvalLine);
-    }
 
 
 }

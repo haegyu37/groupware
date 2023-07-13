@@ -22,19 +22,19 @@ public class Line {
     @JoinColumn(name = "document_id")
     private Document document; // 결재 대상 문서
 
-    private String lineName; // 결재라인 이름
+    private String name; // 결재라인 이름
 
     private int step; // 결재 순서
 
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL)
     private List<Approval> approvals = new ArrayList<>(); // 결재자들의 승인 정보
 
-    @ManyToMany
-    @JoinTable(
-            name = "approval_line_viewer",
-            joinColumns = @JoinColumn(name = "approval_line_id"),
-            inverseJoinColumns = @JoinColumn(name = "viewer_id")
-    )
-    private List<Member> viewers = new ArrayList<>(); // 참조자 목록
+//    @ManyToMany
+//    @JoinTable(
+//            name = "approval_line_viewer",
+//            joinColumns = @JoinColumn(name = "approval_line_id"),
+//            inverseJoinColumns = @JoinColumn(name = "viewer_id")
+//    )
+//    private List<Member> viewers = new ArrayList<>(); // 참조자 목록
 
 }

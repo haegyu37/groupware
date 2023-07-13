@@ -6,46 +6,49 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@AllArgsConstructor
-@ToString
-@NoArgsConstructor
+@Table(name="document")
 @Getter
 @Setter
-@Table(name = "doct")
+@NoArgsConstructor
 public class Document {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id; // 문서 아이디
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "title")
-    private String title; // 문서 제목
+    @Column
+    private String title;
 
-    private String content; //문서 내용
+    @Column
+    private String content;
 
-    private LocalDateTime writeDate; //문서 작성일
+    @Column
+    private LocalDateTime createDate;
 
-    private LocalDateTime updateDate; //문서 수정일
+    @Column
+    private LocalDateTime updateDate;
 
-    private String tem; //문서양식
+    @Column
+    private Long memberId;
 
-    private int appStatus; //결재상태 (0:대기, 1:승인, 2:반려)
+    @Column
+    private Long temId;
 
-    private Long memberId; //직원(작성자) 아이디
+    @Column
+    private Long appId;
 
-    private Long lineId; //결재라인 아이디
-    
-//    private Line lineId; //결재라인 아이디
+    @Builder
+    public Document(Long id, String title, String content, LocalDateTime createDate,
+                 LocalDateTime updateDate, Long memberId, Long temId, Long appId) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
+        this.memberId = memberId;
+        this.temId = temId;
+        this.appId = appId;
+    }
 
-    private int docStatus; //문서 상태(0:임시저장, 1:작성완료)
-
-
-    private LocalDateTime writtenDate; // 문서 작성일
-
-    private String template; // 문서 양식
-
-
-    private Long app; // 결재 아이디
-
-    private Long member; // 직원(작성자) 아이디
 }

@@ -2,6 +2,8 @@ package com.groupware.wimir.service;
 
 import com.groupware.wimir.DTO.MemberRequestDTO;
 import com.groupware.wimir.DTO.TokenDTO;
+import com.groupware.wimir.dto.MemberResponseDTO;
+import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.jwt.TokenProvider;
 import com.groupware.wimir.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,5 @@
 package com.groupware.wimir.dto;
 
-import com.groupware.wimir.constant.Authority;
 import com.groupware.wimir.entity.*;
 import lombok.*;
 
@@ -14,7 +13,7 @@ import java.util.List;
 @Builder
 public class MemberResponseDTO {
     private Long id;
-    private Long no;
+    private String no;
     private String name;
 //    private String password;
     private String position;
