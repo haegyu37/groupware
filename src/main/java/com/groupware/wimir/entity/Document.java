@@ -13,30 +13,24 @@ import java.time.LocalDateTime;
 public class Document {
 
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; //문서 아이디
 
-    @Column
-    private String title;
+    private String title; //문서명
 
-    @Column
-    private String content;
+    private String content; //문서내용
 
-    @Column
-    private LocalDateTime createDate;
+    private LocalDateTime createDate; //작성일
 
-    @Column
-    private LocalDateTime updateDate;
+    private LocalDateTime updateDate; //수정일
 
-    @Column
-    private Long memberId;
+    private Long memberId; //작성자
 
-    @Column
-    private Long temId;
+    private Long temId; //양식
 
-    @Column
-    private Long appId;
+    private Long appId; //결재 아이디
+
+    private int status; //문서상태 (0임시저장, 1작성완료)
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
