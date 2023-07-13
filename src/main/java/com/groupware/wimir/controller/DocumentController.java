@@ -1,6 +1,6 @@
 //package com.groupware.wimir.controller;
 //
-//import com.groupware.wimir.dto.DocumentDTO;
+//import com.groupware.wimir.DTO.DocumentDTO;
 //import com.groupware.wimir.entity.App;
 //import com.groupware.wimir.entity.Document;
 //import com.groupware.wimir.entity.Member;

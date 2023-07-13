@@ -1,4 +1,4 @@
-package com.groupware.wimir.dto;
+package com.groupware.wimir.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

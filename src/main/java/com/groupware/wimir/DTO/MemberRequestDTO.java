@@ -1,4 +1,4 @@
-package com.groupware.wimir.dto;
+package com.groupware.wimir.DTO;
 
 import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.*;
@@ -31,7 +31,8 @@ public class MemberRequestDTO {
                 .password(passwordEncoder.encode(password))
                 .name(name)
                 .position(position)
-                .authority(Authority.ROLE_ADMIN)
+//               .authority(Authority.ROLE_ADMIN)
+               .authority(Authority.ROLE_USER)
                 .part(part)
                 .team(team)
                 .build();
