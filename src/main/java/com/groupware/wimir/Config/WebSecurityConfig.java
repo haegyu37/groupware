@@ -1,6 +1,6 @@
-package com.groupware.wimir.config;
+package com.groupware.wimir.Config;
 
-import com.groupware.wimir.config.JwtSecurityConfig;
+import com.groupware.wimir.Config.JwtSecurityConfig;
 import com.groupware.wimir.jwt.JwtAccessDeniedHandler;
 import com.groupware.wimir.jwt.JwtAuthenticationEntryPoint;
 import com.groupware.wimir.jwt.TokenProvider;

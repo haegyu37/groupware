@@ -1,4 +1,4 @@
-package com.groupware.wimir.config;
+package com.groupware.wimir.Config;
 
 import com.groupware.wimir.jwt.JwtFilter;
 import com.groupware.wimir.jwt.TokenProvider;
@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 
 
 //SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> 인터페이스를 구현하는 구현체

@@ -19,7 +19,6 @@ public class JwtFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
 
 
-    //Request Header에서 토큰정보를 꺼내옴
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
@@ -28,10 +27,6 @@ public class JwtFilter extends OncePerRequestFilter {
         return null;
     }
 
-    //필터링을 실행 resolveToken을 통해 토큰 정보를 꺼내온 다음, validateToken으로 토큰이 유효한지 검사
-    // 유효할 시 Authentication을 가져와서 SecurityContext에 저장
-    // SecurityContext에서 허가된 uri 이외의 모든 Request요청은 전부 이 필터를 거치게되며, 토큰정보가 없거나 유효하지 않으면 정상적으로 수행되지않음
-    // 반대로 Request가 정상적으로 Controller까지 도착했으면 SecurityContext에 Member Id가 존재한다는것이 보장이 됨
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt = resolveToken(request);

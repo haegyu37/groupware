@@ -28,11 +28,11 @@ public class AuthController {
 //        return ResponseEntity.ok(authService.signup(requestDto));
 //    }
 
-//    @PostMapping("/admin/signup")
-//    public ResponseEntity<MemberResponseDTO> signup(@RequestBody MemberRequestDTO requestDto) {
-//
-//        return ResponseEntity.ok(authService.signup(requestDto));
-//    }
+    @PostMapping("/admin/signup")
+    public ResponseEntity<MemberResponseDTO> signup(@RequestBody MemberRequestDTO requestDto) {
+
+        return ResponseEntity.ok(authService.signup(requestDto));
+    }
 
 
 

@@ -18,27 +18,22 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
-import java.util.Base64;
 import lombok.extern.slf4j.Slf4j;
-
+import java.util.logging.Logger;
 @Slf4j
 @Component
 public class TokenProvider {
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "bearer";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;        //토큰 만료시간
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;
     private final Key key;
 
 
-    // @Value는 `springframework.beans.factory.annotation.Value` Value 어노테이션으로 yml에 있는 secret key 를 가져온 다음 이것을 decode
-    // 이후 의존성이 주입된 key의 값으로 정한다
+    // 주의점: 여기서 @Value는 `springframework.beans.factory.annotation.Value`소속이다! lombok의 @Value와 착각하지 말것!
+    //     * @param secretKey
     public TokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-
-        secretKey = "your_secret_key";
-        String encodedKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-        System.out.println(encodedKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
     // 토큰 생성 Authentication 인터페이스를 확장한 매개변수를 받아서 그 값을 string으로 변환
     // 이후 현재시각과 만료시각을 만든 후 jwts의 builder를 이용하여 token을 생성한 다음 tokendto에 생성한 token의 정보를 넣는다
@@ -112,7 +107,7 @@ public class TokenProvider {
         return false;
     }
 
-    //parseClaim 토큰을 claims형태로 만든 메소드 이를 통해 위에서 권한 정보가 있는지 없는지 체크 가능
+    //parseClaim 토큰을 claims형태로 만든 메소드 이를 통해 위에서 권한 정보가 있는지 없는지 체크 가능ㅌ
     private Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
