@@ -1,6 +1,6 @@
 package com.groupware.wimir.dto;
 
-import com.groupware.wimir.constant.Authority;
+import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,14 +17,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @NoArgsConstructor
 @Builder
 public class MemberRequestDTO {
-    //private String email;
     private String no;
     private String password;
     private String name;
     private String position; // 직급 이름
     private String part; // 본부 이름
     private String team; // 팀 이름
-    private String status;
 
     public Member toMember(PasswordEncoder passwordEncoder) {
 

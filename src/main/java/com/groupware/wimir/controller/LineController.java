@@ -1,6 +1,6 @@
 //package com.groupware.wimir.controller;
 //
-//import com.groupware.wimir.constant.Authority;
+//import com.groupware.wimir.entity.Authority;
 //import com.groupware.wimir.entity.Line;
 //import com.groupware.wimir.entity.Member;
 //import com.groupware.wimir.service.LineService;

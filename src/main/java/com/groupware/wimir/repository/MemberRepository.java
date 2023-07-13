@@ -13,8 +13,7 @@ import java.util.List;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
 
-    Optional<Member> findByName(String name);
-
+    Optional<Member> findByNo(String no);
 
     boolean existsByNo(String no);
 

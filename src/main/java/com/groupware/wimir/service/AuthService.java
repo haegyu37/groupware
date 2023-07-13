@@ -25,14 +25,14 @@ public class AuthService {
     private final TokenProvider tokenProvider;
 
     //signup 회원가입
-//    public MemberResponseDTO signup(MemberRequestDTO requestDto) {
-//        if (memberRepository.existsByNo(requestDto.getNo())) {
-//            throw new RuntimeException("이미 가입되어 있는 유저입니다");
-//        }
-//
-//        Member member = requestDto.toMember(passwordEncoder);
-//        return MemberResponseDTO.of(memberRepository.save(member));
-//    }
+    public MemberResponseDTO signup(MemberRequestDTO requestDto) {
+        if (memberRepository.existsByNo(requestDto.getNo())) {
+            throw new RuntimeException("이미 가입되어 있는 유저입니다");
+        }
+
+        Member member = requestDto.toMember(passwordEncoder);
+        return MemberResponseDTO.of(memberRepository.save(member));
+    }
 
     // MemberRequestDto에 있는 메소드 toAuthentication를 통해 생긴 UsernamePasswordAuthenticationToken 타입의 데이터를 가짐
     // 주입받은 Builder를 통해 AuthenticationManager를 구현한 ProviderManager를 생성
