@@ -22,27 +22,31 @@ public class Member {
 
     private String name; //직원 이름
 
-    private String position; //직급
+    private int position; //직급
+//    0: 인턴, 1: 사원, 2:대리, 3:과장, 4:차장, 5:부장, 6:상무, 7:전무, 8:부사장, 9:사장
 
-    private String part; //본부
+//    private String team; //팀
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team; // 팀
 
-    private String team; //팀
-
+    @Enumerated(EnumType.STRING)
     private Authority authority; //직원 권한
+
+    private String img; //직원사진
 
 
     public void setPassword(String password){
         this.password = password;}
 
     @Builder
-    public Member(Long id, String no, String password, String name, String position, Authority authority, String part, String team) {
+    public Member(Long id, String no, String password, String name, int position, Authority authority, Team team) {
         this.id = id;
         this.no = no;
         this.password = password;
         this.name = name;
         this.position = position;
         this.authority = authority;
-        this.part = part;
         this.team = team;
     }
 }

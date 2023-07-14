@@ -24,25 +24,29 @@ public class Document {
 
     private LocalDateTime updateDate; //수정일
 
-    private Long memberId; //작성자
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member writer; // 작성자 (Member와 연관관계)
 
     private Long temId; //양식
 
-    private Long appId; //결재 아이디
+    @ManyToOne
+    @JoinColumn(name = "line_id")
+    private Line line; // 결재라인 (ApprovalLine와 연관관계)
 
-    private int status; //문서상태 (0임시저장, 1작성완료)
+//    private int appStatus; //결재상태 (0대기, 1승인, 2반려)
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
-                 LocalDateTime updateDate, Long memberId, Long temId, Long appId) {
+                 LocalDateTime updateDate, Member writer, Long temId, Line line) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createDate = createDate;
         this.updateDate = updateDate;
-        this.memberId = memberId;
+        this.writer = writer;
         this.temId = temId;
-        this.appId = appId;
+        this.line = line;
     }
 
 }

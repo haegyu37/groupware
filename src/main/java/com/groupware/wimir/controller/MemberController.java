@@ -1,8 +1,8 @@
 package com.groupware.wimir.controller;
 
 
-import com.groupware.wimir.DTO.ChangePasswordRequestDTO;
-import com.groupware.wimir.DTO.MemberResponseDTO;
+import com.groupware.wimir.dto.ChangePasswordRequestDTO;
+import com.groupware.wimir.dto.MemberResponseDTO;
 import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ public class MemberController {
 
 
     @PostMapping("/password")
-    public ResponseEntity<MemberResponseDTO> setMemberPassword(@RequestBody ChangePasswordRequestDTO request) {
+    public ResponseEntity<MemberResponseDTO> setMemberPassword(@RequestBody com.groupware.wimir.dto.ChangePasswordRequestDTO request) {
         System.out.println("비밀번호 변경완료");
         return ResponseEntity.ok(memberService.changeMemberPassword(request.getNewPassword()));
 

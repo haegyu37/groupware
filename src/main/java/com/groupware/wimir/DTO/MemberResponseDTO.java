@@ -16,9 +16,8 @@ public class MemberResponseDTO {
     private String no;
     private String name;
 //    private String password;
-    private String position;
-    private String part;
-    private String team;
+    private int position;
+    private Team team;
     private Authority authority;
 
 
@@ -28,7 +27,6 @@ public class MemberResponseDTO {
                 .name(member.getName())
 //                .password(member.getPassword())
                 .position(member.getPosition())
-                .part(member.getPart())
                 .team(member.getTeam())
                 .authority(member.getAuthority())
                 .build();

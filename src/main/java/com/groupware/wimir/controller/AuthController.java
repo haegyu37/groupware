@@ -1,8 +1,8 @@
 package com.groupware.wimir.controller;
 
-import com.groupware.wimir.DTO.MemberRequestDTO;
-import com.groupware.wimir.DTO.MemberResponseDTO;
-import com.groupware.wimir.DTO.TokenDTO;
+import com.groupware.wimir.dto.MemberRequestDTO;
+import com.groupware.wimir.dto.MemberResponseDTO;
+import com.groupware.wimir.dto.TokenDTO;
 import com.groupware.wimir.dto.MemberResponseDTO;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.AuthService;
@@ -34,7 +34,7 @@ public class AuthController {
 //    }
 
     @PostMapping("/admin/signup")
-    public ResponseEntity<MemberResponseDTO> signup(@RequestBody MemberRequestDTO requestDto) {
+    public ResponseEntity<MemberResponseDTO> signup(@RequestBody com.groupware.wimir.dto.MemberRequestDTO requestDto) {
 
         return ResponseEntity.ok(authService.signup(requestDto));
     }
@@ -57,7 +57,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDTO> login(@RequestBody MemberRequestDTO requestDto) {
+    public ResponseEntity<TokenDTO> login(@RequestBody com.groupware.wimir.dto.MemberRequestDTO requestDto) {
         return ResponseEntity.ok(authService.login(requestDto));
     }
 }
