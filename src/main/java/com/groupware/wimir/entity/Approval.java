@@ -25,11 +25,7 @@ public class Approval {
     @JoinColumn(name = "member_id")
     private Member approver; // 승인자 정보
 
-    @ManyToOne
-    @JoinColumn(name = "line_id")
-    private Line line; // 결재라인 정보
-
-    private int status; // 결재상태(0대기, 1승인, 2반려)
+    private int status; // 결재상태(-1참조, 0대기, 1승인, 2반려)
 
     private LocalDateTime approvalDate; // 승인 날짜
 

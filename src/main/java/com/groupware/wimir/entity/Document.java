@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name="document")
@@ -30,15 +31,24 @@ public class Document {
 
     private Long temId; //양식
 
-    @ManyToOne
-    @JoinColumn(name = "line_id")
-    private Line line; // 결재라인 (ApprovalLine와 연관관계)
+//    @ManyToOne
+//    @JoinColumn(name = "line_id")
+//    private Line line; // 결재라인 (ApprovalLine와 연관관계)
 
 //    private int appStatus; //결재상태 (0대기, 1승인, 2반려)
 
+//    @ManyToMany
+//    @JoinTable(
+//            name = "reference",
+//            joinColumns = @JoinColumn(name = "document_id"),
+//            inverseJoinColumns = @JoinColumn(name = "referenced_id")
+//    )
+//    private List<Member> referencedMembers; // 참조자 목록
+
+
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
-                 LocalDateTime updateDate, Member writer, Long temId, Line line) {
+                 LocalDateTime updateDate, Member writer, Long temId) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -46,7 +56,6 @@ public class Document {
         this.updateDate = updateDate;
         this.writer = writer;
         this.temId = temId;
-        this.line = line;
     }
 
 }
