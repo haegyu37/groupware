@@ -6,30 +6,49 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@AllArgsConstructor
-@ToString
-@NoArgsConstructor
+@Table(name="document")
 @Getter
 @Setter
-@Table(name = "doct")
+@NoArgsConstructor
 public class Document {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id; // 문서 아이디
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "title")
-    private String title; // 문서 제목
+    @Column
+    private String title;
 
-    private String content; // 문서 내용
+    @Column
+    private String content;
 
+    @Column
+    private LocalDateTime createDate;
 
-    private LocalDateTime writtenDate; // 문서 작성일
+    @Column
+    private LocalDateTime updateDate;
 
-    private String template; // 문서 양식
+    @Column
+    private Long memberId;
 
+    @Column
+    private Long temId;
 
-    private Long app; // 결재 아이디
+    @Column
+    private Long appId;
 
-    private Long member; // 직원(작성자) 아이디
+    @Builder
+    public Document(Long id, String title, String content, LocalDateTime createDate,
+                    LocalDateTime updateDate, Long memberId, Long temId, Long appId) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
+        this.memberId = memberId;
+        this.temId = temId;
+        this.appId = appId;
+    }
+
 }
