@@ -5,26 +5,28 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
+@AllArgsConstructor
+@ToString
+@NoArgsConstructor
+@Getter @Setter
 @Table(name = "file")
-@Getter
-@Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class File {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Long id; //파일 아이디
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "name")
+    private String name; //파일 이름
 
-    @Column(name = "size", nullable = false)
-    private Long size;
+    @Column(name = "size")
+    private Long size; //파일 크기
 
-    @Column(name = "path", nullable = false)
-    private String path;
+    @Column(name = "path")
+    private String path; //파일 경로
 
-    @Column(name = "doc_id")
-    private Long docId;
+    @OneToOne
+    @JoinColumn(name = "doc_id")
+    private Document doc; //문서 아이디
 
 }
