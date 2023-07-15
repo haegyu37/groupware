@@ -1,4 +1,4 @@
-package com.groupware.wimir.DTO;
+package com.groupware.wimir.dto;
 
 import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.*;
@@ -20,9 +20,8 @@ public class MemberRequestDTO {
     private String no;
     private String password;
     private String name;
-    private String position; // 직급 이름
-    private String part; // 본부 이름
-    private String team; // 팀 이름
+    private int position; // 직급 이름
+    private Team team; // 팀 이름
 
     public Member toMember(PasswordEncoder passwordEncoder) {
 
@@ -33,7 +32,6 @@ public class MemberRequestDTO {
                 .position(position)
 //               .authority(Authority.ROLE_ADMIN)
                .authority(Authority.ROLE_USER)
-                .part(part)
                 .team(team)
                 .build();
     }

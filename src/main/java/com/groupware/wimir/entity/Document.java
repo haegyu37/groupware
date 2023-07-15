@@ -4,32 +4,58 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@AllArgsConstructor
-@ToString
-@NoArgsConstructor
+@Table(name="document")
 @Getter
 @Setter
-@Table(name = "doct")
+@NoArgsConstructor
 public class Document {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id; // 문서 아이디
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; //문서 아이디
 
-    @Column(name = "title")
-    private String title; // 문서 제목
+    private String title; //문서명
 
-    private String content; // 문서 내용
+    private String content; //문서내용
+
+    private LocalDateTime createDate; //작성일
+
+    private LocalDateTime updateDate; //수정일
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member writer; // 작성자 (Member와 연관관계)
+
+    private Long temId; //양식
+
+//    @ManyToOne
+//    @JoinColumn(name = "line_id")
+//    private Line line; // 결재라인 (ApprovalLine와 연관관계)
+
+//    private int appStatus; //결재상태 (0대기, 1승인, 2반려)
+
+//    @ManyToMany
+//    @JoinTable(
+//            name = "reference",
+//            joinColumns = @JoinColumn(name = "document_id"),
+//            inverseJoinColumns = @JoinColumn(name = "referenced_id")
+//    )
+//    private List<Member> referencedMembers; // 참조자 목록
 
 
-    private LocalDateTime writtenDate; // 문서 작성일
+    @Builder
+    public Document(Long id, String title, String content, LocalDateTime createDate,
+                 LocalDateTime updateDate, Member writer, Long temId) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
+        this.writer = writer;
+        this.temId = temId;
+    }
 
-    private String template; // 문서 양식
-
-
-    private Long app; // 결재 아이디
-
-    private Long member; // 직원(작성자) 아이디
 }
