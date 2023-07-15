@@ -6,40 +6,49 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@AllArgsConstructor
-@ToString
+@Table(name="document")
+@Getter
+@Setter
 @NoArgsConstructor
-@Getter @Setter
-@Table(name = "doc")
 public class Document {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id; //문서 아이디
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "title")
-    private String title; //문서 제목
+    @Column
+    private String title;
 
-    @Column(name = "content", columnDefinition = "TEXT")
-    private String content; //문서 내용
+    @Column
+    private String content;
 
-//    @Column(name = "writer")
-//    private String writer; //문서 작성자
+    @Column
+    private LocalDateTime createDate;
 
-    @Column(name = "written_date")
-    private LocalDateTime writtenDate; //문서 작성일
+    @Column
+    private LocalDateTime updateDate;
 
-    @OneToOne
-    @JoinColumn(name = "tem_id")
-    private Template tem; //문서 양식
+    @Column
+    private Long memberId;
 
-    @OneToOne
-    @JoinColumn(name="app_id")
-    private App app; //결재 아이디
+    @Column
+    private Long temId;
 
-    @OneToOne
-    @JoinColumn(name="users_id")
-    private Users users; //직원(작성자) 아이디
+    @Column
+    private Long appId;
 
+    @Builder
+    public Document(Long id, String title, String content, LocalDateTime createDate,
+                    LocalDateTime updateDate, Long memberId, Long temId, Long appId) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
+        this.memberId = memberId;
+        this.temId = temId;
+        this.appId = appId;
+    }
 
 }

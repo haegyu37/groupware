@@ -3,61 +3,91 @@ package com.groupware.wimir.controller;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.service.DocumentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.time.LocalDateTime;
-import java.util.List;
 
-@RestController
-@RequestMapping("/documents")
+@Controller
+@RequestMapping("/document")
 public class DocumentController {
-    private final DocumentService documentService;
 
-    public DocumentController(DocumentService documentService) {
+    @Autowired
+    private DocumentService documentService;
 
-        this.documentService = documentService;
-    }
+    @Autowired
+    private DocumentRepository documentRepository;
 
-    // 문서 작성
-    @PostMapping
-    public ResponseEntity<Document> createDocument(@RequestBody Document document) {
-        Document savedDocument = documentService.savedDocument(document);
-        return ResponseEntity.ok(savedDocument);
-    }
-
-    // 문서 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<Document> updateDocument(@PathVariable Long id, @RequestBody Document updatedDocument) {
-        Document document = documentService.getDocumentById(id);
-
-        document.setTitle(updatedDocument.getTitle());
-        document.setContent(updatedDocument.getContent());
-        document.setWriter(updatedDocument.getWriter());
-        document.setTem(updatedDocument.getTem());
-
-        Document savedDocument = documentService.savedDocument(document);
-        return ResponseEntity.ok(savedDocument);
-    }
-
-    // 모든 문서 조회
-    @GetMapping("/list")
-    public ResponseEntity<List<Document>> getAllDocuments() {
-        List<Document> documents = documentService.getAllDocuments();
-        return ResponseEntity.ok(documents);
+    // 문서 목록(메인)
+    @GetMapping
+    public String mainDocument(@PageableDefault Pageable pageable, Model model) {
+        model.addAttribute("documentList", documentService.findDocumentList(pageable));
+        return "/document/list";
     }
 
     // 문서 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<Document> getDocumentById(@PathVariable Long id) {
-        Document document = documentService.getDocumentById(id);
-        return ResponseEntity.ok(document);
+    @GetMapping("/read")
+    public String readDocument(@RequestParam(value = "id", defaultValue = "0") Long id, Model model) {
+        model.addAttribute("document", documentService.findDocumentById(id));
+        return "/document/read";
+    }
+
+    // 문서 작성(작성 후, 작성글 조회)
+    @PostMapping("/write")
+    public String createDocument(@RequestBody Document document) {
+        document.setCreateDate(LocalDateTime.now());
+        Document savedDocument = documentRepository.save(document);
+        return "redirect:/document/read?id=" + savedDocument.getId();
+    }
+
+//    // 문서 작성
+//    @PostMapping
+//    public ResponseEntity<?> createDocument(@RequestBody Document document) {
+//        document.setCreateDate(LocalDateTime.now());
+//        documentRepository.save(document);
+//        return new ResponseEntity<>("{}", HttpStatus.CREATED);
+//    }
+
+//    // 문서 수정
+//    @PutMapping("/{id}")
+//    public ResponseEntity<?> updateDocument(@PathVariable("id") Long id, @RequestBody Document document) {
+//        Document updateDocument = documentRepository.getOne(id);
+//        updateDocument.setTitle(document.getTitle());
+//        updateDocument.setContent(document.getContent());
+//        updateDocument.setUpdateDate(LocalDateTime.now());
+//        documentRepository.save(updateDocument);
+//
+//        return new ResponseEntity<>("{}", HttpStatus.OK);
+//    }
+
+    // 문서 수정(조회 페이지에서 수정)
+    @GetMapping("/read/update")
+    public String updateDocumentPage(@RequestParam(value = "id", defaultValue = "0") Long id, Model model) {
+        model.addAttribute("document", documentService.findDocumentById(id));
+        return "/document/update";
+    }
+
+    @PostMapping("/read/update")
+    public String updateDocument(@RequestParam(value = "id", defaultValue = "0") Long id, @RequestBody Document document) {
+        Document updateDocument = documentRepository.getOne(id);
+        updateDocument.setTitle(document.getTitle());
+        updateDocument.setContent(document.getContent());
+        updateDocument.setUpdateDate(LocalDateTime.now());
+        documentRepository.save(updateDocument);
+        return "redirect:/document/read?id=" + updateDocument.getId();
     }
 
     // 문서 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
-        documentService.deleteDocument(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteDocument(@PathVariable("id") Long id) {
+        documentRepository.deleteById(id);
+        return new ResponseEntity<>("{}", HttpStatus.OK);
     }
 }

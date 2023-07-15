@@ -1,44 +1,53 @@
 package com.groupware.wimir;
 
-import com.groupware.wimir.entity.Document;
+import com.groupware.wimir.controller.DocumentController;
+import com.groupware.wimir.DTO.DocumentDTO;
 import com.groupware.wimir.repository.DocumentRepository;
-import com.groupware.wimir.service.DocumentService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application.properties")
 public class DocumentTest {
 
     @Autowired
-    DocumentRepository documentRepository;
+    private DocumentController documentController;
+
+    @Autowired
+    private DocumentRepository documentRepository;
+
+//    @Test
+//    void createDocument() {
+//        DocumentDTO documentDTO = new DocumentDTO();
+//        documentDTO.setTitle("ㄹㄹㅈㄷ");
+//        documentDTO.setContent("dff");
+//        documentDTO.setWrittenDate(LocalDateTime.now());
+//        documentDTO.setMemberId(1L); // memberId 값 설정
+//        documentDTO.setAppId(1L);
+//        documentDTO.setTemId(1L);
+//
+//        ResponseEntity<Document> response = documentController.createDocument(documentDTO);
+//        Document savedDocument = response.getBody();
+//        assertNotNull(savedDocument);
+//    }
+
+
+
+   // 기존 테스트 코드
+
 
 //    @Test
 //    void saveDocument() {
 //        Document document = new Document();
-//        document.setId(2L);
-//        document.setTitle("dfd");
-//        document.setContent("dffd");
-//        document.setWriter("dfd");
-//        document.setTem(2L);
+//        document.setId(3L);
+//        document.setTitle("ㄹㄹㅈㄷ");
+//        document.setContent("dff");
 //        document.setWrittenDate(LocalDateTime.now());
+////        document.setMember(21L);
+////        document.setTem(2L);
+////        document.setApp(12L);
 //        documentRepository.save(document);
 //    }
 
@@ -46,41 +55,49 @@ public class DocumentTest {
 //    void deleteDocument() {
 //        Document document = new Document();
 //
-//        Long documentId = 9L;
+//        Long documentId = 1L;
 //
 //        documentRepository.deleteById(documentId);
 //    }
 
 //    @Test
 //    void updateDocument() {
-//        Document document = documentRepository.findById(1L).orElse(null);
+//        Long documentId = 1L; // 수정할 문서의 id
 //
-//        if (document != null) {
-//            document.setTitle("수정");
-//            document.setContent("dgfg");
-//            document.setWriter("dgfdgd");
-//            document.setTem(3L);
-//            document.setWrittenDate(LocalDateTime.now());
+//        // 기존 문서 조회
+//        Document document = documentRepository.findById(documentId)
+//                .orElseThrow(() -> new NoSuchElementException("문서를 찾을 수 없습니다."));
 //
-//            documentRepository.save(document);
-//        }
+//        // 필드 수정
+//        document.setTitle("수정된 제목");
+//        document.setContent("수정된 내용");
+//        document.setWrittenDate(LocalDateTime.now());
+//
+//        // 수정된 문서 저장
+//        Document savedDocument = documentRepository.save(document);
+//
+//        // 수정된 문서 확인
+//        assertNotNull(savedDocument);
+//        assertEquals("수정된 제목", savedDocument.getTitle());
+//        assertEquals("수정된 내용", savedDocument.getContent());
+//        assertNotNull(savedDocument.getWrittenDate());
 //    }
 
 //    @Test
 //    void getAllDocuments() {
-//
-//        // 모든 문서 조회
-//        List<Document> documents = documentRepository.findAll();
-//        assertTrue(!documents.isEmpty());
+//        ResponseEntity<List<Document>> response = documentController.getAllDocuments();
+//        List<Document> documents = response.getBody();
+//        assertNotNull(documents);
+//        assertFalse(documents.isEmpty());
 //    }
 
 //    @Test
 //    void getDocument() {
 //        // 문서 ID로 조회
-//        Document document = documentRepository.getDocumentById(2L);
+//        Document document = documentRepository.getDocumentById(1L);
 //
 //        // 검증
 //        assertNotNull(document);
-//        assertEquals(2L, document.getId());
+//        assertEquals(1L, document.getId());
 //    }
 }
