@@ -1,10 +1,8 @@
 package com.groupware.wimir.service;
 
-import com.groupware.wimir.dto.MemberRequestDTO;
-import com.groupware.wimir.dto.MemberResponseDTO;
-import com.groupware.wimir.dto.TokenDTO;
-import com.groupware.wimir.dto.MemberRequestDTO;
-import com.groupware.wimir.dto.MemberResponseDTO;
+import com.groupware.wimir.DTO.MemberRequestDTO;
+import com.groupware.wimir.DTO.MemberResponseDTO;
+import com.groupware.wimir.DTO.TokenDTO;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.jwt.TokenProvider;
 import com.groupware.wimir.repository.MemberRepository;
@@ -41,7 +39,7 @@ public class AuthService {
     // 이후 ProviderManager 는 데이터를 AbstractUserDetailsAuthenticationProvider의 자식 클래스인 DaoAuthenticationProvider를 주입받아 호출
     // DaoAuthenticationProvider 내부에 있는 authenticate 에서 retrieveUser을 통해 DB에서 User의 비밀번호가 실제 비밀번호가 맞는지 비교
     // retrieveUser에서는 DB에서의 User를 꺼내기 위해, CustomUserDetailService에 있는 loadUserByUsername을 가져와 사용
-    public com.groupware.wimir.dto.TokenDTO login(MemberRequestDTO requestDto) {
+    public com.groupware.wimir.DTO.TokenDTO login(MemberRequestDTO requestDto) {
         UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
 
         Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);

@@ -1,7 +1,7 @@
 package com.groupware.wimir.service;
 
 import com.groupware.wimir.Config.SecurityUtil;
-import com.groupware.wimir.dto.MemberResponseDTO;
+import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Team;
 import com.groupware.wimir.repository.MemberRepository;

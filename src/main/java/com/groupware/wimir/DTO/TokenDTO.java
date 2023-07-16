@@ -1,4 +1,4 @@
-package com.groupware.wimir.dto;
+package com.groupware.wimir.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +15,6 @@ public class TokenDTO {
     private String grantType;
     private String accessToken;     //
     private Long tokenExpiresIn;    //토큰만료시간
-    //private String refreshToken;
+    private String refreshToken;
 
 }

@@ -1,6 +1,6 @@
 package com.groupware.wimir.jwt;
 
-import com.groupware.wimir.dto.TokenDTO;
+import com.groupware.wimir.DTO.TokenDTO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -12,6 +12,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Cookie;
+
 
 import java.security.Key;
 import java.util.Arrays;
@@ -27,7 +32,12 @@ public class TokenProvider {
     private static final String AUTHORITIES_KEY = "auth";   //사용자 권한(authorities) 식별하는데 사용
     private static final String BEARER_TYPE = "bearer";     // 토큰유형 지정시 사용 Oauth 2.0 인증 프로토콜에서 사용되는 토큰 유형
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;        // 액세스토큰 만ㄹ시간
+
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7 days
+
     private final Key key;  //토큰 생성시 사용할 키
+
+
 
 
     // @Value는 `springframework.beans.factory.annotation.Value` jwt.secret 프로퍼티 값을 주입받기 위해 사용
@@ -60,12 +70,29 @@ public class TokenProvider {
                 .signWith(key, SignatureAlgorithm.HS512)    // 키오 서명 알고리즘을 지정하여 토큰 서명
                 .compact();                                 // 최종적인 토큰 문자열 생성
 
+
+        String refreshToken = generateRefreshToken();
+
         return TokenDTO.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
                 .tokenExpiresIn(tokenExpiresIn.getTime())
                 .build();
     }       // 주어진 인증정보 기반으로 액세스 토큰 생성하고 TokenDTO 객체로 변환하여 반환
+
+    private String generateRefreshToken() {
+        long now = System.currentTimeMillis();
+        Date refreshTokenExpiresIn = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
+
+        return Jwts.builder()
+                .setExpiration(refreshTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+
+
+
 
     //getAuthentication 토큰을 받았을 때 토큰의 인증을 꺼내는 메소드
     // parseClaims 메소드로 string 형태의 토큰을 claims형태로 생성한다. 다음 auth가 없으면 exception을 반환
@@ -119,4 +146,5 @@ public class TokenProvider {
             return e.getClaims();
         }
     }
-}
+
+    }
