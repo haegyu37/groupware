@@ -29,7 +29,8 @@ public class Approval {
 
     private LocalDateTime approvalDate; // 승인 날짜
 
-    private int step; //결재순서
+    @Enumerated(EnumType.STRING)
+    private Position step; //결재순서
 
 
 
