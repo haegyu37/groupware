@@ -1,5 +1,4 @@
-package com.groupware.wimir.dto;
-
+package com.groupware.wimir.DTO;
 import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.*;
 import lombok.AllArgsConstructor;
