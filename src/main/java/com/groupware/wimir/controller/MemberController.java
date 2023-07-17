@@ -4,7 +4,7 @@ package com.groupware.wimir.controller;
 import com.groupware.wimir.DTO.ChangePasswordRequestDTO;
 import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Member;
-import com.groupware.wimir.entity.Team;
+//import com.groupware.wimir.entity.Team;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -42,21 +42,22 @@ public class MemberController {
         return ResponseEntity.ok(memberService.changeMemberPassword(request.getNewPassword()));
 
     }
-
-    //팀 모두 출력
-    @GetMapping("/teams")
-    public List<String> getAllTeams() {
-        List<String> teamNames = new ArrayList<>();
-        Team[] teams = Team.values();
-        for (Team team : teams) {
-            teamNames.add(team.name());
-        }
-        return teamNames;
-    }
-
-    @GetMapping("/{team}")
-    public List<Member> getTeamMembers(@PathVariable("team") Team team) {
-        return memberRepository.findByTeam(team);
-    }
-
 }
+
+//    //팀 모두 출력
+//    @GetMapping("/teams")
+//    public List<String> getAllTeams() {
+//        List<String> teamNames = new ArrayList<>();
+//        Team[] teams = Team.values();
+//        for (Team team : teams) {
+//            teamNames.add(team.name());
+//        }
+//        return teamNames;
+//    }
+//
+//    @GetMapping("/{team}")
+//    public List<Member> getTeamMembers(@PathVariable("team") Team team) {
+//        return memberRepository.findByTeam(team);
+//    }
+//
+//}
