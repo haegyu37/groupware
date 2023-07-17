@@ -2,8 +2,10 @@ package com.groupware.wimir.controller;
 
 import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
+import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Position;
 import com.groupware.wimir.repository.DocumentRepository;
+import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @RequestMapping("/document")
@@ -23,9 +27,10 @@ public class DocumentController {
 
     @Autowired
     private DocumentService documentService;
-
     @Autowired
     private DocumentRepository documentRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     // 문서 목록(메인)
     @GetMapping("/list")
@@ -47,7 +52,11 @@ public class DocumentController {
         //결재라인 지정 (규)
         Approval approval = new Approval();
         approval.setDocument(document); // 승인 대상 문서 설정
-        approval.setApprover(approval.getApprover()); // 승인자 정보 설정  -> 여기 이상함 고쳐라 해규야~^^ 
+
+        List<Long> approversId = Arrays.asList(123L, 456L, 789L); // 적절한 멤버 ID 리스트로 변경해야 합니다.
+        List<Member> approvers = memberRepository.findAllById(approversId);
+        approval.setApprovers(approvers); // 승인자 정보 설정
+
         approval.setStatus(0); // 대기 상태로 설정
         approval.setApprovalDate(null); // 승인 날짜 초기화
         approval.setStep(Position.사원); // 결재순서(직급) 설정

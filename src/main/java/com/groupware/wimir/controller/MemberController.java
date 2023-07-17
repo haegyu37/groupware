@@ -4,6 +4,7 @@ package com.groupware.wimir.controller;
 import com.groupware.wimir.DTO.ChangePasswordRequestDTO;
 import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Member;
+import com.groupware.wimir.entity.Position;
 import com.groupware.wimir.entity.Team;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.MemberService;
@@ -44,8 +45,8 @@ public class MemberController {
     }
 
     //팀 모두 출력
-    @GetMapping("/teams")
-    public List<String> getAllTeams() {
+    @GetMapping("/team")
+    public List<String> getAllTeam() {
         List<String> teamNames = new ArrayList<>();
         Team[] teams = Team.values();
         for (Team team : teams) {
@@ -53,6 +54,19 @@ public class MemberController {
         }
         return teamNames;
     }
+
+    //직급 모두 출력
+    @GetMapping("/position")
+    public List<String> getAllPosition() {
+        List<String> positionNames = new ArrayList<>();
+        Position[] positions = Position.values();
+        for (Position position : positions) {
+            positionNames.add(position.name());
+        }
+        return positionNames;
+    }
+
+
 
     @GetMapping("/{team}")
     public List<Member> getTeamMembers(@PathVariable("team") Team team) {
