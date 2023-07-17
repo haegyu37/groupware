@@ -1,5 +1,4 @@
 package com.groupware.wimir.DTO;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

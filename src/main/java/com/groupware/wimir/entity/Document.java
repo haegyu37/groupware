@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name="document")
@@ -13,42 +14,40 @@ import java.time.LocalDateTime;
 public class Document {
 
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; //문서 아이디
 
-    @Column
-    private String title;
+    private String title; //문서명
 
-    @Column
-    private String content;
+    private String content; //문서내용
 
-    @Column
-    private LocalDateTime createDate;
+    private LocalDateTime createDate; //작성일
 
-    @Column
-    private LocalDateTime updateDate;
+    private LocalDateTime updateDate; //수정일
 
-    @Column
-    private Long memberId;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member writer; // 작성자 (Member와 연관관계)
 
-    @Column
-    private Long temId;
+    private Long temId; //양식
 
-    @Column
-    private Long appId;
+    private int status; // 1: 작성 상태, 0: 임시저장 상태
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long saveId;    // 임시저장 문서 ID
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
-                    LocalDateTime updateDate, Long memberId, Long temId, Long appId) {
+                    LocalDateTime updateDate, Member writer, Long temId, int status, Long saveId) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createDate = createDate;
         this.updateDate = updateDate;
-        this.memberId = memberId;
+        this.writer = writer;
         this.temId = temId;
-        this.appId = appId;
+        this.status = status;
+        this.saveId = saveId;
     }
 
 }
