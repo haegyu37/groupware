@@ -36,9 +36,19 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long saveId;    // 임시저장 문서 ID
 
+    @ManyToMany
+    @JoinTable(
+            name = "document_approvers",
+            joinColumns = @JoinColumn(name = "document_id"),
+            inverseJoinColumns = @JoinColumn(name = "member_id")
+    )
+    private List<Member> approvers; // 결재자 목록
+
+
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
-                    LocalDateTime updateDate, Member writer, Long temId, int status, Long saveId) {
+                    LocalDateTime updateDate, Member writer, Long temId, int status, Long saveId,
+                    List<Member> approvers) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -48,6 +58,6 @@ public class Document {
         this.temId = temId;
         this.status = status;
         this.saveId = saveId;
+        this.approvers = approvers;
     }
-
 }

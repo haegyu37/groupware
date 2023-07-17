@@ -68,11 +68,16 @@ public class MemberController {
         return positionNames;
     }
 
-
-
+    //팀원 출력
     @GetMapping("/{team}")
     public List<Member> getTeamMembers(@PathVariable("team") Team team) {
         return memberRepository.findByTeam(team);
+    }
+
+    //직급원 출력
+    @GetMapping("/{team}")
+    public List<Member> getPositionMembers(@PathVariable("position") Position position) {
+        return memberRepository.findByPosition(position);
     }
 
 }
