@@ -3,7 +3,6 @@ package com.groupware.wimir.service;
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Member;
-import com.groupware.wimir.entity.Team;
 import com.groupware.wimir.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,11 +49,10 @@ public class MemberService {
         return MemberResponseDTO.of(updatedMember);
 
     }
-
 }
 
 
-    //    @Transactional
+//    @Transactional
 //    public MemberResponseDTO changeMemberPassword(String exPassword, String newPassword) {
 //        Member member = memberRepository.findById(SecurityUtil.getCurrentMemberId()).orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
 //        if (!passwordEncoder.matches(exPassword, member.getPassword())) {

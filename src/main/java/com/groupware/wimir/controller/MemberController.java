@@ -4,8 +4,7 @@ package com.groupware.wimir.controller;
 import com.groupware.wimir.DTO.ChangePasswordRequestDTO;
 import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Member;
-import com.groupware.wimir.entity.Position;
-import com.groupware.wimir.entity.Team;
+//import com.groupware.wimir.entity.Team;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +42,7 @@ public class MemberController {
         return ResponseEntity.ok(memberService.changeMemberPassword(request.getNewPassword()));
 
     }
+
 
     //팀 모두 출력
     @GetMapping("/team")
