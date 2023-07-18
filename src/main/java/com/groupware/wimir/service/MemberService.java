@@ -49,6 +49,12 @@ public class MemberService {
         return MemberResponseDTO.of(updatedMember);
 
     }
+
+    // ID로 회원 조회
+    public Member getMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+    }
 }
 
 

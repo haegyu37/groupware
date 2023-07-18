@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -36,19 +37,27 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long saveId;    // 임시저장 문서 ID
 
-    @ManyToMany
-    @JoinTable(
-            name = "document_approvers",
-            joinColumns = @JoinColumn(name = "document_id"),
-            inverseJoinColumns = @JoinColumn(name = "member_id")
-    )
-    private List<Member> approvers; // 결재자 목록
+//    @ManyToMany
+////    @JoinTable(
+////            name = "document_approvers",
+////            joinColumns = @JoinColumn(name = "document_id"),
+////            inverseJoinColumns = @JoinColumn(name = "member_id")
+////    )
+//    private List<Long> approvers; // 결재자 정보
+//
+//    @ManyToMany
+////    @JoinTable(
+////            name = "document_viewers",
+////            joinColumns = @JoinColumn(name = "document_id"),
+////            inverseJoinColumns = @JoinColumn(name = "member_id")
+////    )
+//    private List<Long> viewers; // 참조자 정보
 
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
-                    LocalDateTime updateDate, Member writer, Long temId, int status, Long saveId,
-                    List<Member> approvers) {
+                    LocalDateTime updateDate, Member writer, Long temId, int status, Long saveId) {
+
         this.id = id;
         this.title = title;
         this.content = content;
@@ -58,6 +67,38 @@ public class Document {
         this.temId = temId;
         this.status = status;
         this.saveId = saveId;
-        this.approvers = approvers;
+//        this.approvers = approvers;
+//        this.viewers = viewers;
     }
+
+
+//    public void addApprover(Member approver) {
+//        if (approvers == null) {
+//            approvers = new ArrayList<>();
+//        }
+//        approvers.add(approver.getId());
+//    }
+//
+//    public void removeApprover(Member approver) {
+//        if (approvers != null) {
+//            approvers.remove(approver);
+//        }
+//    }
+//
+//    public void addViewer(Member viewer) {
+//        if (viewers == null) {
+//            viewers = new ArrayList<>();
+//        }
+//        viewers.add(viewer.getId());
+//    }
+//
+//    public void removeViewer(Member viewer) {
+//        if (viewers != null) {
+//            viewers.remove(viewer);
+//        }
+//    }
+
+
+
+
 }

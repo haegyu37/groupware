@@ -29,6 +29,7 @@ public class MemberController {
     @Autowired
     private MemberRepository memberRepository;
 
+    //마이페이지
     @GetMapping("/me")
     public ResponseEntity<MemberResponseDTO> getMyMemberInfo() {
         MemberResponseDTO myInfoBySecurity = memberService.getMyInfoBySecurity();
@@ -37,7 +38,7 @@ public class MemberController {
         // return ResponseEntity.ok(memberService.getMyInfoBySecurity());
     }
 
-
+    //비밀번호 변경
     @PostMapping("/password")
     public ResponseEntity<MemberResponseDTO> setMemberPassword(@RequestBody com.groupware.wimir.DTO.ChangePasswordRequestDTO request) {
         System.out.println("비밀번호 변경완료");
@@ -46,38 +47,5 @@ public class MemberController {
     }
 
 
-    //팀 모두 출력
-    @GetMapping("/team")
-    public List<String> getAllTeam() {
-        List<String> teamNames = new ArrayList<>();
-        Team[] teams = Team.values();
-        for (Team team : teams) {
-            teamNames.add(team.name());
-        }
-        return teamNames;
-    }
-
-    //직급 모두 출력
-    @GetMapping("/position")
-    public List<String> getAllPosition() {
-        List<String> positionNames = new ArrayList<>();
-        Position[] positions = Position.values();
-        for (Position position : positions) {
-            positionNames.add(position.name());
-        }
-        return positionNames;
-    }
-
-    //팀원 출력
-    @GetMapping("/{team}")
-    public List<Member> getTeamMembers(@PathVariable("team") Team team) {
-        return memberRepository.findByTeam(team);
-    }
-
-    //직급원 출력
-    @GetMapping("/{team}")
-    public List<Member> getPositionMembers(@PathVariable("position") Position position) {
-        return memberRepository.findByPosition(position);
-    }
 
 }
