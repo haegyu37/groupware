@@ -8,9 +8,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class DocumentServiceImpl implements DocumentService {
 
     @Autowired
@@ -24,8 +26,12 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Document findDocumentById(Long id) {
-        return documentRepository.findById(id).orElse(new Document());
+    public Document findDocumentByDno(Long dno) {
+        return documentRepository.findByDno(dno).orElse(new Document());
+    }
+
+    public void deleteDocument(Long dno) {
+        documentRepository.deleteByDno(dno);
     }
 
     @Override
@@ -37,12 +43,15 @@ public class DocumentServiceImpl implements DocumentService {
     public void saveDocument(Document document) {
         if (document.getStatus() == 0) {
             // 임시저장 상태인 경우 id는 null
-            document.setId(null);
+            document.setDno(null);
         }
         documentRepository.save(document);
     }
 
     @Override
-    public Document findDocumentBySaveId(Long SaveId) { return documentRepository.findBySaveId(SaveId); }
+    public Document findDocumentBySno(Long Sno) { return documentRepository.findBySno(Sno); }
 
+    public void deleteEditDocument(Long sno) {
+        documentRepository.deleteBySno(sno);
+    }
 }

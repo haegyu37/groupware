@@ -8,7 +8,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Getter @Setter
-public class AppDTO {
+public class ApprovalDTO {
 
     private Long docId; //문서 아이디
 

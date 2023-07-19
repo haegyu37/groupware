@@ -10,12 +10,16 @@ import java.util.List;
 public interface DocumentService {
 
     Page<Document> findDocumentList(Pageable pageable);
-    Document findDocumentById(Long id);
+
+    Document findDocumentByDno(Long dno);
 
     List<Document> findSaveDocumentList();
 
     void saveDocument(Document document);
 
-    Document findDocumentBySaveId(Long SaveId);
+    Document findDocumentBySno(Long Sno);
 
+    void deleteEditDocument(Long sno);
+
+    void deleteDocument(Long dno);
 }
