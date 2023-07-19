@@ -22,7 +22,7 @@ public class AuthController {
 
     //@Autowired
     private final AuthService authService;
-   // @Autowired
+    // @Autowired
     private final MemberRepository memberRepository;
 
     private final MemberService memberService;

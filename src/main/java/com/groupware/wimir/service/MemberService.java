@@ -52,7 +52,7 @@ public class MemberService {
 }
 
 
-    //    @Transactional
+//    @Transactional
 //    public MemberResponseDTO changeMemberPassword(String exPassword, String newPassword) {
 //        Member member = memberRepository.findById(SecurityUtil.getCurrentMemberId()).orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
 //        if (!passwordEncoder.matches(exPassword, member.getPassword())) {

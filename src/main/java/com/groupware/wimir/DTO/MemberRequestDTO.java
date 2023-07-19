@@ -1,5 +1,4 @@
 package com.groupware.wimir.DTO;
-
 import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.*;
 import lombok.AllArgsConstructor;
@@ -20,9 +19,8 @@ public class MemberRequestDTO {
     private String no;
     private String password;
     private String name;
-    private String position; // 직급 이름
-    private String part; // 본부 이름
-    private String team; // 팀 이름
+    private int position; // 직급 이름
+    private Team team; // 팀 이름
 
     public Member toMember(PasswordEncoder passwordEncoder) {
 
@@ -31,9 +29,8 @@ public class MemberRequestDTO {
                 .password(passwordEncoder.encode(password))
                 .name(name)
                 .position(position)
-//               .authority(Authority.ROLE_ADMIN)
-               .authority(Authority.ROLE_USER)
-                .part(part)
+              .authority(Authority.ROLE_ADMIN)
+//               .authority(Authority.ROLE_USER)
                 .team(team)
                 .build();
     }
