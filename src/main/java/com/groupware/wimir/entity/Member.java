@@ -27,7 +27,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Team team; // 팀
 
-    private int position; // 직급
+    @Enumerated(EnumType.STRING)
+    private Position position; // 직급
     //    1: 사원, 2:대리, 3:과장, 4:차장, 5:부장, 6:상무, 7:전무, 8:부사장, 9:사장
 
     @Enumerated(EnumType.STRING)
@@ -41,7 +42,7 @@ public class Member {
     }
 
     @Builder
-    public Member(Long id, String no, String password, String name, int position, Authority authority, Team team) {
+    public Member(Long id, String no, String password, String name, Position position, Authority authority, Team team) {
         this.id = id;
         this.no = no;
         this.password = password;

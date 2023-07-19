@@ -32,16 +32,21 @@ public class AuthController {
 //        return ResponseEntity.ok(authService.signup(requestDto));
 //    }
 
+    //직원 등록
     @PostMapping("/admin/signup")
     public ResponseEntity<MemberResponseDTO> signup(@RequestBody MemberRequestDTO requestDto) {
 
         return ResponseEntity.ok(authService.signup(requestDto));
     }
+
+    //직원 목록
     @GetMapping("/admin/members")
     public ResponseEntity<List<MemberResponseDTO>> getAllMembers() {
         List<MemberResponseDTO> members = memberService.getAllMembers();
         return ResponseEntity.ok(members);
     }
+
+    //직원 삭제
     @DeleteMapping("/admin/members/{memberId}")
     public ResponseEntity<String> deleteMember(@PathVariable Long memberId) {
         try {
@@ -54,7 +59,7 @@ public class AuthController {
         }
     }
 
-
+    //로그인
     @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody MemberRequestDTO requestDto) {
         return ResponseEntity.ok(authService.login(requestDto));

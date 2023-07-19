@@ -19,7 +19,7 @@ public class MemberRequestDTO {
     private String no;
     private String password;
     private String name;
-    private int position; // 직급 이름
+    private Position position; // 직급 이름
     private Team team; // 팀 이름
 
     public Member toMember(PasswordEncoder passwordEncoder) {

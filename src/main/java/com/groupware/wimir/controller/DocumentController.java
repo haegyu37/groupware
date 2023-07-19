@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,35 +27,43 @@ public class DocumentController {
     }
 
     // 문서 조회
-    @GetMapping(value = "/read/{id}")
-    public Document readDocument(@PathVariable("id") Long id) {
-        Document document = documentService.findDocumentById(id);
+    @GetMapping(value = "/read/{dno}")
+    public Document readDocument(@PathVariable("dno") Long dno) {
+        Document document = documentService.findDocumentByDno(dno);
         if (document == null) {
-            throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
+            throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + dno);
         }
         return document;
     }
 
-    //  문서 작성 status에 따라 작성과 임시저장으로 바뀜. 현재 saveid와 상관없이 모두 작성됨, saveId는 auto 안됨
+    // 문서 작성
     @PostMapping(value = "/create")
     public Document createDocument(@RequestBody Document document) {
-        if (document.getSaveId() != null && document.getSaveId() != 0) {
-            // 임시저장인 경우 DB에 저장
-            document.setId(null);
-            document.setCreateDate(LocalDateTime.now());
+        document.setCreateDate(LocalDateTime.now());
+        if (document.getStatus() == 0) {
+            // 임시저장인 경우
+            Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장 번호의 최대값을 가져옴
+            if (maxSno == null) {
+                maxSno = 0L;
+            }
+            document.setSno(maxSno + 1); // 임시저장 번호 생성
         } else {
-            // 작성인 경우 문서 등록
-            document.setSaveId(null);
-            document.setCreateDate(LocalDateTime.now());
+            // 작성인 경우
+            Long maxDno = documentRepository.findMaxDno(); // DB에서 문서 번호의 최대값을 가져옴
+            if (maxDno == null) {
+                maxDno = 0L;
+            }
+            document.setDno(maxDno + 1); // 작성 번호 생성
         }
-        return documentRepository.save(document);
+        documentRepository.save(document);
+        return document;
     }
 
     //  문서 수정
-    @PutMapping(value = "/update/{id}")
-    public Document updateDocument(@PathVariable("id") Long id, @RequestBody Document document) {
-        Document updateDocument = documentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id));
+    @PutMapping(value = "/update/{dno}")
+    public Document updateDocument(@PathVariable("dno") Long dno, @RequestBody Document document) {
+        Document updateDocument = documentRepository.findByDno(dno)
+                .orElseThrow(() -> new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + dno));
         updateDocument.setTitle(document.getTitle());
         updateDocument.setContent(document.getContent());
         updateDocument.setUpdateDate(LocalDateTime.now());
@@ -64,41 +71,51 @@ public class DocumentController {
     }
 
     // 문서 삭제
-    @DeleteMapping(value = "/delete/{id}")
-    public void deleteDocument(@PathVariable("id") Long id) {
-        documentRepository.deleteById(id);
+    @DeleteMapping(value = "/delete/{dno}")
+    public void deleteDocument(@PathVariable("dno") Long dno) {
+        documentService.deleteDocument(dno);
     }
 
-    // 임시저장된 문서 목록 saveId만이 아니라 모든 문서 불러옴
+    // 임시저장된 문서 목록
     @GetMapping(value = "/savelist")
     public List<Document> saveDocumentList() {
         return documentService.findSaveDocumentList();
     }
 
-    // 임시저장된 문서 불러오기
-    @GetMapping(value = "/edit/{saveId}")
-    public Document editDocument(@PathVariable("saveId") Long saveId) {
-        return documentService.findDocumentBySaveId(saveId);
+    // 임시저장된 문서 조회
+    @GetMapping(value = "/editread/{sno}")
+    public Document editDocument(@PathVariable("sno") Long sno) {
+        return documentService.findDocumentBySno(sno);
     }
 
-    // 임시저장된 문서 재작성 status와 saveId 변경안됨.
-    @PostMapping(value = "/edit/{saveId}")
-    public Document updateEditDocument(@PathVariable("saveId") Long saveId, @RequestBody Document document) {
-        Document updateDocument = documentRepository.findBySaveId(saveId);
-        if (updateDocument == null) {
-            throw new ResourceNotFoundException("임시저장된 문서를 찾을 수 없습니다. : " + saveId);
+    // 임시저장 문서 수정(기존 데이터를 가져오는지 의문)
+    @PutMapping(value = "/edit/{sno}")
+    public Document updateEditDocument(@PathVariable("sno") Long sno, @RequestBody Document document) {
+        Document updateDocument = documentRepository.findBySno(sno);
+        if (updateDocument != null) {
+            updateDocument.setTitle(document.getTitle());
+            updateDocument.setContent(document.getContent());
+            updateDocument.setCreateDate(LocalDateTime.now());
+
+            if (document.getStatus() == 0) {    // 임시저장인 경우 그냥 저장
+            } else {
+                // 작성인 경우
+                Long maxDno = documentRepository.findMaxDno(); // DB에서 문서 번호의 최대값을 가져옴
+                if (maxDno == null) {
+                    maxDno = 0L;
+                }
+                updateDocument.setDno(maxDno + 1); // 작성 번호 생성
+                updateDocument.setSno(null);
+                updateDocument.setStatus(1);
+            }
+            documentRepository.save(updateDocument);
         }
-        updateDocument.setTitle(document.getTitle());
-        updateDocument.setContent(document.getContent());
-        updateDocument.setCreateDate(LocalDateTime.now());
-        return documentRepository.save(updateDocument);
+        return updateDocument;
     }
 
-//    // 임시저장 문서 삭제
-//    @DeleteMapping(value = "/edit/{saveId}")
-//    public Document deleteEditDocument(@PathVariable("saveId") Long saveId) {
-//        documentRepository.deleteBySaveId(saveId);
-//    }
-
+    // 임시저장된 문서 삭제
+    @DeleteMapping(value = "/editdelete/{sno}")
+    public void deleteEditDocument(@PathVariable("sno") Long sno) {
+        documentService.deleteEditDocument(sno);
+    }
 }
-

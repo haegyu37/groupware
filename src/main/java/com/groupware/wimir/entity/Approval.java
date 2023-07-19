@@ -25,13 +25,18 @@ public class Approval {
     @JoinColumn(name = "document_id")
     private Document document; // 승인 대상 문서
 
-    @ManyToMany
-    @JoinTable(
-            name = "approval_approvers",
-            joinColumns = @JoinColumn(name = "approval_id"),
-            inverseJoinColumns = @JoinColumn(name = "member_id")
-    )
-    private List<Member> approvers; // 승인자 정보
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member approver; // 결재자
+
+
+//    @ManyToMany
+//    @JoinTable(
+//            name = "approval_approvers",
+//            joinColumns = @JoinColumn(name = "approval_id"),
+//            inverseJoinColumns = @JoinColumn(name = "member_id")
+//    )
+//    private List<Member> approvers; // 승인자 정보
 
     private int status; // 결재상태(-1참조, 0대기, 1승인, 2반려)
 
