@@ -15,7 +15,7 @@ public class MemberResponseDTO {
     private String no;
     private String name;
 //    private String password;
-    private int position;
+    private Position position;
     private Team team;
     private Authority authority;
 
