@@ -9,38 +9,34 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Attachment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //첨부파일 아이디
+    private Long id; //첨부파일 Id
 
-    private String name; //첨부파일 이름
+    private String originalName; // 첨부파일 원본 이름
 
-    private Long size; //첨부파일 크기
+    private String savedName; // 첨부파일 저장 이름
 
-    private String path; //첨부파일 경로
+    private Long size; // 첨부파일 크기
 
-    private Long docId; //첨부파일이 담긴 문서 아이디
+    private String path; // 첨부파일 경로
 
-    private String writter; //문서작성자 아이디
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "document_id")
+    private Document document;  // 첨부파일은 문서 id 값에 할당함
 
-    @Transient
-    private String attachmentLocation;
-
-    public Attachment(String name, Long size, String path, Long docId, String writter) {
-        this.name = name;
+    @Builder
+    public Attachment(Long id, String originalName, String savedName, Long size, String path, Document document) {
+        this.id = id;
+        this.originalName = originalName;
+        this.savedName = savedName;
         this.size = size;
         this.path = path;
-        this.docId = docId;
-        this.writter = writter;
+        this.document = document;
     }
 
-    public void setAttachmentLocation(String attachmentLocation) {
-        this.attachmentLocation = attachmentLocation;
-    }
-
-    public String getAttachmentLocation() {
-        return attachmentLocation;
+    public void setDocument(Document document) {
+        this.document = document;
     }
 }

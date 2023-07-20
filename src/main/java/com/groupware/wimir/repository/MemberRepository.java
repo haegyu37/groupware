@@ -22,7 +22,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     boolean existsByNo(String no);
 
-    List<Member> findByTeam(Team team);
+    List<Member > findByTeam(Team team);
 
     List<Member> findByPosition(Position position);
 

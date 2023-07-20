@@ -21,6 +21,7 @@ public class Approval {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id; // 승인 ID
 
+
     @ManyToOne
     @JoinColumn(name = "document_id")
     private Document document; // 승인 대상 문서
@@ -42,8 +43,12 @@ public class Approval {
 
     private LocalDateTime approvalDate; // 승인 날짜
 
-    @Enumerated(EnumType.STRING)
-    private Position step; //결재순서
+//    @Enumerated(EnumType.STRING)
+//    private Position step; //결재순서
+
+    private int step; //결재순서
+
+    private String name; //결재라인 이름
 
 
 
