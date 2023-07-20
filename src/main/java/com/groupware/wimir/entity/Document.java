@@ -1,10 +1,10 @@
 package com.groupware.wimir.entity;
 
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name="document")
@@ -15,7 +15,7 @@ public class Document {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //문서 아이디
+    private Long id; //문서 Id
 
     private String title; //문서명
 
@@ -33,12 +33,13 @@ public class Document {
 
     private int status; // 1: 작성 상태, 0: 임시저장 상태
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long saveId;    // 임시저장 문서 ID
+    private  Long dno = 0L;  // 문서 번호(디폴트 값은 0)
+
+    private  Long sno = 0L; // 문서 임시저장 번호(디폴트 값은 0)
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
-                    LocalDateTime updateDate, Member writer, Long temId, int status, Long saveId) {
+                    LocalDateTime updateDate, Member writer, Long temId, int status, Long dno, Long sno, Attachment attachment) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -47,7 +48,8 @@ public class Document {
         this.writer = writer;
         this.temId = temId;
         this.status = status;
-        this.saveId = saveId;
+        this.dno = dno;
+        this.sno = sno;
+        this.attachment = attachment;
     }
-
 }
