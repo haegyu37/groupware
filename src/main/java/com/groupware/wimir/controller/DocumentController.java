@@ -1,5 +1,6 @@
 package com.groupware.wimir.controller;
 
+import com.groupware.wimir.entity.Attachment;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.exception.ResourceNotFoundException;
 import com.groupware.wimir.repository.DocumentRepository;
@@ -71,7 +72,11 @@ public class DocumentController {
     }
 
     // 문서 삭제
-    @DeleteMapping(value = "/delete/{dno}")
+//    @DeleteMapping(value = "/delete/{dno}")
+//    public void deleteDocument(@PathVariable("dno") Long dno) {
+//        documentService.deleteDocument(dno);
+//    }
+    @DeleteMapping("/delete/{dno}")
     public void deleteDocument(@PathVariable("dno") Long dno) {
         documentService.deleteDocument(dno);
     }

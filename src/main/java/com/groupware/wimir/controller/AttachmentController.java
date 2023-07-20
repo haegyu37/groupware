@@ -21,17 +21,15 @@ public class AttachmentController {
     }
 
     // 첨부파일 업로드
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload")
     public ResponseEntity<String> uploadAttachments(@RequestParam("attachments") List<MultipartFile> files,
                                                     @RequestParam("documentId") Long documentId) {
         try {
             List<Long> attachmentIds = new ArrayList<>();
-
             for (MultipartFile file : files) {
                 Long attachmentId = attachmentService.uploadAttachment(file, documentId);
                 attachmentIds.add(attachmentId);
             }
-
             String response = "첨부파일이 업로드되었습니다. 첨부파일 ID 목록 : " + attachmentIds;
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -42,7 +40,7 @@ public class AttachmentController {
     }
 
     // 첨부파일 다운로드
-    @GetMapping("/download/{id}")
+    @GetMapping(value = "/download/{id}")
     public ResponseEntity<byte[]> downloadAttachment(@PathVariable Long id) {
         try {
             byte[] fileBytes = attachmentService.downloadAttachment(id);
@@ -50,7 +48,6 @@ public class AttachmentController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             headers.setContentDispositionFormData("attachment", "attachment");
-
             return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,7 +56,7 @@ public class AttachmentController {
     }
 
     // 첨부파일 삭제
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<String> deleteAttachment(@PathVariable Long id) {
         try {
             attachmentService.deleteAttachment(id);

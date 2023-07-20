@@ -1,5 +1,6 @@
 package com.groupware.wimir.service;
 
+import com.groupware.wimir.entity.Attachment;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.repository.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -19,6 +19,9 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Autowired
     private DocumentRepository documentRepository;
+
+    @Autowired
+    private AttachmentService attachmentService;
 
     @Override
     public Page<Document> findDocumentList(Pageable pageable) {
@@ -33,6 +36,14 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     public void deleteDocument(Long dno) {
+        Document document = documentRepository.findByDno(dno)
+                .orElseThrow(() -> new RuntimeException("해당 문서를 찾을 수 없습니다."));
+        // 문서에 속한 첨부파일들을 삭제
+        List<Attachment> attachments = attachmentService.getAttachmentsByDocumentId(document.getId());
+        for (Attachment attachment : attachments) {
+            attachmentService.deleteAttachment(attachment.getId());
+        }
+        // 문서 삭제
         documentRepository.deleteByDno(dno);
     }
 
@@ -54,7 +65,18 @@ public class DocumentServiceImpl implements DocumentService {
     public Document findDocumentBySno(Long Sno) { return documentRepository.findBySno(Sno); }
 
     public void deleteEditDocument(Long sno) {
-        documentRepository.deleteBySno(sno);
+        Document document = documentRepository.findBySno(sno);
+        if (document != null) {
+            // 문서에 속한 첨부파일들을 삭제
+            List<Attachment> attachments = attachmentService.getAttachmentsByDocumentId(document.getId());
+            for (Attachment attachment : attachments) {
+                attachmentService.deleteAttachment(attachment.getId());
+            }
+            // 문서 삭제
+            documentRepository.deleteBySno(sno);
+        } else {
+            throw new RuntimeException("해당 문서를 찾을 수 없습니다.");
+        }
     }
 
     @Override
@@ -62,5 +84,17 @@ public class DocumentServiceImpl implements DocumentService {
         Optional<Document> documentOptional = documentRepository.findById(id);
         return documentOptional.orElseThrow(() -> new RuntimeException("해당 문서를 찾을 수 없습니다."));
     }
+
+    @Override
+    public Document findDocumentById(Long dno) {
+        return documentRepository.findById(dno)
+                .orElseThrow(() -> new RuntimeException("해당 문서를 찾을 수 없습니다."));
+    }
+
+    @Override
+    public void deleteAttachment(Long id) {
+        attachmentService.deleteAttachment(id);
+    }
+
 }
 

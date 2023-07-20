@@ -21,7 +21,11 @@ public interface DocumentService {
 
     void deleteEditDocument(Long sno);
 
-    void deleteDocument(Long dno);
-
     Document getDocumentById(Long documentId);
+
+    Document findDocumentById(Long dno);
+
+    void deleteAttachment(Long id);
+
+    void deleteDocument(Long dno);
 }

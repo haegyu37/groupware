@@ -1,10 +1,10 @@
 package com.groupware.wimir.entity;
 
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name="document")
@@ -39,7 +39,7 @@ public class Document {
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
-                    LocalDateTime updateDate, Member writer, Long temId, int status, Long dno, Long sno, Attachment attachment) {
+                    LocalDateTime updateDate, Member writer, Long temId, int status, Long dno, Long sno) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -50,6 +50,5 @@ public class Document {
         this.status = status;
         this.dno = dno;
         this.sno = sno;
-        this.attachment = attachment;
     }
 }

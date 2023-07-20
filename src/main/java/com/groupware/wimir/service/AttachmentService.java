@@ -27,7 +27,7 @@ public class AttachmentService {
         this.attachmentRepository = attachmentRepository;
         this.documentRepository = documentRepository;
         // 파일 저장 디렉토리 설정 및 생성 코드 생략
-        this.attachmentStorageLocation = Paths.get("C:\\groupware\\upload");
+        this.attachmentStorageLocation = Paths.get("C:\\uploads");
     }
 
     public Long uploadAttachment(MultipartFile file, Long documentId) {
@@ -36,7 +36,6 @@ public class AttachmentService {
 
         // 문서 id에 해당하는 Document 엔티티를 찾아옴
         Document document = findDocumentById(documentId);
-
         Attachment newAttachment = Attachment.builder()
                 .originalName(name)
                 .savedName(name)
@@ -72,8 +71,8 @@ public class AttachmentService {
         }
     }
 
-    public void deleteAttachment(Long id) {
-        Attachment attachment = getAttachmentById(id);
+    public void deleteAttachment(Long attachmentId) {
+        Attachment attachment = getAttachmentById(attachmentId);
         Path attachmentPath = Paths.get(attachment.getPath(), attachment.getSavedName());
         try {
             Files.delete(attachmentPath);
@@ -86,7 +85,6 @@ public class AttachmentService {
     public void saveAttachments(List<Attachment> attachments, Long documentId) {
         Document document = new Document();
         document.setId(documentId);
-
         for (Attachment attachment : attachments) {
             attachment.setDocument(document);
         }
@@ -96,5 +94,9 @@ public class AttachmentService {
     private Document findDocumentById(Long documentId) {
         Optional<Document> documentOptional = documentRepository.findById(documentId);
         return documentOptional.orElseThrow(() -> new RuntimeException("해당 문서를 찾을 수 없습니다."));
+    }
+
+    public List<Attachment> getAttachmentsByDocumentId(Long documentId) {
+        return attachmentRepository.findByDocumentId(documentId);
     }
 }
