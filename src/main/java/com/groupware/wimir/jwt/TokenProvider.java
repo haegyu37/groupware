@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,6 +51,8 @@ public class TokenProvider {
 
     // 토큰 생성 Authentication 인터페이스를 확장한 매개변수를 받아서 그 값을 string으로 변환
     // 이후 현재시각과 만료시각을 만든 후 jwts의 builder를 이용하여 token을 생성한 다음 tokendto에 생성한 token의 정보를 넣는다
+    @Autowired
+    private HttpServletResponse response;
     public TokenDTO generateTokenDto(Authentication authentication) {
 
         String authorities = authentication.getAuthorities().stream()   //사용자의 권한정보 추출
@@ -73,10 +76,17 @@ public class TokenProvider {
 
         String refreshToken = generateRefreshToken();
 
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true); // HttpOnly 설정 (JavaScript에서 접근 불가)
+        refreshTokenCookie.setMaxAge((int) (REFRESH_TOKEN_EXPIRE_TIME / 1000)); // 리프레시 토큰의 만료 시간 설정 (초 단위)
+        refreshTokenCookie.setPath("/"); // 쿠키의 유효 경로 설정 (전체 경로에서 유효하도록 설정)
+        response.addCookie(refreshTokenCookie); // 응답 헤더에 쿠키 추가
+
         return TokenDTO.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
                 .tokenExpiresIn(tokenExpiresIn.getTime())
+                .refreshToken(refreshToken)
                 .build();
     }       // 주어진 인증정보 기반으로 액세스 토큰 생성하고 TokenDTO 객체로 변환하여 반환
 
