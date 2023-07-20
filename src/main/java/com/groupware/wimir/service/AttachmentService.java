@@ -1,8 +1,13 @@
 package com.groupware.wimir.service;
 
 import com.groupware.wimir.entity.Attachment;
+import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.repository.AttachmentRepository;
+import com.groupware.wimir.repository.DocumentRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,36 +21,31 @@ import java.util.Optional;
 public class AttachmentService {
     private final AttachmentRepository attachmentRepository;
     private final Path attachmentStorageLocation;
+    private final DocumentRepository documentRepository;
 
-    public AttachmentService(AttachmentRepository attachmentRepository) {
+    public AttachmentService(AttachmentRepository attachmentRepository, DocumentRepository documentRepository) {
         this.attachmentRepository = attachmentRepository;
+        this.documentRepository = documentRepository;
         // 파일 저장 디렉토리 설정 및 생성 코드 생략
         this.attachmentStorageLocation = Paths.get("C:\\groupware\\upload");
     }
 
-    public Long uploadAttachment(MultipartFile file, Long docId, String writter) {
+    public Long uploadAttachment(MultipartFile file, Long documentId) {
         String name = getName(file);
-        try {
-            // 파일 업로드 경로 설정
-            Path targetLocation = this.attachmentStorageLocation.resolve(name);
-            // 파일 업로드
-            Files.createDirectories(targetLocation.getParent()); // 부모 디렉터리 생성
-            Files.copy(file.getInputStream(), targetLocation);
+        Path targetLocation = this.attachmentStorageLocation.resolve(name);
 
-            // Attachment 생성 및 저장
-            Attachment newAttachment = new Attachment();
-            newAttachment.setName(name);
-            newAttachment.setPath(targetLocation.getParent().toString()); // 파일 경로 설정
-            newAttachment.setSize(file.getSize()); // 파일 크기 설정
-            newAttachment.setDocId(docId);
-            newAttachment.setWritter(writter); // 작성자 정보 설정
-            attachmentRepository.save(newAttachment);
+        // 문서 id에 해당하는 Document 엔티티를 찾아옴
+        Document document = findDocumentById(documentId);
 
-            return newAttachment.getId(); // 저장된 첨부 파일 ID 반환
-        } catch (IOException ex) {
-            // 파일 업로드 중 오류 발생 시 예외 처리
-            throw new RuntimeException("첨부파일을 업로드할 수 없습니다.", ex);
-        }
+        Attachment newAttachment = Attachment.builder()
+                .originalName(name)
+                .savedName(name)
+                .size(file.getSize())
+                .path(targetLocation.getParent().toString())
+                .document(document) // 문서 정보를 설정해줌
+                .build();
+        attachmentRepository.save(newAttachment);
+        return newAttachment.getId();
     }
 
     private String getName(MultipartFile file) {
@@ -57,9 +57,14 @@ public class AttachmentService {
         }
     }
 
+    public Attachment getAttachmentById(Long id) {
+        Optional<Attachment> attachmentOptional = attachmentRepository.findById(id);
+        return attachmentOptional.orElseThrow(() -> new RuntimeException("해당 첨부파일을 찾을 수 없습니다."));
+    }
+
     public byte[] downloadAttachment(Long id) {
         Attachment attachment = getAttachmentById(id);
-        Path attachmentPath = Paths.get(attachment.getAttachmentLocation());
+        Path attachmentPath = Paths.get(attachment.getPath(), attachment.getSavedName());
         try {
             return Files.readAllBytes(attachmentPath);
         } catch (IOException ex) {
@@ -67,31 +72,29 @@ public class AttachmentService {
         }
     }
 
-    public boolean deleteAttachment(Long id, String currentUser) {
+    public void deleteAttachment(Long id) {
         Attachment attachment = getAttachmentById(id);
-
-        // 첨부 파일을 업로드한 사용자와 현재 로그인한 사용자를 비교하여 권한 확인
-        if (!attachment.getWritter().equals(currentUser)) {
-            throw new RuntimeException("해당 첨부파일을 삭제할 권한이 없습니다.");
-        }
-
+        Path attachmentPath = Paths.get(attachment.getPath(), attachment.getSavedName());
         try {
-            // Attachment 삭제
-            attachmentRepository.delete(attachment); // 데이터베이스에서 첨부파일 정보 삭제
-
-            return true;
-        } catch (Exception ex) {
-            throw new RuntimeException("첨부파일을 삭제하는 중에 오류가 발생했습니다.", ex);
+            Files.delete(attachmentPath);
+            attachmentRepository.delete(attachment);
+        } catch (IOException ex) {
+            throw new RuntimeException("첨부파일을 삭제할 수 없습니다.", ex);
         }
     }
 
-//    public Path getAttachmentPathById(Long id) {
-//        Attachment attachment = getAttachmentById(id);
-//        return Paths.get(attachment.getAttachmentLocation());
-//    }
+    public void saveAttachments(List<Attachment> attachments, Long documentId) {
+        Document document = new Document();
+        document.setId(documentId);
 
-    public Attachment getAttachmentById(Long id) {
-        Optional<Attachment> attachmentOptional = attachmentRepository.findById(id);
-        return attachmentOptional.orElseThrow(() -> new RuntimeException("해당 첨부파일을 찾을 수 없습니다."));
+        for (Attachment attachment : attachments) {
+            attachment.setDocument(document);
+        }
+        attachmentRepository.saveAll(attachments);
+    }
+
+    private Document findDocumentById(Long documentId) {
+        Optional<Document> documentOptional = documentRepository.findById(documentId);
+        return documentOptional.orElseThrow(() -> new RuntimeException("해당 문서를 찾을 수 없습니다."));
     }
 }

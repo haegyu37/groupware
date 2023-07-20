@@ -54,4 +54,6 @@ public class DocumentServiceImpl implements DocumentService {
     public void deleteEditDocument(Long sno) {
         documentRepository.deleteBySno(sno);
     }
+
+
 }

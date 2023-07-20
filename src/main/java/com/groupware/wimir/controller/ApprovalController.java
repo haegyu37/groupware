@@ -1,5 +1,6 @@
 package com.groupware.wimir.controller;
 
+import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Position;
 import com.groupware.wimir.entity.Team;
@@ -18,7 +19,7 @@ public class ApprovalController {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    private ApprovalService appService;
+    private ApprovalService approvalService;
 
     //팀 모두 출력
     @GetMapping("/team")
@@ -58,14 +59,15 @@ public class ApprovalController {
 
     //결재라인 지정(개인)
     @PostMapping("/create")
-    public List<Member> createIndividualApprovalLine(@RequestBody List<Long> approverIds) {
-        return appService.createApprovalLine(approverIds);
+    public void createIndividualApprovalLine(@RequestBody ApprovalDTO approvalDTO) {
+        approvalService.createApprovalLine(approvalDTO);
+//        return approvalService.createApprovalLine(memberList);
     }
 
     //결재라인 지정(부서 전체)
     @PostMapping("/create-team/{team}")
-    public List<Member> createDepartmentApprovalLine(@PathVariable String team) {
-        return appService.createTeamApprovalLine(team);
+    public List<Member> createTeamApprovalLine(@PathVariable String team) {
+        return approvalService.createTeamApprovalLine(team);
     }
 
 
