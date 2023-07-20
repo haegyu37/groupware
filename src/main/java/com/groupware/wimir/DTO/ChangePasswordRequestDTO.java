@@ -1,4 +1,5 @@
 package com.groupware.wimir.DTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChangePasswordRequestDTO {
-//    private String no;
+    //    private String no;
 //    private String exPassword;
     private String newPassword;
 }

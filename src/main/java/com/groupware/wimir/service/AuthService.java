@@ -46,5 +46,9 @@ public class AuthService {
 
         return tokenProvider.generateTokenDto(authentication);
     }
+    public void logout() {
+
+    }
+
 
 }
