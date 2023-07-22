@@ -2,6 +2,7 @@ package com.groupware.wimir.controller;
 
 import com.groupware.wimir.DTO.MemberRequestDTO;
 import com.groupware.wimir.DTO.MemberResponseDTO;
+import com.groupware.wimir.DTO.RefreshTokenRequestDTO;
 import com.groupware.wimir.DTO.TokenDTO;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.AuthService;
@@ -81,4 +82,10 @@ public class AuthController {
 
         return ResponseEntity.ok("로그아웃 되었습니다.");
     }
+    // 토큰 갱신
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenDTO> refreshToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequest) {
+        return ResponseEntity.ok(authService.refreshToken(refreshTokenRequest));
+    }
+
 }

@@ -2,6 +2,7 @@ package com.groupware.wimir.service;
 
 import com.groupware.wimir.DTO.MemberRequestDTO;
 import com.groupware.wimir.DTO.MemberResponseDTO;
+import com.groupware.wimir.DTO.RefreshTokenRequestDTO;
 import com.groupware.wimir.DTO.TokenDTO;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.jwt.TokenProvider;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,9 +48,28 @@ public class AuthService {
 
         return tokenProvider.generateTokenDto(authentication);
     }
+    // 토큰 갱신 로직 구현
+    public TokenDTO refreshToken(RefreshTokenRequestDTO refreshTokenRequest) {
+        String refreshToken = refreshTokenRequest.getRefreshToken();
+
+        if (!tokenProvider.validateToken(refreshToken)) {
+            throw new RuntimeException("유효하지 않은 리프레시 토큰입니다.");
+        }
+
+        // 리프레시 토큰에서 사용자 정보 추출
+        Authentication authentication = tokenProvider.getAuthentication(refreshToken);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        // 기존 사용자 정보로 새로운 액세스 토큰 생성
+        TokenDTO newTokenDTO = tokenProvider.generateTokenDto(authentication);
+
+        return newTokenDTO;
+    }
     public void logout() {
 
     }
+
+
 
 
 }
