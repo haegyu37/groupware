@@ -57,18 +57,18 @@ public class ApprovalController {
         return memberRepository.findByPosition(position);
     }
 
-    //결재라인 지정(개인)
-    @PostMapping("/create")
-    public void createIndividualApprovalLine(@RequestBody ApprovalDTO approvalDTO) {
-        approvalService.createApprovalLine(approvalDTO);
-//        return approvalService.createApprovalLine(memberList);
-    }
-
-    //결재라인 지정(부서 전체)
-    @PostMapping("/create-team/{team}")
-    public List<Member> createTeamApprovalLine(@PathVariable String team) {
-        return approvalService.createTeamApprovalLine(team);
-    }
+//    //결재라인 지정(개인)
+//    @PostMapping("/create")
+//    public void createIndividualApprovalLine(@RequestBody ApprovalDTO approvalDTO) {
+//        approvalService.createApprovalLine(approvalDTO);
+////        return approvalService.createApprovalLine(memberList);
+//    }
+//
+//    //결재라인 지정(부서 전체)
+//    @PostMapping("/create-team/{team}")
+//    public List<Member> createTeamApprovalLine(@PathVariable String team) {
+//        return approvalService.createTeamApprovalLine(team);
+//    }
 
 
 }
