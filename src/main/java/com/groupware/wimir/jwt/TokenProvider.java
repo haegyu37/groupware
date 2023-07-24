@@ -32,9 +32,9 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";   //사용자 권한(authorities) 식별하는데 사용
     private static final String BEARER_TYPE = "bearer";     // 토큰유형 지정시 사용 Oauth 2.0 인증 프로토콜에서 사용되는 토큰 유형
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 360;        // 액세스토큰 만료시간
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 360;       // 1분 액세스토큰 만료시간
 
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7 days
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
 
     private final Key key;  //토큰 생성시 사용할 키
 
@@ -114,21 +114,20 @@ public class TokenProvider {
     //UsernamePasswordAuthenticationToken인스턴스는 UserDetails를 생성해서 후에 SecurityContext에 사용하기 위해 만든 절차
     //SecurityContext는 Authentication객체를 저장하기 때문
     public Authentication getAuthentication(String accessToken) {
-        Claims claims = parseClaims(accessToken);           //토큰 파싱하여 클레임 객체를 얻음
+        Claims claims = parseClaims(accessToken);
 
-        if (claims.get(AUTHORITIES_KEY) == null) {
+        if (claims == null || claims.get(AUTHORITIES_KEY) == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
-        //권한 정보를 문자열로부터 추출하여 GrantAuthority 객체들의 컬렉션으로 변환. 권한 정보는 쉼표로 구분된 문자열 형태로 토큰에 저장되어있음
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        UserDetails principal = new User(claims.getSubject(), "", authorities); // 사용자 이름을 추출하여 User객체 생성
+        UserDetails principal = new User(claims.getSubject(), "", authorities);
 
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
     }
 
     // validateToken 토큰을 검증하기 위한 메소드
@@ -147,7 +146,37 @@ public class TokenProvider {
         }
         return false;
     }
+    // 리프레시 토큰으로부터 새로운 액세스 토큰 발급 메서드
+    public TokenDTO generateNewAccessToken(String refreshToken) {
+        Claims claims = parseClaims(refreshToken);
 
+        // 리프레시 토큰으로부터 사용자 정보 추출
+        String username = claims.getSubject();
+        String authorities = claims.get(AUTHORITIES_KEY).toString();
+
+        Collection<? extends GrantedAuthority> grantedAuthorities =
+                Arrays.stream(authorities.split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+
+        UserDetails userDetails = new User(username, "", grantedAuthorities);
+
+        // 새로운 액세스 토큰 발급
+        String newAccessToken = Jwts.builder()
+                .setSubject(username)
+                .claim(AUTHORITIES_KEY, authorities)
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_TIME))
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+
+        // 새로운 액세스 토큰을 TokenDTO에 담아서 반환
+        return TokenDTO.builder()
+                .grantType(BEARER_TYPE)
+                .accessToken(newAccessToken)
+                .tokenExpiresIn(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_TIME)
+                .refreshToken(refreshToken)
+                .build();
+    }
     //parseClaim 토큰을 claims형태로 만든 메소드 이를 통해 위에서 권한 정보가 있는지 없는지 체크 가능
     private Claims parseClaims(String accessToken) {
         try {
