@@ -2,13 +2,13 @@ package com.groupware.wimir.controller;
 
 import com.groupware.wimir.DTO.MemberRequestDTO;
 import com.groupware.wimir.DTO.MemberResponseDTO;
-import com.groupware.wimir.DTO.RefreshTokenRequestDTO;
+import com.groupware.wimir.DTO.TokenRequestDTO;
 import com.groupware.wimir.DTO.TokenDTO;
+import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.AuthService;
 import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,18 +54,20 @@ public class AuthController {
     }
 
     //직원 삭제
-    @DeleteMapping("/admin/members/{memberId}")
-    public ResponseEntity<String> deleteMember(@PathVariable Long memberId) {
+    @DeleteMapping("/admin/members/{memberNo}")
+    public ResponseEntity<String> deleteMemberByNo(@PathVariable String memberNo) {
         try {
-            memberRepository.deleteById(memberId);
-            return ResponseEntity.ok("회원 정보가 삭제되었습니다.");
-        } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.notFound().build();
+            Optional<Member> memberOptional = memberRepository.findByNo(memberNo);
+            if (memberOptional.isPresent()) {
+                memberRepository.delete(memberOptional.get());
+                return ResponseEntity.ok("회원 정보가 삭제되었습니다.");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
     //로그인
     @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody MemberRequestDTO requestDto) {
@@ -84,8 +87,8 @@ public class AuthController {
     }
     // 토큰 갱신
     @PostMapping("/refresh")
-    public ResponseEntity<TokenDTO> refreshToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequest) {
-        return ResponseEntity.ok(authService.refreshToken(refreshTokenRequest));
+    public ResponseEntity<TokenDTO> refresh(@RequestBody TokenRequestDTO tokenRequestDTO) {
+        return ResponseEntity.ok(authService.refresh(tokenRequestDTO));
     }
 
 }

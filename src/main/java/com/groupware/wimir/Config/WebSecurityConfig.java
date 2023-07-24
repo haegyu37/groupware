@@ -55,6 +55,11 @@ public class WebSecurityConfig {
                 .accessDeniedHandler(jwtAccessDeniedHandler)
 
                 .and()
+                .headers()
+                .frameOptions()
+                .sameOrigin()
+
+                .and()
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers("/auth/**").permitAll()
