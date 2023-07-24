@@ -20,6 +20,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+
 
 @RequiredArgsConstructor
 @Configuration
@@ -78,8 +80,8 @@ public class WebSecurityConfig {
         config.addAllowedOrigin("http://프론트 AWS  주소"); // 프론트 IPv4 주소
         config.addAllowedMethod("*"); // 모든 메소드 허용.
         config.addAllowedHeader("*");
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // 허용할 헤더 추가
         config.setAllowCredentials(true);
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
