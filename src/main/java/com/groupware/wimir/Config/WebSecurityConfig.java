@@ -82,6 +82,7 @@ public class WebSecurityConfig {
         config.addAllowedHeader("*");
 
         //config.setAllowCredentials(true);
+//        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // 허용할 헤더 추가
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
