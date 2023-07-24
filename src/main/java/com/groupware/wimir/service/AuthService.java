@@ -85,7 +85,7 @@ public class AuthService {
         // 새로운 토큰 생성
         TokenDTO tokenDTO = tokenProvider.generateTokenDto(authentication);
 
-        // 6. 저장소 정보 업데이트
+        //  저장소 정보 업데이트
         RefreshToken newRefreshToken = refreshToken.updateValue(tokenDTO.getRefreshToken());
         refreshTokenRepository.save(newRefreshToken);
 
