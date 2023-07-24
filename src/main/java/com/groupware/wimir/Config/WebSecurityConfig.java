@@ -78,7 +78,7 @@ public class WebSecurityConfig {
         config.addAllowedOrigin("*"); // 로컬
         config.addAllowedMethod("*"); // 모든 메소드 허용.
         config.addAllowedHeader("*");
-        config.setAllowCredentials(true);
+
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
