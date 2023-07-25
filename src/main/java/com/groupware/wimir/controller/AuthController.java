@@ -62,6 +62,8 @@ public class AuthController {
     public ResponseEntity<TokenDTO> login(@RequestBody MemberRequestDTO requestDto) {
         return ResponseEntity.ok(authService.login(requestDto));
     }
+
+    //로그아웃
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletResponse response) {
         // 리프레시 토큰을 저장하는 쿠키를 제거합니다.

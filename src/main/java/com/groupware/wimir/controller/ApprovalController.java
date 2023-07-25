@@ -2,6 +2,7 @@ package com.groupware.wimir.controller;
 
 import com.google.protobuf.Message;
 import com.groupware.wimir.DTO.ApprovalDTO;
+import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Position;
@@ -89,23 +90,53 @@ public class ApprovalController {
         return memberRepository.findByPosition(position);
     }
 
-//    //작성 중 ...
-//
-//    //결재 메인화면: 결재할 문서, 결재 중 문서, 결재 완료한 문서 출력
-//    @GetMapping
-//    public ModelAndView approvalMain(@SessionAttribute(name = "loginMember", required = false) Member loginMember) {
-//
-//        Approval approval_Before = approvalService.approval_Before(loginMember); //결재할 문서
-//        Approval approval_Ing = approvalService.approval_Ing(loginMember); //결재 중 문서
-//        Approval approval_Done = approvalService.approval_Done(loginMember); //결재 완료한 문서
-//
-//        List<Approval> appMine = approvalService.getRecentList(loginMember); //내 결재 목록
-//        List<Approval> appWrite = approvalService.getRecentList1(loginMember); //내가 작성한 결재
-//        List<Approval> appReceive = approvalService.getRecentList2(loginMember); //결재 수신목록
-//
-//        return model;
-//    }
-//
+    //작성 중 ...
+    //결재 메인화면: 결재할 문서, 결재 중 문서, 결재 완료한 문서 출력
+    @GetMapping
+    public ResponseEntity<List<Approval>> getAllMembers() {
+        List<Approval> approval = approvalService.getAllMembers();
+        return ResponseEntity.ok(approval);
+    }
+
+
+
+    @RequestMapping(value = "/approvalMain", method = { RequestMethod.GET })
+    public ModelAndView approvalMain(@SessionAttribute(name = "loginMember", required = false) Member loginMember,
+                                     ModelAndView model) {
+
+        int approval_Before = approvalService.approval_Before(loginMember);
+        int approval_Ing = approvalService.approval_Ing(loginMember);
+        int approval_Done = approvalService.approval_Done(loginMember);
+
+        List<Approval> mainList = null; // 내 결재 목록
+
+        List<Approval> mainList1 = null; // 내가 작성한 결재
+
+        List<Approval> mainList2 = null; // 결재 수신목록
+
+        System.out.println(approval_Before);
+        System.out.println(approval_Ing);
+        System.out.println(approval_Done);
+
+        mainList = approvalService.getRecentList(loginMember);
+
+        mainList1 = approvalService.getRecentList1(loginMember);
+
+        mainList2 = approvalService.getRecentList2(loginMember);
+
+        System.out.println("mainList : " + mainList);
+
+        model.addObject("mainList", mainList);
+        model.addObject("mainList1", mainList1);
+        model.addObject("mainList2", mainList2);
+        model.addObject("countYet", approval_Before);
+        model.addObject("countUnder", approval_Ing);
+        model.addObject("countDone", approval_Done);
+        model.setViewName("approval/approvalMain");
+
+        return model;
+    }
+
 //    //결재리스트
 //    @GetMapping(value = "/approvalList")
 //    public String approvalList(Model model,
