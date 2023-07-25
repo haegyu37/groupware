@@ -5,6 +5,9 @@ import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +51,23 @@ public class MemberService {
 
         return MemberResponseDTO.of(updatedMember);
 
+    }
+    @Transactional
+    public MemberResponseDTO changeUserPasswordByAdmin(Long memberId, String newPassword) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+
+        member.setPassword(passwordEncoder.encode(newPassword));
+        Member updatedMember = memberRepository.save(member);
+
+        // 변경된 사용자 정보로 인증 객체 갱신
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                updatedMember.getId(), newPassword, SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return MemberResponseDTO.of(updatedMember);
     }
 
     // ID로 회원 조회

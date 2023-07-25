@@ -1,6 +1,7 @@
 package com.groupware.wimir.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.stereotype.Component;
 

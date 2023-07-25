@@ -1,9 +1,6 @@
 package com.groupware.wimir.controller;
 
-import com.groupware.wimir.DTO.MemberRequestDTO;
-import com.groupware.wimir.DTO.MemberResponseDTO;
-import com.groupware.wimir.DTO.TokenRequestDTO;
-import com.groupware.wimir.DTO.TokenDTO;
+import com.groupware.wimir.DTO.*;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.AuthService;
@@ -91,4 +88,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.refresh(tokenRequestDTO));
     }
 
+    @PostMapping("/admin/members/{id}/password")
+    public ResponseEntity<MemberResponseDTO> changeUserPasswordByAdmin(@PathVariable Long id, @RequestBody ResetPasswordDTO newPasswordDto) {
+        MemberResponseDTO updatedUser = memberService.changeUserPasswordByAdmin(id, newPasswordDto.getNewPassword());
+        return ResponseEntity.ok(updatedUser);
+    }
 }

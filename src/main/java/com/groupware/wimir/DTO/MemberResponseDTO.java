@@ -22,6 +22,7 @@ public class MemberResponseDTO {
 
     public static MemberResponseDTO of(Member member) {
         return MemberResponseDTO.builder()
+                .id(member.getId())
                 .no(member.getNo())
                 .name(member.getName())
 //                .password(member.getPassword())
