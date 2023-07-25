@@ -2,54 +2,57 @@ package com.groupware.wimir.service;
 
 import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.entity.Approval;
-import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
-import com.groupware.wimir.entity.Team;
-import com.groupware.wimir.repository.ApprovalRepository;
-import com.groupware.wimir.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.awt.desktop.AppEvent;
 import java.util.List;
 
-@Service
-public class ApprovalService {
-    @Autowired
-    private MemberService memberService;
-    @Autowired
-    private MemberRepository memberRepository;
+// ApprovalService.java
+public interface ApprovalService {
 
-    @Autowired
-    ApprovalRepository approvalRepository;
+    int approval_Before(Member loginMember);
+    int approval_Ing(Member loginMember);
+    int approval_Done(Member loginMember);
 
+    List<Approval> getRecentList(Member loginMember);
+    List<Approval> getRecentList1(Member loginMember);
+    List<Approval> getRecentList2(Member loginMember);
 
-    public void createApprovalLine(ApprovalDTO approvalDTO) {
-        List<Member> memberList = new ArrayList<>();
-        for(int i=0; i<approvalDTO.getMemberList().size(); i++){
-            memberList.add(memberService.getMemberById(approvalDTO.getMemberList().get(i)));
-        }
-        Document document = approvalDTO.getDocument();
-        // 개인 별로 결재자 지정
-        for (Member member : memberList) {
+    Page<Approval> getApprovalList(Pageable pageable, String searchText);
 
-            Approval approval = new Approval();
-            approval.setApprover(member);
-            approval.setDocument(document);
+    int getListCount(String searchText);
 
-            approvalRepository.save(approval);
-        }
+    // LetterOfApproval 등록
+    int saveLetterOfApproval(Approval approval);
+    int saveLetterOfApproval2(Approval approval);
+    int saveLetterOfApproval3(Approval approval);
 
-    }
+    Approval findListByNo(int appNo);
 
-    public List<Member> createTeamApprovalLine(String team) {
-        List<Member> teamMembers = memberService.getMembersByTeam(Team.valueOf(team));
+    int rejectUpdate(Approval approval);
 
-        // 부서 전체를 선택하는 경우 직급 순서대로 결재자 정렬
-        Collections.sort(teamMembers, Comparator.comparing(Member::getPosition));
+    // 결재상태 갱신
+    int approved1(int appNo);
+    int approved2(int appNo);
+    int approved3(int appNo);
 
-        return teamMembers;
-    }
+    // 휴가신청서 등록
+    int insertApproval(Approval approval);
+    int insertLeave(Approval approval);
+    int insertReceive(Approval approval);
+
+    int saveExpenseReport(Approval approval);
+    int saveExpenseReport2(Approval approval);
+    int saveExpenseReport3(Approval approval);
+
+    Approval findExpenseReportListByNo(int appNo);
+
+    // 휴가신청서 상세보기
+    Approval findListByLeaveNo(int appNo);
 }
+
+

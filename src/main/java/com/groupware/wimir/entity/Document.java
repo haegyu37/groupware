@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class Document {
 
     @Id
@@ -50,4 +51,6 @@ public class Document {
         this.dno = dno;
         this.sno = sno;
     }
+
+    public void setWriter() {}
 }
