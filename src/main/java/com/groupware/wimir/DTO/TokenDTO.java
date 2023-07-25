@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 public class TokenDTO {
     private String grantType;
     private String accessToken;     //
-    private Long tokenExpiresIn;    //토큰만료시간
     private String refreshToken;
+    private Long tokenExpiresIn;    //토큰만료시간
+
 
 }

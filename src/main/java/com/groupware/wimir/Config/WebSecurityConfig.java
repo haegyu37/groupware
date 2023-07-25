@@ -20,6 +20,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+
 
 @RequiredArgsConstructor
 @Configuration
@@ -42,7 +44,8 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors().configurationSource(corsConfigurationSource())
+                .cors()
+                .configurationSource(corsConfigurationSource())
 
                 .and()
                 .httpBasic().disable()
@@ -53,6 +56,11 @@ public class WebSecurityConfig {
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
+//
+//                .and()
+//                .headers()
+//                .frameOptions()
+//                .sameOrigin()
 
                 .and()
                 .authorizeRequests()
@@ -69,10 +77,12 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.addAllowedOrigin("*"); // 로컬
+        config.addAllowedOrigin("*"); // 모든 도메인허용
         config.addAllowedMethod("*"); // 모든 메소드 허용.
         config.addAllowedHeader("*");
 
+        //config.setAllowCredentials(true);
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // 허용할 헤더 추가
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
