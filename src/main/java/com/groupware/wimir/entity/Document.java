@@ -4,13 +4,13 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name="document")
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class Document {
 
     @Id
@@ -51,4 +51,6 @@ public class Document {
         this.dno = dno;
         this.sno = sno;
     }
+
+    public void setWriter() {}
 }

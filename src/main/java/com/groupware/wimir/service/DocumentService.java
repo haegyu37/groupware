@@ -1,13 +1,19 @@
 package com.groupware.wimir.service;
 
 import com.groupware.wimir.entity.Document;
+import com.groupware.wimir.entity.Member;
+import com.groupware.wimir.repository.DocumentRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 
 public interface DocumentService {
+
 
     Page<Document> findDocumentList(Pageable pageable);
 
@@ -21,11 +27,10 @@ public interface DocumentService {
 
     void deleteEditDocument(Long sno);
 
+    void deleteDocument(Long dno);
+
     Document getDocumentById(Long documentId);
 
-    Document findDocumentById(Long dno);
+    Page<Document> findDocumentListByWriter(Member writer, Pageable pageable);
 
-    void deleteAttachment(Long id);
-
-    void deleteDocument(Long dno);
 }

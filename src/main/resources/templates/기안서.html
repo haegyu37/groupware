@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<HEAD>
+  <meta http-equiv="Content-Language" content="ko">
+  <meta http-equiv="Content-Type" content="text/html; charset=ks_c_5601-1987">
+  <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=5.0, minimum-scale=0.5, user-scalable=yes">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+
+  <link href="font.css" rel="stylesheet" type="text/css">
+  <link id="mycss01" href="style3.css" rel="stylesheet" type="text/css" >
+  <script src="./common.js"></script>
+
+  <script id="nopspro" type="text/xmldata">
+  <rootnode>
+    <setvalue>
+	  <사원명_직위>user1</사원명_직위>
+	  <부서명>busu1</부서명>
+	  <문서제목>title1;</문서제목>
+	  <형식일시>YYYY.MM.DD.;ymd3;</형식일시>
+	  <문서번호형식>N;1;N;기안-{YYYY}-;5;</문서번호형식>
+	  <문서번호>dono</문서번호>
+	  <사용자정의_footer>footer</사용자정의_footer>
+	  <첨부파일명>files</첨부파일명>
+	  <qrcode>open_doc;qrcode;</qrcode>
+	  <결재의견>appr_cmt</결재의견>
+    </setvalue>
+	<command>
+     <display_on_edit>stylechange</display_on_edit>
+     <hide_on_print>stylechange</hide_on_print>
+     <save_source>Y</save_source>
+   </command>
+  </rootnode>
+</script>
+
+</HEAD>
+
+<BODY>
+<!--상단-->
+<table width="640">
+  <tr>
+    <td id="tms_auto_sign2" style="width: 1%; white-space: nowrap;"></td>
+    <td height="93" class="form16b1">기 안 서</td>
+    <td id="tms_auto_sign" style="width: 1%; white-space: nowrap;"></td>
+  </tr>
+</table>
+
+<!--여백-->
+<div class="blank01"></div>
+
+
+<!-- 문서정보 -->
+<table width="640" class="form9 bordertop2">
+  <colgroup>
+    <col width="100">
+    <col width="190">
+    <col width="100">
+    <col width="180">
+    <col width="70">
+  </colgroup>
+  <tr>
+    <td  class="bold stitle">작성자명</td>
+    <td  class="border-right_dotted"><div id="user1"></div></td>
+    <td  class="bold stitle">작성일자</td>
+    <td class="border-right_dotted"><div class="tmsselect" id="ymd3" onClick="javascript:fun('calender',this.id,'YYYY.MM.DD.');"></div></td>
+    <td rowspan="2"><img width="58px" height="58px" align="middle" id="qrcode" ></td>
+
+  </tr>
+  <tr>
+    <td  class="bold stitle">부 서 명</td>
+    <td  class="border-right_dotted"><div id="busu1"></div></td>
+    <td  class="bold stitle">문서번호</td>
+    <td class="border-right_dotted"><div id="dono" ></div></td>
+  </tr>
+</table>
+
+
+<!--여백-->
+<div class="blank01"></div>
+
+<!-- 제목 및 내용 -->
+<table width="640" class="form9_contents bordertop2">
+  <colgroup>
+    <col width="100">
+    <col width="540">
+  </colgroup>
+  <tr>
+    <td class="bold stitle">제&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;목</td>
+    <td ><div tms_edit id="title1" class="tmsedit"></div></td>
+  </tr>
+  <tr>
+    <td colspan="2"><div tms_edit id="as2" class="tmsedit minheight400"></div></td>
+  </tr>
+  <tr>
+    <td class="bold stitle" title="파일선택" style="cursor:pointer;" onclick="javascript:fun('add_file');">첨부파일</td>
+    <td ><div id="files" class="tmsedit"></div></td>
+  </tr>
+  <tr>
+    <td class="bold stitle" >결재의견</td>
+    <td><div id="appr_cmt"></div></td>
+  </tr>
+
+  <tr>
+    <td class="bold stitle" >후 처 리</td>
+    <td onclick="fun('comment','cmt','[{TIME}] [{NAME}] {COMMENT}<BR>' );" style="cursor:pointer;"  title="결재/저장 후 의견 및 업무 기록"><DIV  id="cmt" class="textleft" ></DIV></td>
+  </tr>
+
+</table>
+
+
+<div id="footer-wrapper" style="position:relative; width:640px; margin:0 auto;">
+
+  <!--하단-->
+  <div id="footer" class="footer"></div>
+
+</div>
+
+
+<!--여백-->
+<div class="blank01"></div>
+
+</BODY>
+</HTML>

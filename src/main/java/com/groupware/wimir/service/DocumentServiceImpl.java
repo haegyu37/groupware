@@ -2,6 +2,7 @@ package com.groupware.wimir.service;
 
 import com.groupware.wimir.entity.Attachment;
 import com.groupware.wimir.entity.Document;
+import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.repository.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,12 @@ public class DocumentServiceImpl implements DocumentService {
         pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber() - 1,
                 pageable.getPageSize());
         return documentRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Document> findDocumentListByWriter(Member writer, Pageable pageable) {
+//        Page<Document> Documents = documentRepository.findByWriter(writer, pageable);
+        return documentRepository.findByWriter(writer, pageable);
     }
 
     @Override
@@ -85,16 +92,17 @@ public class DocumentServiceImpl implements DocumentService {
         return documentOptional.orElseThrow(() -> new RuntimeException("해당 문서를 찾을 수 없습니다."));
     }
 
-    @Override
+//    @Override
     public Document findDocumentById(Long dno) {
         return documentRepository.findById(dno)
                 .orElseThrow(() -> new RuntimeException("해당 문서를 찾을 수 없습니다."));
     }
 
-    @Override
+//    @Override
     public void deleteAttachment(Long id) {
         attachmentService.deleteAttachment(id);
     }
+
 
 }
 

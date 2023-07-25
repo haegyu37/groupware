@@ -35,20 +35,14 @@ public class TemplateService {
     }
 
     public void generateDocument(Long templateId, Map<String, Object> data, String outputPath) {
-        try {
-            Template template = templateRepository.findById(templateId)
-                    .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
-        } catch (ChangeSetPersister.NotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        Template template = templateRepository.findById(templateId)
+                .orElseThrow(() -> new RuntimeException("Template not found with ID: " + templateId));
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(outputPath)) {
             XWPFDocument document = new XWPFDocument();
 
             // 양식에 데이터 적용 및 문서 생성 로직 작성
             // 데이터를 양식에 적용하여 문서를 생성하는 코드를 작성합니다.
-
-            // 예시로 데이터를 특정 위치에 삽입하는 코드를 작성합니다.
             XWPFParagraph paragraph = document.createParagraph();
             XWPFRun run = paragraph.createRun();
             run.setText("Example Data: " + data.toString());
@@ -57,11 +51,16 @@ public class TemplateService {
         } catch (IOException e) {
             e.printStackTrace();
             // 예외 처리
-
+            throw new RuntimeException("Failed to generate the document: " + e.getMessage());
         }
     }
 
     public Template getTemplateById(Long id) {
-        return null;
+        return templateRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Template not found with ID: " + id));
+    }
+
+    public void save(Template template) {
+        templateRepository.save(template);
     }
 }

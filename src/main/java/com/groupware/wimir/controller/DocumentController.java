@@ -1,6 +1,11 @@
 package com.groupware.wimir.controller;
 
-import com.groupware.wimir.entity.Attachment;
+import com.groupware.wimir.entity.Member;
+import com.groupware.wimir.repository.MemberRepository;
+import org.apache.poi.ss.formula.functions.T;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.data.repository.Repository;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.exception.ResourceNotFoundException;
 import com.groupware.wimir.repository.DocumentRepository;
@@ -20,13 +25,20 @@ public class DocumentController {
 
     private final DocumentService documentService;
     private final DocumentRepository documentRepository;
+    private final MemberRepository memberRepository;
 
     // 문서 목록(메인)
     @GetMapping(value = "/list")
     public List<Document> documentList(@PageableDefault Pageable pageable) {
         return documentService.findDocumentList(pageable).getContent();
     }
-    ////
+
+    // 상신 문서 목록
+    @GetMapping(value = "/list/{writer}")
+    public List<Document> submitList(@PathVariable Member writer, @PageableDefault Pageable pageable) {
+        return documentService.findDocumentListByWriter(writer, pageable).getContent();
+    }
+
     // 문서 조회
     @GetMapping(value = "/read/{dno}")
     public Document readDocument(@PathVariable("dno") Long dno) {
@@ -38,9 +50,15 @@ public class DocumentController {
     }
 
     // 문서 작성
-    @PostMapping(value = "/create")
-    public Document createDocument(@RequestBody Document document) {
+    @PostMapping(value = "/create/{writer-id}")
+    public Document createDocument(@RequestBody Document document, @PathVariable("writer-id") Long writerId) {
         document.setCreateDate(LocalDateTime.now());
+        System.out.println("document : " + document + "    writer-id" + writerId);
+
+        Member writer = memberRepository.findById(writerId)
+                .orElseThrow(() -> new RuntimeException("해당 작성자를 찾을 수 없습니다."));
+        document.setWriter(writer);
+
         if (document.getStatus() == 0) {
             // 임시저장인 경우
             Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장 번호의 최대값을 가져옴
@@ -72,10 +90,6 @@ public class DocumentController {
     }
 
     // 문서 삭제
-//    @DeleteMapping(value = "/delete/{dno}")
-//    public void deleteDocument(@PathVariable("dno") Long dno) {
-//        documentService.deleteDocument(dno);
-//    }
     @DeleteMapping("/delete/{dno}")
     public void deleteDocument(@PathVariable("dno") Long dno) {
         documentService.deleteDocument(dno);
