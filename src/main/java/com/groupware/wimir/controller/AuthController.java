@@ -74,12 +74,14 @@ public class AuthController {
 
         return ResponseEntity.ok("로그아웃 되었습니다.");
     }
+
     // 토큰 갱신
     @PostMapping("/refresh")
     public ResponseEntity<TokenDTO> refresh(@RequestBody TokenRequestDTO tokenRequestDTO) {
         return ResponseEntity.ok(authService.refresh(tokenRequestDTO));
     }
 
+    //회원 상세보기
     @GetMapping("/admin/members/{id}")
     public ResponseEntity<MemberResponseDTO> getMemberById(@PathVariable Long id) {
         Member member = memberService.getMemberById(id);
@@ -87,6 +89,7 @@ public class AuthController {
         return ResponseEntity.ok(memberResponseDTO);
     }
 
+    //관리자에서 비밀번호 초기화
     @PostMapping("/admin/members/{id}/password")
     public ResponseEntity<MemberResponseDTO> changeUserPasswordByAdmin(@PathVariable Long id, @RequestBody ResetPasswordDTO newPasswordDto) {
         MemberResponseDTO updatedUser = memberService.changeUserPasswordByAdmin(id, newPasswordDto.getNewPassword());
