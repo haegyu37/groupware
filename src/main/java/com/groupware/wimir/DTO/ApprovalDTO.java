@@ -20,9 +20,8 @@ public class ApprovalDTO {
 //    private String title;
 //    @Autowired
 //    private String content;
-    @Autowired
     private Long documentId;
-    @Autowired
-    private Long approver;
+    private Long id;
+    private int Status;
 
 }

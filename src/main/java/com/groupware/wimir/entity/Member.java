@@ -36,9 +36,9 @@ public class Member {
 
     private String img; //직원사진
 
-    @ManyToOne
-    @JoinColumn(name = "approval_id")
-    private Approval approval; // 승인 대상 문서
+//    @ManyToOne
+//    @JoinColumn(name = "approval_id")
+//    private Approval approval; // 승인 대상 문서
 
     public void setPassword(String password) {
         this.password = password;

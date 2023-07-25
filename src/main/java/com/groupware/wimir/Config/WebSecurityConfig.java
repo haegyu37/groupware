@@ -69,11 +69,9 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.addAllowedOrigin("http://localhost:3000"); // 로컬
-        config.addAllowedOrigin("http://프론트 AWS  주소"); // 프론트 IPv4 주소
+        config.addAllowedOrigin("*"); // 로컬
         config.addAllowedMethod("*"); // 모든 메소드 허용.
         config.addAllowedHeader("*");
-        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

@@ -5,10 +5,10 @@ import com.groupware.wimir.DTO.DocumentDTO;
 import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.exception.ResourceNotFoundException;
-import com.groupware.wimir.repository.ApprovalRepository;
+//import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
-import com.groupware.wimir.service.ApprovalService;
+//import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -27,13 +27,14 @@ public class DocumentController {
     private final DocumentService documentService;
     private final DocumentRepository documentRepository;
     private final MemberRepository memberRepository;
-    private final ApprovalRepository approvalRepository;
-    private final ApprovalService approvalService;
+//    private final ApprovalRepository approvalRepository;
+//    private final ApprovalService approvalService;
 
     // 문서 목록(메인)
     @GetMapping(value = "/list")
     public List<Document> documentList(@PageableDefault Pageable pageable) {
-        return documentService.findDocumentList(pageable).getContent();
+        // 임시저장 상태가 아닌(1인) 문서만 조회하도록 수정
+        return documentService.findDocumentListByStatusNot(0, pageable).getContent();
     }
 
     // 문서 조회
@@ -81,28 +82,53 @@ public class DocumentController {
         return ResponseEntity.ok(document);
     }
 
-    @PostMapping(value = "/createApprovers")
-    public ResponseEntity<Void> createApprovers(@RequestBody List<ApprovalDTO> approvalDTOs) {
-        Document document = documentService.getMostRecentDocument(); // 이전 요청에서 저장한 문서 가져오기
-
-        // 결재자들을 저장합니다.
-        for (ApprovalDTO approvalDTO : approvalDTOs) {
-            Approval approver = new Approval();
-            approver.setId(approvalDTO.getApprover());
-            // 나머지 코드는 이전과 동일합니다.
-
-            // 결재자를 저장합니다.
-            approvalService.saveApprover(approver);
-
-            // 문서와 결재자의 관계를 설정합니다.
-            document.getApprovals().add(approver);
-        }
-
-        // 수정된 문서를 다시 저장합니다.
-        document = documentService.saveDocument(document);
-
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping(value = "/create")
+//    public ResponseEntity<Document> createDocumentWithApproval(@RequestBody DocumentDTO documentDTO, @RequestParam("approvers") List<Long> approvers) {
+//        // 문서 작성
+//        Document document = new Document();
+//        document.setTitle(documentDTO.getTitle());
+//        document.setContent(documentDTO.getContent());
+//        document.setWriter(documentDTO.getWriter());
+//        document.setCreateDate(LocalDateTime.now());
+//        document.setStatus(documentDTO.getStatus());
+//        document.setDno(document.getDno()); // 문서번호
+//        document.setSno(document.getSno()); // 임시저장 번호
+//
+//        if (document.getStatus() == 0) {
+//            // 임시저장인 경우
+//            Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장 번호의 최대값을 가져옴
+//            if (maxSno == null) {
+//                maxSno = 0L;
+//            }
+//            document.setSno(maxSno + 1); // 임시저장 번호 생성
+//        } else {
+//            // 작성인 경우
+//            Long maxDno = documentRepository.findMaxDno(); // DB에서 문서 번호의 최대값을 가져옴
+//            if (maxDno == null) {
+//                maxDno = 0L;
+//            }
+//            document.setDno(maxDno + 1); // 작성 번호 생성
+//        }
+//
+//        // 문서를 저장하고 저장된 문서를 반환합니다.
+//        document = documentService.saveDocument(document);
+//
+//        // 결재자들을 지정하여 Approval 객체를 생성 및 저장합니다.
+//        int step = 1; // 결재 순서를 나타내는 변수
+//        for (Long approversId : approvers) {
+//            Approval approval = new Approval();
+//            approval.setDocument(document);
+//            approval.setMemberId(memberRepository.findById(approversId)
+//                    .orElseThrow(() -> new ResourceNotFoundException("결재자를 찾을 수 없습니다. : " + approversId)));
+//            approval.setStatus(0); // 결재 대기 상태로 설정
+//            approval.setApprovalDate(null); // 결재 일시 초기화 (아직 결재가 이루어지지 않았으므로 null로 설정)
+//            approval.setStep(step++); // 결재 순서 지정
+//            approval.setName(approval.getName()); // 결재라인 이름 지정 (임의로 "결재라인 1", "결재라인 2"와 같이 설정)
+//            approvalRepository.save(approval);
+//        }
+//
+//        return ResponseEntity.ok(document);
+//    }
 
     // 문서 수정
     @PutMapping(value = "/update/{dno}")

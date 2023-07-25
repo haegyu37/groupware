@@ -38,12 +38,13 @@ public class Document {
 
     private  Long sno = 0L; // 문서 임시저장 번호(디폴트 값은 0)
 
-    @OneToMany(mappedBy = "document", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Approval> approvals = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "approval_id")
+    private Approval approvalId; // 결재자
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
-                    LocalDateTime updateDate, Member writer, Long temId, int status, Long dno, Long sno, List<Approval> approvals) {
+                    LocalDateTime updateDate, Member writer, Long temId, int status, Long dno, Long sno, Approval approvalId) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -54,6 +55,6 @@ public class Document {
         this.status = status;
         this.dno = dno;
         this.sno = sno;
-        this.approvals = approvals;
+        this.approvalId = approvalId;
     }
 }

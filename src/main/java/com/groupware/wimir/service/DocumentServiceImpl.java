@@ -78,5 +78,10 @@ public class DocumentServiceImpl implements DocumentService {
         return documents.get(0); // 가장 첫 번째(가장 최근) 문서 반환
     }
 
+    @Override
+    public Page<Document> findDocumentListByStatusNot(int status, Pageable pageable) {
+        return documentRepository.findByStatusNot(status, pageable);
+    }
+
 
 }
