@@ -88,9 +88,17 @@ public class AuthController {
         return ResponseEntity.ok(authService.refresh(tokenRequestDTO));
     }
 
+    @GetMapping("/admin/members/{id}")
+    public ResponseEntity<MemberResponseDTO> getMemberById(@PathVariable Long id) {
+        Member member = memberService.getMemberById(id);
+        MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
+        return ResponseEntity.ok(memberResponseDTO);
+    }
+
     @PostMapping("/admin/members/{id}/password")
     public ResponseEntity<MemberResponseDTO> changeUserPasswordByAdmin(@PathVariable Long id, @RequestBody ResetPasswordDTO newPasswordDto) {
         MemberResponseDTO updatedUser = memberService.changeUserPasswordByAdmin(id, newPasswordDto.getNewPassword());
         return ResponseEntity.ok(updatedUser);
     }
+
 }
