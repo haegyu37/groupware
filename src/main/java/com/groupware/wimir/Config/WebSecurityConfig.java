@@ -77,12 +77,12 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.addAllowedOrigin("*"); // 로컬
+        config.addAllowedOrigin("*"); // 모든 도메인허용
         config.addAllowedMethod("*"); // 모든 메소드 허용.
         config.addAllowedHeader("*");
 
         //config.setAllowCredentials(true);
-//        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // 허용할 헤더 추가
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // 허용할 헤더 추가
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
