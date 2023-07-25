@@ -22,17 +22,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthController {
 
-    //@Autowired
     private final AuthService authService;
-    // @Autowired
     private final MemberRepository memberRepository;
-
     private final MemberService memberService;
-
-//    @PostMapping("/signup")
-//    public ResponseEntity<MemberResponseDto> signup(@RequestBody MemberRequestDto requestDto) {
-//        return ResponseEntity.ok(authService.signup(requestDto));
-//    }
 
     //직원 등록
     @PostMapping("/admin/signup")

@@ -2,6 +2,7 @@ package com.groupware.wimir.controller;
 
 import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.DTO.DocumentDTO;
+import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
@@ -11,6 +12,7 @@ import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 //import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.DocumentService;
+import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -27,7 +29,8 @@ public class DocumentController {
 
     private final DocumentService documentService;
     private final DocumentRepository documentRepository;
-    private final MemberRepository memberRepository;
+//    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     // 문서 목록
     @GetMapping(value = "/list")
@@ -43,21 +46,22 @@ public class DocumentController {
     }
 
     // 문서 작성
-    @PostMapping(value = "/create/{memberId}")
-    public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO, @PathVariable("memberId") Long writerId) {
+    @PostMapping(value = "/create")
+    public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO) {
         Document document = new Document();
+
         document.setTitle(documentDTO.getTitle());
         document.setContent(documentDTO.getContent());
+        documentService.setWriterByToken(document);
         document.setCreateDate(LocalDateTime.now());
         document.setStatus(documentDTO.getStatus());
         document.setDno(document.getDno()); //문서번호
         document.setSno(document.getSno()); //임시저장 번호
 
-        System.out.println("document : " + document + "    writerId" + writerId);
-
-        Member writer = memberRepository.findById(writerId)
-                .orElseThrow(() -> new RuntimeException("해당 작성자를 찾을 수 없습니다."));
-        document.setWriter(documentDTO.getWriter());
+//        System.out.println("document : " + document + "    writerId" + writerId);
+//
+//        Member writer = memberRepository.findById(writerId)
+//                .orElseThrow(() -> new RuntimeException("해당 작성자를 찾을 수 없습니다."));
 
         if (document.getStatus() == 0) {
             // 임시저장인 경우

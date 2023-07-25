@@ -13,6 +13,7 @@ import java.util.Optional;
 
 
 import java.util.List;
+import java.util.stream.DoubleStream;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -25,7 +26,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member > findByTeam(Team team);
 
     List<Member> findByPosition(Position position);
-
 }
 
 

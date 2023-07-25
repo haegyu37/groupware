@@ -24,6 +24,5 @@ public interface DocumentService {
     public Page<Document> findDocumentListByStatusNot(int status, Pageable pageable);
 
 
-
-
+    void setWriterByToken(Document document);
 }

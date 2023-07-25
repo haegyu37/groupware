@@ -33,9 +33,9 @@ public class Document {
 
     private int status; // 1: 작성 상태, 0: 임시저장 상태
 
-    private  Long dno = 0L;  // 문서 번호(디폴트 값은 0)
+    private Long dno = 0L;  // 문서 번호(디폴트 값은 0)
 
-    private  Long sno = 0L; // 문서 임시저장 번호(디폴트 값은 0)
+    private Long sno = 0L; // 문서 임시저장 번호(디폴트 값은 0)
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
@@ -51,6 +51,10 @@ public class Document {
         this.dno = dno;
         this.sno = sno;
     }
-
-    public void setWriter() {}
 }
+
+//    public void setWriterFromToken(String token) {
+//        // token을 이용하여 Member 객체를 조회하는 메소드가 있다고 가정하고, 그 메소드는 getMemberFromToken으로 가정함
+//        Member member = getMemberFromToken(token);
+//        this.writer = member;
+//    }

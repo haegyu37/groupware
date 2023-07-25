@@ -6,6 +6,8 @@ import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Team;
 import com.groupware.wimir.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,7 @@ public class MemberService {
                 .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
     }
 
+
     //등록된 모든 사원 정보 조회
     public List<MemberResponseDTO> getAllMembers() {
         List<Member> members = memberRepository.findAll();
@@ -51,16 +54,12 @@ public class MemberService {
 
     }
 
-    // ID로 회원 조회
-    public Member getMemberById(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
-    }
+//    // ID로 회원 조회
+//    public Member getMemberById(Long memberId) {
+//        return memberRepository.findById(memberId)
+//                .orElseThrow(() -> new RuntimeException("Member not found"));
+//    }
 
-    //팀원 모두 조회
-    public List<Member> getMembersByTeam(Team team) {
-        return memberRepository.findByTeam(team);
-    }
 }
 
 
