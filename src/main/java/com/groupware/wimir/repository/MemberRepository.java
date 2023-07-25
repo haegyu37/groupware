@@ -1,7 +1,6 @@
 package com.groupware.wimir.repository;
 
 import com.groupware.wimir.entity.Member;
-//import com.groupware.wimir.entity.Team;
 import com.groupware.wimir.entity.Position;
 import com.groupware.wimir.entity.Team;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     boolean existsByNo(String no);
 
-    List<Member> findByTeam(Team team);
+    List<Member > findByTeam(Team team);
 
     List<Member> findByPosition(Position position);
 

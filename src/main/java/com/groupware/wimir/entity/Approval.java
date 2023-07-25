@@ -4,9 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
-
-import com.groupware.wimir.entity.Member;
 
 
 @Entity
@@ -21,27 +18,21 @@ public class Approval {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id; // 승인 ID
 
-    @ManyToOne
-    @JoinColumn(name = "document_id")
-    private Document document; // 승인 대상 문서
-
-    @ManyToMany
-    @JoinTable(
-            name = "approval_approvers",
-            joinColumns = @JoinColumn(name = "approval_id"),
-            inverseJoinColumns = @JoinColumn(name = "member_id")
-    )
-    private List<Member> approvers; // 승인자 정보
-
-    private int status; // 결재상태(-1참조, 0대기, 1승인, 2반려)
-
     private LocalDateTime approvalDate; // 승인 날짜
 
-    @Enumerated(EnumType.STRING)
-    private Position step; //결재순서
+    private String reason; // 반려사유
 
+    private int status; // 결재상태(0대기, 1완료)
 
+    private int result; //결재결과(0반려, 1승인)
 
+    private int step; //결재순서
+
+    private String name; //결재라인 이름
+
+    private Long approver;
+
+    private Long document;
 
 
 

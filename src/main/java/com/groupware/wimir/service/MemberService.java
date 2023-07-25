@@ -3,6 +3,7 @@ package com.groupware.wimir.service;
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Member;
+import com.groupware.wimir.entity.Team;
 import com.groupware.wimir.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -74,6 +75,11 @@ public class MemberService {
     public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("Member not found"));
+    }
+
+    //팀원 모두 조회
+    public List<Member> getMembersByTeam(Team team) {
+        return memberRepository.findByTeam(team);
     }
 }
 

@@ -4,19 +4,18 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name="document")
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class Document {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //문서 아이디
+    private Long id; //문서 Id
 
     private String title; //문서명
 
@@ -34,30 +33,13 @@ public class Document {
 
     private int status; // 1: 작성 상태, 0: 임시저장 상태
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long saveId;    // 임시저장 문서 ID
+    private  Long dno = 0L;  // 문서 번호(디폴트 값은 0)
 
-//    @ManyToMany
-////    @JoinTable(
-////            name = "document_approvers",
-////            joinColumns = @JoinColumn(name = "document_id"),
-////            inverseJoinColumns = @JoinColumn(name = "member_id")
-////    )
-//    private List<Long> approvers; // 결재자 정보
-//
-//    @ManyToMany
-////    @JoinTable(
-////            name = "document_viewers",
-////            joinColumns = @JoinColumn(name = "document_id"),
-////            inverseJoinColumns = @JoinColumn(name = "member_id")
-////    )
-//    private List<Long> viewers; // 참조자 정보
-
+    private  Long sno = 0L; // 문서 임시저장 번호(디폴트 값은 0)
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
-                    LocalDateTime updateDate, Member writer, Long temId, int status, Long saveId) {
-
+                    LocalDateTime updateDate, Member writer, Long temId, int status, Long dno, Long sno) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -66,39 +48,9 @@ public class Document {
         this.writer = writer;
         this.temId = temId;
         this.status = status;
-        this.saveId = saveId;
-//        this.approvers = approvers;
-//        this.viewers = viewers;
+        this.dno = dno;
+        this.sno = sno;
     }
 
-
-//    public void addApprover(Member approver) {
-//        if (approvers == null) {
-//            approvers = new ArrayList<>();
-//        }
-//        approvers.add(approver.getId());
-//    }
-//
-//    public void removeApprover(Member approver) {
-//        if (approvers != null) {
-//            approvers.remove(approver);
-//        }
-//    }
-//
-//    public void addViewer(Member viewer) {
-//        if (viewers == null) {
-//            viewers = new ArrayList<>();
-//        }
-//        viewers.add(viewer.getId());
-//    }
-//
-//    public void removeViewer(Member viewer) {
-//        if (viewers != null) {
-//            viewers.remove(viewer);
-//        }
-//    }
-
-
-
-
+    public void setWriter() {}
 }
