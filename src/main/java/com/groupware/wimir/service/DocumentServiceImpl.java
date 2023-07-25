@@ -54,17 +54,6 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public void setWriterByToken(Document document) {
-//        Document document, String token
-        // 토큰 파싱 및 멤버 정보 조회 로직을 구현합니다.
-        // 이 부분은 토큰 라이브러리나 Spring Security 등을 사용하여 구현할 수 있습니다.
-        // 토큰을 파싱하여 멤버 아이디를 얻어온다고 가정하겠습니다.
-
-//        memberRepository.findById(SecurityUtil.getCurrentMemberId())
-//                .map(MemberResponseDTO::of)
-//                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
-
-
-//        Long memberId = parseTokenAndGetMemberId(token);
 
         // 멤버 아이디를 이용하여 데이터베이스에서 멤버 정보를 조회합니다.
         Member writer = memberRepository.findById(SecurityUtil.getCurrentMemberId())

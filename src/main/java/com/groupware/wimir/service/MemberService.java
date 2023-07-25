@@ -25,7 +25,6 @@ public class MemberService {
 
 
     //getMyInfoBySecurity는 헤더에 있는 token값을 토대로 Member의 data를 건내주는 메소드
-
     public MemberResponseDTO getMyInfoBySecurity() {
         return memberRepository.findById(SecurityUtil.getCurrentMemberId())
                 .map(MemberResponseDTO::of)

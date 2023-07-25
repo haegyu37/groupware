@@ -58,11 +58,6 @@ public class DocumentController {
         document.setDno(document.getDno()); //문서번호
         document.setSno(document.getSno()); //임시저장 번호
 
-//        System.out.println("document : " + document + "    writerId" + writerId);
-//
-//        Member writer = memberRepository.findById(writerId)
-//                .orElseThrow(() -> new RuntimeException("해당 작성자를 찾을 수 없습니다."));
-
         if (document.getStatus() == 0) {
             // 임시저장인 경우
             Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장 번호의 최대값을 가져옴

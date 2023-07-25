@@ -53,8 +53,3 @@ public class Document {
     }
 }
 
-//    public void setWriterFromToken(String token) {
-//        // token을 이용하여 Member 객체를 조회하는 메소드가 있다고 가정하고, 그 메소드는 getMemberFromToken으로 가정함
-//        Member member = getMemberFromToken(token);
-//        this.writer = member;
-//    }

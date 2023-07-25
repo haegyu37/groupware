@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@AllArgsConstructor
+//@AllArgsConstructor
 @ToString
 @NoArgsConstructor
 @Getter @Setter
@@ -30,12 +30,27 @@ public class Approval {
 
     private String name; //결재라인 이름
 
-    private Long approver;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member; //결재자
 
-    private Long document;
+    @ManyToOne
+    @JoinColumn(name = "document_id")
+    private Document document; //결재문서
 
-
-
+    @Builder
+    public Approval(Long id, LocalDateTime approvalDate, String reason, int status, int result, int step,
+                    String name, Member member, Document document) {
+        this.id = id;
+        this.approvalDate = approvalDate;
+        this.reason = reason;
+        this.status = status;
+        this.result = result;
+        this.step = step;
+        this.name = name;
+        this.member = member;
+        this.document = document;
+    }
 
 
 }

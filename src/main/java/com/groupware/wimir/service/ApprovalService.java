@@ -14,9 +14,9 @@ import java.util.List;
 // ApprovalService.java
 public interface ApprovalService {
 
-    int approval_Before(Member loginMember);
-    int approval_Ing(Member loginMember);
-    int approval_Done(Member loginMember);
+    Approval approval_Before(Member loginMember);
+    Approval approval_Ing(Member loginMember);
+    Approval approval_Done(Member loginMember);
 
     List<Approval> getRecentList(Member loginMember);
     List<Approval> getRecentList1(Member loginMember);
