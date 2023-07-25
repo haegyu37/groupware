@@ -13,24 +13,17 @@ import java.util.List;
 
 public interface DocumentService {
 
-
-    Page<Document> findDocumentList(Pageable pageable);
-
-    Document findDocumentByDno(Long dno);
+    Document findDocumentById(Long id);
 
     List<Document> findSaveDocumentList();
 
     Document saveDocument(Document document);
 
-    Document findDocumentBySno(Long Sno);
-
-    void deleteEditDocument(Long sno);
-
-    void deleteDocument(Long dno);
-
-    Document getMostRecentDocument();
+    void deleteDocument(Long id);
 
     public Page<Document> findDocumentListByStatusNot(int status, Pageable pageable);
+
+
 
 
 }

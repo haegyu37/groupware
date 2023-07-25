@@ -15,14 +15,6 @@ import java.util.Optional;
 public interface DocumentRepository extends JpaRepository<Document, Long> {
     List<Document> findByStatus(int status);
 
-    Document findBySno(Long Sno);
-
-    void deleteBySno(Long sno);
-
-    void deleteByDno(Long dno);
-
-    Optional<Document> findByDno(Long dno);
-
     @Query("SELECT MAX(sno) FROM Document")
     Long findMaxSno();
 

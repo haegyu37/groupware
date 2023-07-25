@@ -5,6 +5,7 @@
 //import org.springframework.data.domain.Page;
 //import org.springframework.data.domain.Pageable;
 //import org.springframework.data.jpa.repository.JpaRepository;
+//import org.springframework.data.jpa.repository.Query;
 //import org.springframework.data.repository.CrudRepository;
 //import org.springframework.stereotype.Repository;
 //
@@ -17,15 +18,19 @@
 //    List<Approval> findAll(); //Iterable 형식 말고 List 형식으로 받기
 //
 //
-//    int approvalCount_YET(Member loginMember);
-//    int approvalCount_UNDER(Member loginMember);
-//    int approvalCount_DONE(Member loginMember);
+//    int approval_Before(Member loginMember);
+//    int approval_Ing(Member loginMember);
+//    int approval_Done(Member loginMember);
 //
-//    List<Approval> selectRecentList(Member loginMember);
-//    List<Approval> selectRecentList1(Member loginMember);
-//    List<Approval> selectRecentList2(Member loginMember);
+//    List<Approval> findByStatusAndDocumentIsNotNull(int status);
+//    List<Approval> findByApproverAndStatus(Member loginMember, int status);
 //
-//    Page<Approval> findByNameContainingIgnoreCase(String searchText, Pageable pageable);
+//
+//    List<Approval> selectRecentList(Member loginMember); //내 결재 목록
+//    List<Approval> selectRecentList1(Member loginMember); //내가 작성한 결재
+//    List<Approval> selectRecentList2(Member loginMember); //결재 수신 목록
+//
+//    Page<Approval> selectApprovalList(Pageable pageable, String searchText);
 //
 //    int listCount(String searchText);
 //
@@ -55,4 +60,7 @@
 //    Approval selectExpenseReportListDetail(int appNo);
 //
 //    Approval viewAppLeaveList(int appNo); //APP_LEAVE DAO
+//
+//    Page<Approval> findByNameContaining(String searchText, Pageable pageable);
+//
 //}
