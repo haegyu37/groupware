@@ -4,7 +4,7 @@ import lombok.*;
 
 import java.util.Map;
 
-@AllArgsConstructor
+//@AllArgsConstructor
 @ToString
 @Getter
 @Setter
