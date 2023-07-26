@@ -1,6 +1,7 @@
 package com.groupware.wimir.repository;
 
 import com.groupware.wimir.entity.Document;
+import com.groupware.wimir.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,8 +19,8 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     @Query("SELECT MAX(dno) FROM Document")
     Long findMaxDno();
 
-    Page<Document> findByStatusNot(int status, Pageable pageable);
+    Page<Document> findByWriter(Member writer, Pageable pageable);
 
-    Page<Document> findByWriterIdAndStatus(Long memberId, int status, Pageable pageable);
 
 }
+

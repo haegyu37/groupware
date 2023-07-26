@@ -28,5 +28,8 @@ public interface DocumentService {
 
 //    public Document getDocumentById(Long documentId);
 
+    Document getDocumentById(Long documentId);
 
-    }
+    Page<Document> findDocumentListByWriter(Member writer, Pageable pageable);
+
+}
