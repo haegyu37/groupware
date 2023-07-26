@@ -26,29 +26,29 @@ public class Approval {
 
     private int result; //결재결과(0반려, 1승인)
 
-    private int step; //결재순서
+//    private int step; //결재순서
 
     private String name; //결재라인 이름
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member; //결재자
+//    @ManyToOne
+//    @JoinColumn(name = "member_id")
+//    private Member member; //결재자
 
     @ManyToOne
     @JoinColumn(name = "document_id")
     private Document document; //결재문서
 
     @Builder
-    public Approval(Long id, LocalDateTime approvalDate, String reason, int status, int result, int step,
-                    String name, Member member, Document document) {
+    public Approval(Long id, LocalDateTime approvalDate, String reason, int status, int result,
+                    String name, Document document) {
         this.id = id;
         this.approvalDate = approvalDate;
         this.reason = reason;
         this.status = status;
         this.result = result;
-        this.step = step;
+//        this.step = step;
         this.name = name;
-        this.member = member;
+//        this.member = member;
         this.document = document;
     }
 

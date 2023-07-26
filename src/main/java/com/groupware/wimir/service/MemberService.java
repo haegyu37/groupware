@@ -3,6 +3,7 @@ package com.groupware.wimir.service;
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Member;
+import com.groupware.wimir.entity.Position;
 import com.groupware.wimir.entity.Team;
 import com.groupware.wimir.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,6 +77,14 @@ public class MemberService {
     public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("해당 직원을 찾을 수 없습니다."));
+    }
+
+    public List<Member> getAllMembersByTeam() {
+        List<Member> members = memberRepository.findAll();
+        members.sort(Comparator.comparing((Member member) -> member.getTeam() == null ? 0 : 1)
+                .thenComparing(Member::getTeam, Comparator.nullsLast(Comparator.naturalOrder()))
+                .thenComparing(Member::getPosition, Comparator.comparingInt(Position::getValue)));
+        return members;
     }
 
 }

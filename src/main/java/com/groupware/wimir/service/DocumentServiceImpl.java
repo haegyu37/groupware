@@ -29,11 +29,6 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public List<Document> findSaveDocumentList() {
-        return documentRepository.findByStatus(0);
-    }
-
-    @Override
     public Document saveDocument(Document document) {
         if (document.getStatus() == 0) {
             // 임시저장 상태인 경우 id는 null
@@ -62,6 +57,17 @@ public class DocumentServiceImpl implements DocumentService {
         // 문서의 작성자를 설정합니다.
         document.setWriter(writer);
     }
+
+    @Override
+    public Page<Document> findDocumentListByWriterAndStatus(Long memberId, int status, Pageable pageable) {
+        return documentRepository.findByWriterIdAndStatus(memberId, status, pageable);
+    }
+
+
+
+
+
+
 
 
 }
