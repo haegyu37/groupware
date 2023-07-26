@@ -65,7 +65,7 @@ public class WebSecurityConfig {
                 .and()
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/auth/**","/member/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()

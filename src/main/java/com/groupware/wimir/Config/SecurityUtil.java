@@ -5,9 +5,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 
 
-// SecurityContex에 유저 정보가 저장되는 시점을 다루는 클래스
-// Request가 들어오면 JwtFilter의 doFilter에서 저장되는데 거기에 있는 인증정보를 꺼내서, 그안의 id를 반환한다.
-// entity를 정할때 id타입을 Long으로 했기 때문에 Long을 반환
+// SecurityContextHolder를 사용하여 인증된 사용자 정보가 저장되는 시점을 다룸
+// Request가 들어오면 JwtFilter의 doFilter에서 저장되는데 거기에 있는 인증정보를 꺼내서, Long 타입으로 파싱하여 반환
 public class SecurityUtil {
 
     private SecurityUtil() { }

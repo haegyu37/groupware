@@ -75,7 +75,7 @@ public class AuthController {
         // 리프레시 토큰을 저장하는 쿠키를 제거합니다.
         Cookie refreshTokenCookie = new Cookie("refreshToken", null);
         refreshTokenCookie.setMaxAge(0); // 쿠키 만료시간을 0으로 설정하여 삭제
-        refreshTokenCookie.setPath("/"); // 쿠키의 경로 설정 (반드시 로그아웃 처리와 같은 경로로 설정)
+        refreshTokenCookie.setPath("/"); // 쿠키의 경로 설정 (로그아웃 처리와 같은 경로로 설정)
         response.addCookie(refreshTokenCookie); // 응답 헤더에 쿠키 추가
 
         log.info("로그아웃이 성공적으로 처리되었습니다.");
