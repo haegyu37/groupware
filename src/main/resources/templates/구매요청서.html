@@ -115,13 +115,8 @@
     <setvalue>
 	  <사원명_직위>user1</사원명_직위>
 	  <부서명>busu1</부서명>
-	  <형식일시>YYYY.MM.DD.;ymd1;ymd3;</형식일시>
-	  <문서번호형식>N;1;N;구매요청-{YYYY}-;5;</문서번호형식>
-	  <문서번호>dono</문서번호>
 	  <사용자정의_footer>footer</사용자정의_footer>
 	  <qrcode>open_doc;qrcode;</qrcode>
-	  <첨부파일명>files</첨부파일명>
-	  <결재의견>appr_cmt</결재의견>
     </setvalue>
 	<command>
      <display_on_edit>stylechange</display_on_edit>
@@ -169,8 +164,6 @@
   <tr>
     <td class="bold stitle">부 서 명</td>
     <td class="border-right_dotted"><div id="busu1"></div></td>
-    <td class="bold stitle">문서번호</td>
-    <td class="border-right_dotted"><div id="dono" ></div></td>
   </tr>
   <tr>
     <td class="bold stitle">청구일자</td>
@@ -312,10 +305,6 @@
   <tr>
     <td class="bold stitle">특기사항</td>
     <td colspan="4" ><div tms_edit id="bigo" class="inputBox tmsedit minheight50"></div></td>
-  </tr>
-  <tr>
-    <td class="bold stitle" title="파일선택" style="cursor:pointer;" onClick="javascript:fun('add_file');">첨부파일</td>
-    <td colspan="4" ><div id="files" class="tmsedit"></div></td>
   </tr>
 
 </table>

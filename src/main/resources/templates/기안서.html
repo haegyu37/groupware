@@ -15,13 +15,8 @@
 	  <사원명_직위>user1</사원명_직위>
 	  <부서명>busu1</부서명>
 	  <문서제목>title1;</문서제목>
-	  <형식일시>YYYY.MM.DD.;ymd3;</형식일시>
-	  <문서번호형식>N;1;N;기안-{YYYY}-;5;</문서번호형식>
-	  <문서번호>dono</문서번호>
+	  <문서내용>as2;</문서내용>
 	  <사용자정의_footer>footer</사용자정의_footer>
-	  <첨부파일명>files</첨부파일명>
-	  <qrcode>open_doc;qrcode;</qrcode>
-	  <결재의견>appr_cmt</결재의견>
     </setvalue>
 	<command>
      <display_on_edit>stylechange</display_on_edit>
@@ -67,8 +62,6 @@
   <tr>
     <td  class="bold stitle">부 서 명</td>
     <td  class="border-right_dotted"><div id="busu1"></div></td>
-    <td  class="bold stitle">문서번호</td>
-    <td class="border-right_dotted"><div id="dono" ></div></td>
   </tr>
 </table>
 
@@ -88,19 +81,6 @@
   </tr>
   <tr>
     <td colspan="2"><div tms_edit id="as2" class="tmsedit minheight400"></div></td>
-  </tr>
-  <tr>
-    <td class="bold stitle" title="파일선택" style="cursor:pointer;" onclick="javascript:fun('add_file');">첨부파일</td>
-    <td ><div id="files" class="tmsedit"></div></td>
-  </tr>
-  <tr>
-    <td class="bold stitle" >결재의견</td>
-    <td><div id="appr_cmt"></div></td>
-  </tr>
-
-  <tr>
-    <td class="bold stitle" >후 처 리</td>
-    <td onclick="fun('comment','cmt','[{TIME}] [{NAME}] {COMMENT}<BR>' );" style="cursor:pointer;"  title="결재/저장 후 의견 및 업무 기록"><DIV  id="cmt" class="textleft" ></DIV></td>
   </tr>
 
 </table>

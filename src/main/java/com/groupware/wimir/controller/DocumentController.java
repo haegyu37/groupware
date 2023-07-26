@@ -2,10 +2,6 @@ package com.groupware.wimir.controller;
 
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.repository.MemberRepository;
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
-import org.springframework.data.repository.Repository;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.exception.ResourceNotFoundException;
 import com.groupware.wimir.repository.DocumentRepository;
