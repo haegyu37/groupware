@@ -26,4 +26,7 @@ public interface DocumentService {
 
     Page<Document> findDocumentListByWriterAndStatus(Long memberId, int status, Pageable pageable);
 
-}
+//    public Document getDocumentById(Long documentId);
+
+
+    }

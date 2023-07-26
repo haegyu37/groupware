@@ -57,7 +57,7 @@ public class DocumentController {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         return documentService.findDocumentListByWriterAndStatus(currentMemberId, 1, pageable);
     }
-    
+
     // 문서 작성
     @PostMapping(value = "/create")
     public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO) {
@@ -95,59 +95,6 @@ public class DocumentController {
 
         return ResponseEntity.ok(document);
     }
-
-//    //문서작성 + 결재자 지정
-//    @PostMapping("/create")
-//    public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO,
-//                                                   @RequestParam("approvalIds") List<Long> approvalIds) {
-//
-//        Document document = new Document();
-//        document.setContent(documentDTO.getContent());
-//        documentService.setWriterByToken(document);
-//        document.setCreateDate(LocalDateTime.now());
-//        document.setStatus(documentDTO.getStatus());
-//        document.setDno(document.getDno()); //문서번호
-//        document.setSno(document.getSno()); //임시저장 번호
-//
-//        // 저장할 문서와 결재자들을 생성하고 연결합니다.
-//        List<Approval> approvals = new ArrayList<>();
-//        int step = 1;
-//        for (Long approvalId : approvalIds) {
-//            Approval approval = new Approval();
-//            approval.setStep(step);
-//            approval.setDocument(document);
-//            approval.setMember(approvalService.findApprovalMemberById(approvalId)); //결재자와 연결
-//            approvals.add(approval);
-//
-//            approval = approvalService.saveApproval(approval); // 저장
-//
-//            step++;
-//
-//        }
-//
-//        document.setApprovals(approvals);
-//
-//        if (document.getStatus() == 0) {
-//            // 임시저장인 경우
-//            Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장 번호의 최대값을 가져옴
-//            if (maxSno == null) {
-//                maxSno = 0L;
-//            }
-//            document.setSno(maxSno + 1); // 임시저장 번호 생성
-//        } else {
-//            // 작성인 경우
-//            Long maxDno = documentRepository.findMaxDno(); // DB에서 문서 번호의 최대값을 가져옴
-//            if (maxDno == null) {
-//                maxDno = 0L;
-//            }
-//            document.setDno(maxDno + 1); // 작성 번호 생성
-//        }
-//
-//        // 문서를 저장하고 저장된 문서를 반환합니다.
-//        document = documentService.saveDocument(document);
-//
-//        return ResponseEntity.ok(document);
-//    }
 
     // 문서 상세 조회
     @GetMapping(value = "/read/{id}")

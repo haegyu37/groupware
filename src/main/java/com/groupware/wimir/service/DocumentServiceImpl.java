@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -62,6 +63,16 @@ public class DocumentServiceImpl implements DocumentService {
     public Page<Document> findDocumentListByWriterAndStatus(Long memberId, int status, Pageable pageable) {
         return documentRepository.findByWriterIdAndStatus(memberId, status, pageable);
     }
+
+//    public Document getDocumentById(Long documentId) {
+//        // findById 메서드는 Optional<Document>를 반환한다고 가정합니다.
+//        Document document = documentRepository.findById(documentId);
+//        return document;
+//
+////        // 문서가 찾아지지 않은 경우를 처리할 수 있습니다.
+////        // 여기에서는 orElseThrow를 사용하여 문서를 찾지 못한 경우 예외를 던집니다.
+////        return optionalDocument.orElseThrow(() -> new RuntimeException("ID " + documentId + "에 해당하는 문서를 찾을 수 없습니다."));
+//    }
 
 
 

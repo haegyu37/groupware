@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -86,6 +87,12 @@ public class MemberService {
                 .thenComparing(Member::getPosition, Comparator.comparingInt(Position::getValue)));
         return members;
     }
+
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException("Member not found with ID: " + memberId));
+    }
+
 
 }
 
