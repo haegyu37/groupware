@@ -83,6 +83,7 @@ dependencies {
 	// SLF4J 로그 바인딩 (예: Logback)
 	implementation 'ch.qos.logback:logback-classic:1.2.6'
 
+	implementation 'commons-io:commons-io:2.11.0' // commons-io 라이브러리 추가
 }
 
 tasks.named('test') {
