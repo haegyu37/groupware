@@ -21,6 +21,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByNo(String no);
 
+
     boolean existsByNo(String no);
 
     List<Member > findByTeam(Team team);

@@ -46,6 +46,7 @@ public class MemberController {
 
     }
 
+    // 사진등록
     @PostMapping("/profile-image")
     public ResponseEntity<String> uploadProfileImage(@RequestParam("image") MultipartFile image) {
         try {

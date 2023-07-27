@@ -48,10 +48,10 @@ public class AuthController {
     }
 
     //직원 삭제
-    @DeleteMapping("/admin/members/{memberNo}")
-    public ResponseEntity<String> deleteMemberByNo(@PathVariable String memberNo) {
+    @DeleteMapping("/admin/members/{memberId}")
+    public ResponseEntity<String> deleteMemberById(@PathVariable Long memberId) {
         try {
-            Optional<Member> memberOptional = memberRepository.findByNo(memberNo);
+            Optional<Member> memberOptional = memberRepository.findById(memberId);
             if (memberOptional.isPresent()) {
                 memberRepository.delete(memberOptional.get());
                 return ResponseEntity.ok("회원 정보가 삭제되었습니다.");
