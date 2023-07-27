@@ -13,5 +13,8 @@ import java.util.List;
 
 @Repository
 public interface ApprovalRepository extends JpaRepository<Approval, Long> {
+    List<Approval> findByName(String name);
+
+    List<Approval> findAll();
 
 }

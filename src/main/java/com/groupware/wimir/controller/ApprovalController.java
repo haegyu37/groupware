@@ -1,11 +1,17 @@
 package com.groupware.wimir.controller;
 
+import com.groupware.wimir.Config.SecurityUtil;
+import com.groupware.wimir.DTO.ApprovalDTO;
+//import com.groupware.wimir.DTO.ApprovalRequestDTO;
+import com.groupware.wimir.DTO.DocumentDTO;
 import com.groupware.wimir.DTO.LineDTO;
 import com.groupware.wimir.entity.*;
-import com.groupware.wimir.repository.LineRepository;
+import com.groupware.wimir.repository.ApprovalRepository;
+import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 //import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.ApprovalService;
+import com.groupware.wimir.service.DocumentService;
 import com.groupware.wimir.service.LineService;
 import com.groupware.wimir.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,9 +39,11 @@ public class ApprovalController {
     @Autowired
     private MemberService memberService;
     @Autowired
-    private LineRepository lineRepository;
-    @Autowired
     private LineService lineService;
+    @Autowired
+    ApprovalRepository approvalRepository;
+    @Autowired
+    DocumentService documentService;
 
     //팀 모두 출력
     @GetMapping("/team")
@@ -94,6 +102,54 @@ public class ApprovalController {
 
         return outputList;
     }
+
+    //결재 요청
+//    @PostMapping()
+//    public ResponseEntity<Approval> setApprovalRequest(@RequestBody ApprovalDTO approvalDTO, @RequestBody LineDTO lineDTO){
+//        Approval approval = new Approval();
+////        Document document = new Document();
+//
+//        approval.setApproved(0); //결재 완료 전
+//        approval.setApprovalDate(null); //결재 완료 전
+//        approval.setDocument(approvalDTO.getDocumentId()); //문서번호 저장
+//
+//        approvalRepository.save(approval);
+//
+//        List<Long> approvers = lineDTO.getApprovers(); //List<Long>으로 입력받은 값을 approvers에 대입
+//
+//        for (Long approverId : approvers) { //List approvers 각각의 값을 approverId에 대입
+//            if (approverId != null) {
+//                ApprovalLine line = new ApprovalLine();
+//                String name = lineDTO.getName();
+//
+//                line.setMemberId(approverId);
+//                line.setName(name);
+//                line.setWriter(SecurityUtil.getCurrentMemberId());
+//
+//                lineRepository.save(line); //MemberId, Name, Writer값 각각 저장
+//            }
+//        }
+//
+//        return ResponseEntity.ok(approval);
+//
+//    }
+
+//    @PostMapping("/request")
+//    public ResponseEntity<Approval> setApprovalRequest(@RequestBody ApprovalDTO approvalDTO) {
+//
+//        List<Long> approvers = approvalDTO.getApprovers(); // List<Long>으로 입력받은 값을 approvers에 대입
+//
+//        for (Long approverId : approvers) { // List approvers 각각의 값을 approverId에 대입
+//            Approval line = new Approval();
+//
+//            line.setMemberId(approverId);
+//            line.setName(approvalDTO.getName());
+//            line.setWriter(SecurityUtil.getCurrentMemberId());
+//
+//            return ResponseEntity.ok(approvalRepository.save(line)); // MemberId, Name, Writer값 각각 저장
+//        }
+//    }
+
 
 
 

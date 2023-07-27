@@ -15,12 +15,10 @@ import javax.transaction.Transactional;
 @Service
 @Transactional
 public class DocumentServiceImpl implements DocumentService {
-
     @Autowired
     private DocumentRepository documentRepository;
     @Autowired
     private MemberRepository memberRepository;
-
     @Autowired
     private AttachmentService attachmentService;
 
