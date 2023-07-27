@@ -51,7 +51,7 @@ public class MemberController {
     public ResponseEntity<String> uploadProfileImage(@RequestParam("image") MultipartFile image) {
         try {
             // 이미지를 저장할 디렉토리 경로 지정
-            String uploadDir = "src/main/resourcesstatic/images"; //
+            String uploadDir = "src/main/resources/static/images"; //
 
             // 이미지 파일 이름 생성 (예시: "profile_12345.jpg")
             String fileName = "profile_" + SecurityUtil.getCurrentMemberId() + "." + FilenameUtils.getExtension(image.getOriginalFilename());
