@@ -29,7 +29,9 @@ public class Document {
     @JoinColumn(name = "member_id")
     private Member writer; // 작성자 (Member와 연관관계)
 
-    private Long temId; //양식
+    @ManyToOne
+    @JoinColumn(name = "tem_id")
+    private Template template; // 양식 (Template와 연관관계)
 
     private int status; // 1: 작성 상태, 0: 임시저장 상태
 
@@ -39,14 +41,14 @@ public class Document {
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
-                    LocalDateTime updateDate, Member writer, Long temId, int status, Long dno, Long sno) {
+                    LocalDateTime updateDate, Member writer, Template template, int status, Long dno, Long sno) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.writer = writer;
-        this.temId = temId;
+        this.template = template;
         this.status = status;
         this.dno = dno;
         this.sno = sno;

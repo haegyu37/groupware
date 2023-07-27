@@ -31,6 +31,10 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
     Page<Document> findByWriter(Member writer, Pageable pageable);
 
+    List<Document> findByTemplateCategory(String category);
+
+    @Query("SELECT d FROM Document d JOIN d.template t GROUP BY t.category")
+    List<Document> findDocumentsByTemplateCategory();
 
 }
 
