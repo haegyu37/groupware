@@ -1,34 +1,36 @@
-//package com.groupware.wimir.entity;
-//
-//import lombok.Getter;
-//import lombok.NoArgsConstructor;
-//import lombok.Setter;
-//import lombok.ToString;
-//
-//import javax.persistence.*;
-//import java.time.LocalDateTime;
-//
-//@Entity
-////@AllArgsConstructor
-//@ToString
-//@NoArgsConstructor
-//@Getter
-//@Setter
-//@Table(name = "approvalLine")
-//public class ApprovalLine {
-//
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-//
-//    private Long approverId;
-//
+package com.groupware.wimir.entity;
+
+import lombok.*;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
+@AllArgsConstructor
+@ToString
+@NoArgsConstructor
+@Getter
+@Setter
+@Table(name = "approval_line")
+public class ApprovalLine {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+//    @ManyToMany(mappedBy = "lines")
+//    private List<Approval> approvals;
+
 //    @ManyToOne
-//    @JoinColumn(name = "approval_id")
-//    private Approval approval;
-//
-//    private LocalDateTime approvedDate;
-//
-//
-//
-//}
+//    @JoinColumn(name = "member_id")
+    private Long memberId; // 결재자 (Member와 연관관계)
+
+    private LocalDateTime approvalDate;
+
+    private String status; //0결재 전 1승인 2반려
+
+    private String name; //결재라인 이름
+
+}
+
+
