@@ -3,34 +3,37 @@ package com.groupware.wimir.service;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.repository.DocumentRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
 
 public interface DocumentService {
 
+//    Document findDocumentById(Long id);
 
-    Page<Document> findDocumentList(Pageable pageable);
+//    List<Document> findSaveDocumentList();
 
-    Document findDocumentByDno(Long dno);
+    Document findDocumentById(Long id);
 
-    List<Document> findSaveDocumentList();
+    Document saveDocument(Document document);
 
-    void saveDocument(Document document);
+    void deleteDocument(Long id);
 
-    Document findDocumentBySno(Long Sno);
+    public Page<Document> findDocumentListByStatusNot(int status, Pageable pageable);
 
-    void deleteEditDocument(Long sno);
+    void setWriterByToken(Document document);
 
-    void deleteDocument(Long dno);
+    Page<Document> findDocumentListByWriterAndStatus(Long memberId, int status, Pageable pageable);
 
-    Document getDocumentById(Long documentId);
+//    public Document getDocumentById(Long documentId);
 
-    Page<Document> findDocumentListByWriter(Member writer, Pageable pageable);
+//    Document getDocumentById(Long documentId);
+//
+//    Page<Document> findDocumentListByWriter(Member writer, Pageable pageable);
 
 }

@@ -1,17 +1,29 @@
 package com.groupware.wimir.controller;
 
-import com.groupware.wimir.entity.Member;
-import com.groupware.wimir.repository.MemberRepository;
+import com.groupware.wimir.Config.SecurityUtil;
+import com.groupware.wimir.DTO.ApprovalDTO;
+import com.groupware.wimir.DTO.DocumentDTO;
+import com.groupware.wimir.DTO.MemberResponseDTO;
+import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
+import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.exception.ResourceNotFoundException;
+//import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.DocumentRepository;
+import com.groupware.wimir.repository.MemberRepository;
+//import com.groupware.wimir.service.ApprovalService;
+import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.DocumentService;
+import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,38 +34,43 @@ public class DocumentController {
     private final DocumentService documentService;
     private final DocumentRepository documentRepository;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
+    private final ApprovalService approvalService;
 
-    // 문서 목록(메인)
+    // 문서 목록(정상 저장 전체 다 보도록)
     @GetMapping(value = "/list")
     public List<Document> documentList(@PageableDefault Pageable pageable) {
-        return documentService.findDocumentList(pageable).getContent();
+        // 임시저장 상태가 아닌(1인) 문서만 조회하도록 수정
+        return documentService.findDocumentListByStatusNot(0, pageable).getContent();
     }
 
-    // 상신 문서 목록
-    @GetMapping(value = "/list/{writer}")
-    public List<Document> submitList(@PathVariable Member writer, @PageableDefault Pageable pageable) {
-        return documentService.findDocumentListByWriter(writer, pageable).getContent();
+    //내가 작성한 임시저장 리스트
+    @GetMapping("/savelist")
+    public Page<Document> getMySaveList(@PageableDefault Pageable pageable) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return documentService.findDocumentListByWriterAndStatus(currentMemberId, 0, pageable);
     }
 
-    // 문서 조회
-    @GetMapping(value = "/read/{dno}")
-    public Document readDocument(@PathVariable("dno") Long dno) {
-        Document document = documentService.findDocumentByDno(dno);
-        if (document == null) {
-            throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + dno);
-        }
-        return document;
+    //내가 작성한 저장 리스트
+    @GetMapping("/mylist")
+    public Page<Document> getMyList(@PageableDefault Pageable pageable) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return documentService.findDocumentListByWriterAndStatus(currentMemberId, 1, pageable);
     }
 
     // 문서 작성
-    @PostMapping(value = "/create/{writer-id}")
-    public Document createDocument(@RequestBody Document document, @PathVariable("writer-id") Long writerId) {
-        document.setCreateDate(LocalDateTime.now());
-        System.out.println("document : " + document + "    writer-id" + writerId);
+    @PostMapping(value = "/create")
+    public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO) {
+        Document document = new Document();
 
-        Member writer = memberRepository.findById(writerId)
-                .orElseThrow(() -> new RuntimeException("해당 작성자를 찾을 수 없습니다."));
-        document.setWriter(writer);
+        document.setTitle(documentDTO.getTitle());
+        document.setContent(documentDTO.getContent());
+        documentService.setWriterByToken(document);
+        document.setCreateDate(LocalDateTime.now());
+        document.setStatus(documentDTO.getStatus());
+        document.setDno(document.getDno()); //문서번호
+        document.setSno(document.getSno()); //임시저장 번호
+
 
         if (document.getStatus() == 0) {
             // 임시저장인 경우
@@ -70,68 +87,65 @@ public class DocumentController {
             }
             document.setDno(maxDno + 1); // 작성 번호 생성
         }
-        documentRepository.save(document);
+
+
+        // 문서를 저장하고 저장된 문서를 반환합니다.
+        document = documentService.saveDocument(document);
+
+
+        return ResponseEntity.ok(document);
+    }
+
+    // 문서 상세 조회
+    @GetMapping(value = "/read/{id}")
+    public Document readDocument(@PathVariable("id") Long id) {
+        Document document = documentService.findDocumentById(id);
+        if (document == null) {
+            throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
+        }
         return document;
     }
 
-    //  문서 수정
-    @PutMapping(value = "/update/{dno}")
-    public Document updateDocument(@PathVariable("dno") Long dno, @RequestBody Document document) {
-        Document updateDocument = documentRepository.findByDno(dno)
-                .orElseThrow(() -> new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + dno));
-        updateDocument.setTitle(document.getTitle());
-        updateDocument.setContent(document.getContent());
-        updateDocument.setUpdateDate(LocalDateTime.now());
-        return documentRepository.save(updateDocument);
-    }
+    // 문서 수정
+    @PutMapping(value = "/update/{id}")
+    public Document updateDocument(@PathVariable("id") Long id, @RequestBody DocumentDTO documentDTO) {
+        Document updateDocument = documentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id));
 
-    // 문서 삭제
-    @DeleteMapping("/delete/{dno}")
-    public void deleteDocument(@PathVariable("dno") Long dno) {
-        documentService.deleteDocument(dno);
-    }
-
-    // 임시저장된 문서 목록
-    @GetMapping(value = "/savelist")
-    public List<Document> saveDocumentList() {
-        return documentService.findSaveDocumentList();
-    }
-
-    // 임시저장된 문서 조회
-    @GetMapping(value = "/editread/{sno}")
-    public Document editDocument(@PathVariable("sno") Long sno) {
-        return documentService.findDocumentBySno(sno);
-    }
-
-    // 임시저장 문서 수정(기존 데이터를 가져오는지 의문)
-    @PutMapping(value = "/edit/{sno}")
-    public Document updateEditDocument(@PathVariable("sno") Long sno, @RequestBody Document document) {
-        Document updateDocument = documentRepository.findBySno(sno);
         if (updateDocument != null) {
-            updateDocument.setTitle(document.getTitle());
-            updateDocument.setContent(document.getContent());
-            updateDocument.setCreateDate(LocalDateTime.now());
+            updateDocument.setTitle(documentDTO.getTitle());
+            updateDocument.setContent(documentDTO.getContent());
+            updateDocument.setUpdateDate(LocalDateTime.now());
 
-            if (document.getStatus() == 0) {    // 임시저장인 경우 그냥 저장
+            if (documentDTO.getStatus() == 0) {
+                // 임시저장인 경우 그냥 저장
             } else {
                 // 작성인 경우
-                Long maxDno = documentRepository.findMaxDno(); // DB에서 문서 번호의 최대값을 가져옴
+                Long maxDno = documentRepository.findMaxDno();
                 if (maxDno == null) {
                     maxDno = 0L;
                 }
-                updateDocument.setDno(maxDno + 1); // 작성 번호 생성
+                if (updateDocument.getDno() == null || updateDocument.getDno() == 0) {
+                    updateDocument.setDno(maxDno + 1);
+                }
                 updateDocument.setSno(null);
                 updateDocument.setStatus(1);
             }
-            documentRepository.save(updateDocument);
+
+            return documentRepository.save(updateDocument);
         }
-        return updateDocument;
+
+        throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
     }
 
-    // 임시저장된 문서 삭제
-    @DeleteMapping(value = "/editdelete/{sno}")
-    public void deleteEditDocument(@PathVariable("sno") Long sno) {
-        documentService.deleteEditDocument(sno);
+    // 문서 삭제
+    @DeleteMapping(value = "/delete/{id}")
+    public void deleteDocument(@PathVariable("id") Long id) {
+        documentService.deleteDocument(id);
     }
+
+
+
+
+
 }
-

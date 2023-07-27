@@ -1,21 +1,15 @@
 package com.groupware.wimir.controller;
 
 
-import com.groupware.wimir.DTO.ChangePasswordRequestDTO;
 import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Member;
 //import com.groupware.wimir.entity.Team;
-import com.groupware.wimir.entity.Team;
-import com.groupware.wimir.entity.Position;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,7 +29,6 @@ public class MemberController {
         MemberResponseDTO myInfoBySecurity = memberService.getMyInfoBySecurity();
         System.out.println(myInfoBySecurity.getName());
         return ResponseEntity.ok((myInfoBySecurity));
-        // return ResponseEntity.ok(memberService.getMyInfoBySecurity());
     }
 
     //비밀번호 변경
