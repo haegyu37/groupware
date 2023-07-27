@@ -37,7 +37,6 @@ public class TemplateService {
                 .orElseThrow(() -> new RuntimeException("양식을 찾을 수 없습니다 : " + id));
 
         // TemplateDTO에 담긴 정보로 Template 엔티티를 업데이트
-        template.setName(templateDTO.getName());
         template.setCategory(templateDTO.getCategory());
         template.setData(templateDTO.getData());
 

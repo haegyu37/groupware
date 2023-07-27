@@ -7,11 +7,13 @@ import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
+import com.groupware.wimir.entity.Template;
 import com.groupware.wimir.exception.ResourceNotFoundException;
 //import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 //import com.groupware.wimir.service.ApprovalService;
+import com.groupware.wimir.repository.TemplateRepository;
 import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.DocumentService;
 import com.groupware.wimir.service.MemberService;
@@ -23,7 +25,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -36,6 +37,7 @@ public class DocumentController {
     private final MemberRepository memberRepository;
     private final MemberService memberService;
     private final ApprovalService approvalService;
+    private final TemplateRepository templateRepository;
 
     // 문서 목록(정상 저장 전체 다 보도록)
     @GetMapping(value = "/list")
@@ -45,20 +47,63 @@ public class DocumentController {
     }
 
     //내가 작성한 임시저장 리스트
-    @GetMapping("/savelist")
+    @GetMapping(value = "/savelist")
     public Page<Document> getMySaveList(@PageableDefault Pageable pageable) {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         return documentService.findDocumentListByWriterAndStatus(currentMemberId, 0, pageable);
     }
 
     //내가 작성한 저장 리스트
-    @GetMapping("/mylist")
+    @GetMapping(value = "/mylist")
     public Page<Document> getMyList(@PageableDefault Pageable pageable) {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         return documentService.findDocumentListByWriterAndStatus(currentMemberId, 1, pageable);
     }
 
+    // 카테고리별 작성된 문서 리스트(현재 status 구분없이 전부 가져옴)
+    @GetMapping("/categorylist/{id}")
+    public Page<Document> getDocumentsByTemplateId(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
+        return documentService.findDocumentsByTemplateIdAndStatus(id, 1, pageable);
+    }
+
+
     // 문서 작성
+//    @PostMapping(value = "/create")
+//    public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO) {
+//        Document document = new Document();
+//
+//        document.setTitle(documentDTO.getTitle());
+//        document.setContent(documentDTO.getContent());
+//        documentService.setWriterByToken(document);
+//        document.setCreateDate(LocalDateTime.now());
+//        document.setStatus(documentDTO.getStatus());
+//        document.setDno(document.getDno()); //문서번호
+//        document.setSno(document.getSno()); //임시저장 번호
+//        document.setTemplate(documentDTO.getTemplate());    // 양식명
+//        System.out.println(documentDTO.getTemplate());
+//
+//        if (document.getStatus() == 0) {
+//            // 임시저장인 경우
+//            Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장 번호의 최대값을 가져옴
+//            if (maxSno == null) {
+//                maxSno = 0L;
+//            }
+//            document.setSno(maxSno + 1); // 임시저장 번호 생성
+//        } else {
+//            // 작성인 경우
+//            Long maxDno = documentRepository.findMaxDno(); // DB에서 문서 번호의 최대값을 가져옴
+//            if (maxDno == null) {
+//                maxDno = 0L;
+//            }
+//            document.setDno(maxDno + 1); // 작성 번호 생성
+//        }
+//
+//        // 문서를 저장하고 저장된 문서를 반환합니다.
+//        document = documentService.saveDocument(document);
+//
+//        return ResponseEntity.ok(document);
+//    }
+
     @PostMapping(value = "/create")
     public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO) {
         Document document = new Document();
@@ -71,6 +116,10 @@ public class DocumentController {
         document.setDno(document.getDno()); //문서번호
         document.setSno(document.getSno()); //임시저장 번호
 
+//        Template templateId = documentDTO.getTemplate();
+//        Template template = templateRepository.findById(templateId)
+//                .orElseThrow(() -> new ResourceNotFoundException("양식을 찾을 수 없습니다. : " + templateId));
+//        document.setTemplate(template);
 
         if (document.getStatus() == 0) {
             // 임시저장인 경우
@@ -88,13 +137,12 @@ public class DocumentController {
             document.setDno(maxDno + 1); // 작성 번호 생성
         }
 
-
         // 문서를 저장하고 저장된 문서를 반환합니다.
         document = documentService.saveDocument(document);
 
-
         return ResponseEntity.ok(document);
     }
+
 
     // 문서 상세 조회
     @GetMapping(value = "/read/{id}")
@@ -143,9 +191,5 @@ public class DocumentController {
     public void deleteDocument(@PathVariable("id") Long id) {
         documentService.deleteDocument(id);
     }
-
-
-
-
 
 }

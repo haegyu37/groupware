@@ -28,7 +28,6 @@ public class TemplateController {
     public String createTemplate(@RequestBody TemplateDTO templateDTO) throws IOException {
         // Template 엔티티로 변환하여 저장
         Template template = Template.builder()
-                .name(templateDTO.getName())
                 .title(templateDTO.getTitle())
                 .content(templateDTO.getContent())
                 .category(templateDTO.getCategory())
@@ -55,7 +54,6 @@ public class TemplateController {
         // Template 엔티티를 TemplateDTO로 변환하여 반환
         TemplateDTO templateDTO = new TemplateDTO(
                 template.getId(),
-                template.getName(),
                 template.getTitle(),
                 template.getContent(),
                 template.getCategory(),

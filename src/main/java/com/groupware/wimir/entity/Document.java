@@ -4,8 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name="document")
@@ -33,7 +31,7 @@ public class Document {
 
     @ManyToOne
     @JoinColumn(name = "tem_id")
-    private Template template; // 양식 (Template와 연관관계)
+    private Template template; // 양식명
 
     private int status; // 1: 작성 상태, 0: 임시저장 상태
 
@@ -43,7 +41,6 @@ public class Document {
 
 //    @OneToMany(mappedBy = "document", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Approval> approvals = new ArrayList<>();
-
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,

@@ -1,13 +1,8 @@
 package com.groupware.wimir.service;
 
 import com.groupware.wimir.entity.Document;
-import com.groupware.wimir.entity.Member;
-import com.groupware.wimir.repository.DocumentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -29,6 +24,14 @@ public interface DocumentService {
     void setWriterByToken(Document document);
 
     Page<Document> findDocumentListByWriterAndStatus(Long memberId, int status, Pageable pageable);
+
+    Page<Document> findDocumentsByTemplateIdAndStatus(Long id, int status, Pageable pageable);
+
+
+//    List<Document> getDocumentsByCategory(String category);
+//
+//    List<Document> getDocumentsByTemplate(Template template);
+
 
 //    public Document getDocumentById(Long documentId);
 

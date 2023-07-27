@@ -16,21 +16,18 @@ public class Template {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id; //양식 아이디
 
-    private String name; // 양식명
-
     private String title; //양식 제목
 
     private String content; //양식 내용
 
-    private String category; //양식 카테고리
+    private String category; //양식명
 
     @ElementCollection
     private Map<String, String> data = new HashMap<>(); // 추가 데이터
 
     @Builder
-    public Template(Long id, String name, String title, String content, String category, Map<String, String> data) {
+    public Template(Long id, String title, String content, String category, Map<String, String> data) {
         this.id = id;
-        this.name = name;
         this.title = title;
         this.content = content;
         this.category = category;
@@ -52,5 +49,6 @@ public class Template {
         }
         return data.get(key);
     }
+
 }
 
