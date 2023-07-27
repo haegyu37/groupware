@@ -2,29 +2,17 @@ package com.groupware.wimir.controller;
 
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.ApprovalDTO;
-//import com.groupware.wimir.DTO.ApprovalRequestDTO;
-import com.groupware.wimir.DTO.DocumentDTO;
-import com.groupware.wimir.DTO.LineDTO;
 import com.groupware.wimir.entity.*;
 import com.groupware.wimir.repository.ApprovalRepository;
-import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
-//import com.groupware.wimir.service.ApprovalService;
-import com.groupware.wimir.service.ApprovalService;
-import com.groupware.wimir.service.DocumentService;
-import com.groupware.wimir.service.LineService;
 import com.groupware.wimir.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -35,15 +23,9 @@ public class ApprovalController {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    private ApprovalService approvalService;
-    @Autowired
     private MemberService memberService;
     @Autowired
-    private LineService lineService;
-    @Autowired
     ApprovalRepository approvalRepository;
-    @Autowired
-    DocumentService documentService;
 
     //팀 모두 출력
     @GetMapping("/team")
@@ -103,58 +85,24 @@ public class ApprovalController {
         return outputList;
     }
 
-    //결재 요청
-//    @PostMapping()
-//    public ResponseEntity<Approval> setApprovalRequest(@RequestBody ApprovalDTO approvalDTO, @RequestBody LineDTO lineDTO){
-//        Approval approval = new Approval();
-////        Document document = new Document();
-//
-//        approval.setApproved(0); //결재 완료 전
-//        approval.setApprovalDate(null); //결재 완료 전
-//        approval.setDocument(approvalDTO.getDocumentId()); //문서번호 저장
-//
-//        approvalRepository.save(approval);
-//
-//        List<Long> approvers = lineDTO.getApprovers(); //List<Long>으로 입력받은 값을 approvers에 대입
-//
-//        for (Long approverId : approvers) { //List approvers 각각의 값을 approverId에 대입
-//            if (approverId != null) {
-//                ApprovalLine line = new ApprovalLine();
-//                String name = lineDTO.getName();
-//
-//                line.setMemberId(approverId);
-//                line.setName(name);
-//                line.setWriter(SecurityUtil.getCurrentMemberId());
-//
-//                lineRepository.save(line); //MemberId, Name, Writer값 각각 저장
-//            }
-//        }
-//
-//        return ResponseEntity.ok(approval);
-//
-//    }
+    @PostMapping("/request")
+    public ResponseEntity<Approval> setApprovalRequest(@RequestBody ApprovalDTO approvalDTO) {
 
-//    @PostMapping("/request")
-//    public ResponseEntity<Approval> setApprovalRequest(@RequestBody ApprovalDTO approvalDTO) {
-//
-//        List<Long> approvers = approvalDTO.getApprovers(); // List<Long>으로 입력받은 값을 approvers에 대입
-//
-//        for (Long approverId : approvers) { // List approvers 각각의 값을 approverId에 대입
-//            Approval line = new Approval();
-//
-//            line.setMemberId(approverId);
-//            line.setName(approvalDTO.getName());
-//            line.setWriter(SecurityUtil.getCurrentMemberId());
-//
-//            return ResponseEntity.ok(approvalRepository.save(line)); // MemberId, Name, Writer값 각각 저장
-//        }
-//    }
+        for (Long approverId : approvalDTO.getApprovers()) {
+            Approval line = new Approval();
 
+            line.setMemberId(approverId);
+            line.setName(approvalDTO.getName());
+            line.setWriter(SecurityUtil.getCurrentMemberId());
 
+            return ResponseEntity.ok(approvalRepository.save(line));
+        }
 
-
+        // 반드시 ResponseEntity를 반환해야 하므로 해당 부분에 대한 처리를 추가할 수 있습니다.
+        // 예를 들어, 아래와 같이 처리하면 됩니다.
+        return ResponseEntity.badRequest().build();
     }
-
+}
 
 
 
