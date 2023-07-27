@@ -1,18 +1,18 @@
 package com.groupware.wimir.DTO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+@NoArgsConstructor // 기본 생성자 추가
 @AllArgsConstructor
 @ToString
 @Getter @Setter
 public class LineDTO {
 
-    private String name; //결재라인명
-
-    private int step; //결제 단계 (1~N)
-
-    private Long usersId; //결재자
+    private List<Long> approvers;
+    private LocalDateTime approvalDate;
+    private String status;
+    private String name;
 
 }

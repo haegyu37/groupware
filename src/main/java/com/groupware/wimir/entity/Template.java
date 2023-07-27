@@ -28,7 +28,7 @@ public class Template {
     private Map<String, String> data = new HashMap<>(); // 추가 데이터
 
     @Builder
-    public Template(Long id, String name, String title, String content, String category, Map<String, String> data) {
+    public Template(Long id, String title, String name, String content, String category, Map<String, String> data) {
         this.id = id;
         this.name = name;
         this.title = title;
