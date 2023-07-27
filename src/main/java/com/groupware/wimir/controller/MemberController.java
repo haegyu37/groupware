@@ -36,7 +36,6 @@ public class MemberController {
         MemberResponseDTO myInfoBySecurity = memberService.getMyInfoBySecurity();
         System.out.println(myInfoBySecurity.getName());
         return ResponseEntity.ok((myInfoBySecurity));
-
     }
 
     //비밀번호 변경

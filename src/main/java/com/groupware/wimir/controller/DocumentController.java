@@ -1,7 +1,9 @@
 package com.groupware.wimir.controller;
 
+import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.DTO.DocumentDTO;
+import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
@@ -10,14 +12,18 @@ import com.groupware.wimir.exception.ResourceNotFoundException;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 //import com.groupware.wimir.service.ApprovalService;
+import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.DocumentService;
+import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,36 +34,43 @@ public class DocumentController {
     private final DocumentService documentService;
     private final DocumentRepository documentRepository;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
+    private final ApprovalService approvalService;
 
-    // 문서 목록
+    // 문서 목록(정상 저장 전체 다 보도록)
     @GetMapping(value = "/list")
     public List<Document> documentList(@PageableDefault Pageable pageable) {
         // 임시저장 상태가 아닌(1인) 문서만 조회하도록 수정
         return documentService.findDocumentListByStatusNot(0, pageable).getContent();
     }
 
-    // 임시저장 목록
-    @GetMapping(value = "/savelist")
-    public List<Document> saveDocumentList() {
-        return documentService.findSaveDocumentList();
+    //내가 작성한 임시저장 리스트
+    @GetMapping("/savelist")
+    public Page<Document> getMySaveList(@PageableDefault Pageable pageable) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return documentService.findDocumentListByWriterAndStatus(currentMemberId, 0, pageable);
+    }
+
+    //내가 작성한 저장 리스트
+    @GetMapping("/mylist")
+    public Page<Document> getMyList(@PageableDefault Pageable pageable) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return documentService.findDocumentListByWriterAndStatus(currentMemberId, 1, pageable);
     }
 
     // 문서 작성
-    @PostMapping(value = "/create/{memberId}")
-    public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO, @PathVariable("memberId") Long writerId) {
+    @PostMapping(value = "/create")
+    public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO) {
         Document document = new Document();
+
         document.setTitle(documentDTO.getTitle());
         document.setContent(documentDTO.getContent());
+        documentService.setWriterByToken(document);
         document.setCreateDate(LocalDateTime.now());
         document.setStatus(documentDTO.getStatus());
         document.setDno(document.getDno()); //문서번호
         document.setSno(document.getSno()); //임시저장 번호
 
-        System.out.println("document : " + document + "    writerId" + writerId);
-
-        Member writer = memberRepository.findById(writerId)
-                .orElseThrow(() -> new RuntimeException("해당 작성자를 찾을 수 없습니다."));
-        document.setWriter(documentDTO.getWriter());
 
         if (document.getStatus() == 0) {
             // 임시저장인 경우
@@ -78,6 +91,7 @@ public class DocumentController {
 
         // 문서를 저장하고 저장된 문서를 반환합니다.
         document = documentService.saveDocument(document);
+
 
         return ResponseEntity.ok(document);
     }
@@ -129,6 +143,8 @@ public class DocumentController {
     public void deleteDocument(@PathVariable("id") Long id) {
         documentService.deleteDocument(id);
     }
+
+
 
 
 

@@ -29,17 +29,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class AuthController {
 
-    //@Autowired
     private final AuthService authService;
-    // @Autowired
     private final MemberRepository memberRepository;
-
     private final MemberService memberService;
-
-//    @PostMapping("/signup")
-//    public ResponseEntity<MemberResponseDto> signup(@RequestBody MemberRequestDto requestDto) {
-//        return ResponseEntity.ok(authService.signup(requestDto));
-//    }
 
     //직원 등록
     @PostMapping("/admin/signup")
@@ -75,6 +67,8 @@ public class AuthController {
     public ResponseEntity<TokenDTO> login(@RequestBody MemberRequestDTO requestDto) {
         return ResponseEntity.ok(authService.login(requestDto));
     }
+
+    //로그아웃
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletResponse response) {
         // 리프레시 토큰을 저장하는 쿠키를 제거합니다.
@@ -87,6 +81,7 @@ public class AuthController {
 
         return ResponseEntity.ok("로그아웃 되었습니다.");
     }
+
     // 토큰 갱신
     @PostMapping("/refresh")
     public ResponseEntity<TokenDTO> refresh(@RequestBody TokenRequestDTO tokenRequestDTO) {

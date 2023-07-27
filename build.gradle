@@ -30,25 +30,22 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.projectlombok:lombok:1.18.26'
-//	compileOnly 'org.projectlombok:lombok'
-//	annotationProcessor 'org.projectlombok:lombok'
-//	implementation 'mysql:mysql-connector-java:8.0.27'
-//	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-//	// 엑셀 파일
+	// 엑셀 파일
 	implementation group: 'org.apache.poi', name: 'poi', version: '5.2.2'
 	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.2'
-//	// pdf 파일
+	// pdf 파일
 	implementation 'com.itextpdf:itextpdf:5.5.13.3'
 	implementation 'com.itextpdf.tool:xmlworker:5.5.13.3'
 	implementation 'com.itextpdf:pdfa:7.2.3'
+	// 웹 변환
+	implementation group: 'org.xhtmlrenderer', name: 'flying-saucer-pdf-openpdf', version: '9.1.22'
+	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 	// odf toolkit
 	implementation 'org.odftoolkit:simple-odf:0.9.0'
 	// summernote
 	implementation 'org.webjars.npm:summernote:0.8.20'
 
-// https://mvnrepository.com/artifact/mysql/mysql-connector-java
 	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.27'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -57,22 +54,16 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-
 	annotationProcessor(
 
 			"javax.persistence:javax.persistence-api",
-
 			"javax.annotation:javax.annotation-api",
-
 			"com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
-
-
 
 	// Spring Security 추가
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.security:spring-security-test'
-
 
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'

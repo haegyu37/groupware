@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="document")
@@ -33,9 +35,13 @@ public class Document {
 
     private int status; // 1: 작성 상태, 0: 임시저장 상태
 
-    private  Long dno = 0L;  // 문서 번호(디폴트 값은 0)
+    private Long dno = 0L;  // 문서 번호(디폴트 값은 0)
 
-    private  Long sno = 0L; // 문서 임시저장 번호(디폴트 값은 0)
+    private Long sno = 0L; // 문서 임시저장 번호(디폴트 값은 0)
+
+//    @OneToMany(mappedBy = "document", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Approval> approvals = new ArrayList<>();
+
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
@@ -51,6 +57,5 @@ public class Document {
         this.dno = dno;
         this.sno = sno;
     }
-
-    public void setWriter() {}
 }
+

@@ -4,10 +4,12 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 
 @Entity
-@AllArgsConstructor
+//@AllArgsConstructor
 @ToString
 @NoArgsConstructor
 @Getter @Setter
@@ -15,27 +17,35 @@ import java.time.LocalDateTime;
 public class Approval {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id; // 승인 ID
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private LocalDateTime approvalDate; // 승인 날짜
+    @ManyToOne
+    @JoinColumn(name = "document_id")
+    private Document document;
 
-    private String reason; // 반려사유
+    @ElementCollection
+    @JoinColumn(name = "approvers_id")
+    private List<Long> approverIds;
 
-    private int status; // 결재상태(0대기, 1완료)
+//    //엔티티 나누기
+//    @OneToMany(mappedBy = "approval")
+//    private List<ApprovalLine> approvers;
 
-    private int result; //결재결과(0반려, 1승인)
 
-    private int step; //결재순서
+    private int approved; //결재 결과 (0전, 1승인, 2반려)
+
+    private LocalDateTime approvalDate;
 
     private String name; //결재라인 이름
 
-    private Long approver;
 
-    private Long document;
-
-
-
-
+    public Approval(Document document, List<Long> approverIds, int approved, LocalDateTime approvalDate, String name) {
+        this.document = document;
+        this.approverIds = approverIds;
+        this.approved = approved;
+        this.approvalDate = approvalDate;
+        this.name = name;
+    }
 
 }
