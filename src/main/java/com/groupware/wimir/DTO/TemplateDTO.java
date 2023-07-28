@@ -17,8 +17,6 @@ public class TemplateDTO {
 
     private String category; //양식명
 
-    private Map<String, String> data; // 추가 데이터
-
     public TemplateDTO(Long id, String title, String content, String category) {
     }
 }
