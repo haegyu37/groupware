@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -85,22 +86,35 @@ public class ApprovalController {
         return outputList;
     }
 
-    @PostMapping("/request")
-    public ResponseEntity<Approval> setApprovalRequest(@RequestBody ApprovalDTO approvalDTO) {
+    //결재라인 지정(미리 저장한 결재라인을 불러와서 지정하기)
+    @PostMapping("/create")
+    public ResponseEntity<Approval> setApproval(@RequestBody ApprovalDTO approvalDTO) {
 
-        for (Long approverId : approvalDTO.getApprovers()) {
-            Approval line = new Approval();
+        List<Approval> approvals = approvalRepository.findByLineId(approvalDTO.getLineId());
+//        System.out.println("결재자들: " + approvals);
 
-            line.setMemberId(approverId);
-            line.setName(approvalDTO.getName());
-            line.setWriter(SecurityUtil.getCurrentMemberId());
+//        List<Long> lineIds = approvals.stream().map(Approval::getLineId).collect(Collectors.toList());
+        List<Long> memberIds = approvals.stream().map(Approval::getMemberId).collect(Collectors.toList());
+        List<Long> writers = approvals.stream().map(Approval::getWriter).collect(Collectors.toList());
+        List<String> names = approvals.stream().map(Approval::getName).collect(Collectors.toList());
+// 다른 필드들에 대해서도 필요한 경우에 리스트로 추출
 
-            return ResponseEntity.ok(approvalRepository.save(line));
+// 리스트로 만들어진 각 칼럼들의 값들을 approval 엔티티에 삽입
+        Approval savedApproval = null;
+        for (int i = 0; i < approvals.size(); i++) {
+            Approval approval = new Approval();
+//            approval.setLineId(lineIds.get(i));
+            approval.setMemberId(memberIds.get(i));
+            approval.setWriter(writers.get(i));
+            approval.setName(names.get(i));
+//            System.out.println("문서아이디" + approvalDTO.getDocumentId());
+            approval.setDocument(approvalDTO.getDocumentId());
+
+            savedApproval = approvalRepository.save(approval);
+
         }
 
-        // 반드시 ResponseEntity를 반환해야 하므로 해당 부분에 대한 처리를 추가할 수 있습니다.
-        // 예를 들어, 아래와 같이 처리하면 됩니다.
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(savedApproval);
     }
 }
 

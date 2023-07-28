@@ -2,12 +2,15 @@ package com.groupware.wimir.service;
 
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.entity.Approval;
+//import com.groupware.wimir.entity.ApprovalLine;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.repository.ApprovalRepository;
+//import com.groupware.wimir.repository.LineRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,24 +27,13 @@ import java.util.stream.Collectors;
 public class LineService {
 
     @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
     private ApprovalRepository approvalRepository;
 
-    public Map<String, List<Approval>> groupAllLinesByNameTocken(Long userId, Pageable pageable) {
-        List<Approval> allLines = approvalRepository.findAll();
-        return allLines.stream()
-                .filter(line -> line.getWriter().equals(userId))
-                .collect(Collectors.groupingBy(Approval::getName));
-    }
+//    public List<Approval> findByWriter(Long memberId) {
+//        return approvalRepository.findByWriter(memberId);
+//    }
 
-    public List<Approval> getApprovalLineByName(String name) {
-        return approvalRepository.findByName(name);
+    public List<Approval> getLineByLineId(Long id) {
+        return approvalRepository.findByLineId(id);
     }
-
-    public Map<String, List<Approval>> groupLinesByName() {
-        List<Approval> allLines = approvalRepository.findAll();
-        return allLines.stream().collect(Collectors.groupingBy(Approval::getName));
-    }
-
 }

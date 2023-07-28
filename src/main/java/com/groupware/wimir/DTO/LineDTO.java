@@ -14,5 +14,6 @@ public class LineDTO {
     private List<Long> approvers;
     private String name;
     private Long writer;
+    private String category;
 
 }

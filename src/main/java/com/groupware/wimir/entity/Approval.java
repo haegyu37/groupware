@@ -5,6 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -38,18 +40,16 @@ public class Approval {
 
     private Long writer; //결재라인 작성자
 
+    private Long lineId; //결재라인 아이디
+
     private String category; //결재라인 카테고리
 
     private int status; //결재 결과 (0전, 1승인, 2반려)
 
-
-
-
-//    public Approval(Long document, List<Long> line, int approved, LocalDateTime approvalDate) {
-//        this.document = document;
-//        this.line = line;
-//        this.approved = approved;
-//        this.approvalDate = approvalDate;
-//    }
+    public static Map<Long, List<Approval>> groupByLineId(List<Approval> approvals) {
+        return approvals.stream()
+                .filter(approval -> approval.getLineId() != null) // lineId가 null이 아닌 경우만 필터링
+                .collect(Collectors.groupingBy(Approval::getLineId));
+    }
 
 }

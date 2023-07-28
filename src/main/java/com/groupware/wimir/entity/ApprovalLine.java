@@ -4,6 +4,7 @@
 //
 //import javax.persistence.*;
 //import java.time.LocalDateTime;
+//import java.util.List;
 //
 //@Entity
 //@AllArgsConstructor
@@ -18,15 +19,12 @@
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    private Long id;
 //
-//    private Long memberId; // 결재자 (Member와 연관관계)
-//
-//    private LocalDateTime appDate;
-//
-//    private String status; //0결재 전 1승인 2반려
+//    @OneToMany
+//    private List<Member> approver; // 결재자 (Member와 연관관계)
 //
 //    private String name; //결재라인 이름
 //
-//    private Long writer; // 작성자 (Member와 연관관계)
+//    private Long writer; // 작성자
 //
 //    private String category;
 //

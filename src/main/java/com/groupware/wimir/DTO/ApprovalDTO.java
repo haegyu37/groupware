@@ -19,9 +19,12 @@ public class ApprovalDTO {
 
         private Long documentId;
         private List<Long> approvers;
-        private String name;
+//        private String name;
         private LocalDateTime approvalDate;
         private int approved;
+        private Long lineId;
+
+
 
 
 }
