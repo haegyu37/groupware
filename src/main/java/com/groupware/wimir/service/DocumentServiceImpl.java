@@ -130,8 +130,13 @@ public class DocumentServiceImpl implements DocumentService {
         return documentRepository.findByWriterIdAndStatus(memberId, status, pageable);
     }
     @Override
-    public Page<Document> findDocumentsByTemplateIdAndStatus(Long id, int status, Pageable pageable) {
+    public Page<Document> findDocumentListByTemplateIdAndStatus(Long id, int status, Pageable pageable) {
         return documentRepository.findByTemplateIdAndStatus(id, status, pageable);
+    }
+
+    @Override
+    public Page<Document> findDocumentListByWriterAndTemplateIdAndStatus(Long memberId, Long id, int status, Pageable pageable) {
+        return documentRepository.findByWriterAndTemplateIdAndStatus(memberId, id, status, pageable);
     }
 
 //    public Document getDocumentById(Long documentId) {

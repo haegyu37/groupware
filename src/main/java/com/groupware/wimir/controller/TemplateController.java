@@ -31,7 +31,6 @@ public class TemplateController {
                 .title(templateDTO.getTitle())
                 .content(templateDTO.getContent())
                 .category(templateDTO.getCategory())
-                .data(templateDTO.getData())
                 .build();
         templateService.createTemplate(template);
 
@@ -56,8 +55,7 @@ public class TemplateController {
                 template.getId(),
                 template.getTitle(),
                 template.getContent(),
-                template.getCategory(),
-                template.getData()
+                template.getCategory()
         );
         return templateDTO;
     }

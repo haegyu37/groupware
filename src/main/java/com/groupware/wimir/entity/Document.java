@@ -19,6 +19,7 @@ public class Document {
 
     private String title; //문서명
 
+    @Column(columnDefinition = "TEXT")
     private String content; //문서내용
 
     private LocalDateTime createDate; //작성일

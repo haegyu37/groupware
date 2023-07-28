@@ -60,50 +60,22 @@ public class DocumentController {
         return documentService.findDocumentListByWriterAndStatus(currentMemberId, 1, pageable);
     }
 
-    // 카테고리별 작성된 문서 리스트(현재 status 구분없이 전부 가져옴)
-    @GetMapping("/categorylist/{id}")
-    public Page<Document> getDocumentsByTemplateId(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
-        return documentService.findDocumentsByTemplateIdAndStatus(id, 1, pageable);
+    // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
+    @GetMapping(value ="/categorylist/{id}")
+    public Page<Document> getDocumentsByTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
+        return documentService.findDocumentListByTemplateIdAndStatus(id, 1, pageable);
+    }
+
+    // 카테고리별 자신이 작성한 문서 리스트(fun8번 결재 상태 추가되어야 함)
+    @GetMapping(value = "categorymylist/{id}")
+    public Page<Document> getDocumentsByMyTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return documentService.findDocumentListByWriterAndTemplateIdAndStatus(currentMemberId, id, 1, pageable);
     }
 
 
-    // 문서 작성
-//    @PostMapping(value = "/create")
-//    public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO) {
-//        Document document = new Document();
-//
-//        document.setTitle(documentDTO.getTitle());
-//        document.setContent(documentDTO.getContent());
-//        documentService.setWriterByToken(document);
-//        document.setCreateDate(LocalDateTime.now());
-//        document.setStatus(documentDTO.getStatus());
-//        document.setDno(document.getDno()); //문서번호
-//        document.setSno(document.getSno()); //임시저장 번호
-//        document.setTemplate(documentDTO.getTemplate());    // 양식명
-//        System.out.println(documentDTO.getTemplate());
-//
-//        if (document.getStatus() == 0) {
-//            // 임시저장인 경우
-//            Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장 번호의 최대값을 가져옴
-//            if (maxSno == null) {
-//                maxSno = 0L;
-//            }
-//            document.setSno(maxSno + 1); // 임시저장 번호 생성
-//        } else {
-//            // 작성인 경우
-//            Long maxDno = documentRepository.findMaxDno(); // DB에서 문서 번호의 최대값을 가져옴
-//            if (maxDno == null) {
-//                maxDno = 0L;
-//            }
-//            document.setDno(maxDno + 1); // 작성 번호 생성
-//        }
-//
-//        // 문서를 저장하고 저장된 문서를 반환합니다.
-//        document = documentService.saveDocument(document);
-//
-//        return ResponseEntity.ok(document);
-//    }
 
+    // 문서 작성
     @PostMapping(value = "/create")
     public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO) {
         Document document = new Document();
@@ -115,11 +87,8 @@ public class DocumentController {
         document.setStatus(documentDTO.getStatus());
         document.setDno(document.getDno()); //문서번호
         document.setSno(document.getSno()); //임시저장 번호
-
-//        Template templateId = documentDTO.getTemplate();
-//        Template template = templateRepository.findById(templateId)
-//                .orElseThrow(() -> new ResourceNotFoundException("양식을 찾을 수 없습니다. : " + templateId));
-//        document.setTemplate(template);
+        document.setTemplate(documentDTO.getTemplate());    // 양식명
+        System.out.println(documentDTO.getTemplate());
 
         if (document.getStatus() == 0) {
             // 임시저장인 경우
