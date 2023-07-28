@@ -44,7 +44,7 @@ public class Approval {
 
     private String category; //결재라인 카테고리
 
-    private int status; //결재 결과 (0전, 1승인, 2반려)
+    private int status; //결재자별 결재상태 (0전, 1승인, 2반려)
 
     public static Map<Long, List<Approval>> groupByLineId(List<Approval> approvals) {
         return approvals.stream()

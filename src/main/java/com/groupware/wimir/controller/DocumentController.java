@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/documents")
@@ -78,16 +79,23 @@ public class DocumentController {
     public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO) {
         Document document = new Document();
 
+        System.out.println("즐찾"+documentDTO.getLineId());
         document.setTitle(documentDTO.getTitle());
         document.setContent(documentDTO.getContent());
         documentService.setWriterByToken(document);
         document.setCreateDate(LocalDateTime.now());
         document.setStatus(documentDTO.getStatus());
-        document.setDno(document.getDno()); //문서번호
-        document.setSno(document.getSno()); //임시저장 번호
+//        document.setDno(document.getDno()); //문서번호
+//        document.setSno(document.getSno()); //임시저장 번호
         document.setTemplate(documentDTO.getTemplate());    // 양식명
-        System.out.println(documentDTO.getTemplate());
+//        System.out.println(documentDTO.getTemplate());
+        document.setResult(0);
+        approvalService.setApproval(documentDTO);
 
+
+//        int result = approvalService.submitApproval(documentDTO);
+
+        //임시저장 관련
         if (document.getStatus() == 0) {
             // 임시저장인 경우
             Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장 번호의 최대값을 가져옴

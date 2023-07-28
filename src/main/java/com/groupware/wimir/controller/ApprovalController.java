@@ -8,6 +8,7 @@ import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,46 +88,56 @@ public class ApprovalController {
     }
 
     //결재라인 지정(미리 저장한 결재라인을 불러와서 지정하기)
-    @PostMapping("/create")
-    public ResponseEntity<Approval> setApproval(@RequestBody ApprovalDTO approvalDTO) {
-        Approval savedApproval = null;
-
-        if(approvalDTO.getLineId() !=  null) {
-
-            List<Approval> approvals = approvalRepository.findByLineId(approvalDTO.getLineId());
-
-            List<Long> memberIds = approvals.stream().map(Approval::getMemberId).collect(Collectors.toList());
-            List<Long> writers = approvals.stream().map(Approval::getWriter).collect(Collectors.toList());
-            List<String> names = approvals.stream().map(Approval::getName).collect(Collectors.toList());
-            // 다른 필드들에 대해서도 필요한 경우에 리스트로 추출
-
-            // 리스트로 만들어진 각 칼럼들의 값들을 approval 엔티티에 삽입
-            for (int i = 0; i < approvals.size(); i++) {
-                Approval approval = new Approval();
-                approval.setMemberId(memberIds.get(i));
-                approval.setWriter(writers.get(i));
-                approval.setName(names.get(i));
-                approval.setDocument(approvalDTO.getDocumentId());
-
-                savedApproval = approvalRepository.save(approval);
+//    @PostMapping("/create")
+//    public ResponseEntity<Approval> setApproval(@RequestBody ApprovalDTO approvalDTO) {
+//        Approval savedApproval = null;
+//
+//        if(approvalDTO.getLineId() !=  null) {
+//
+//            List<Approval> approvals = approvalRepository.findByLineId(approvalDTO.getLineId());
+//
+//            List<Long> memberIds = approvals.stream().map(Approval::getMemberId).collect(Collectors.toList());
+//            List<Long> writers = approvals.stream().map(Approval::getWriter).collect(Collectors.toList());
+//            List<String> names = approvals.stream().map(Approval::getName).collect(Collectors.toList());
+//            // 다른 필드들에 대해서도 필요한 경우에 리스트로 추출
+//
+//            // 리스트로 만들어진 각 칼럼들의 값들을 approval 엔티티에 삽입
+//            for (int i = 0; i < approvals.size(); i++) {
+//                Approval approval = new Approval();
+//                approval.setMemberId(memberIds.get(i));
+//                approval.setWriter(writers.get(i));
+//                approval.setName(names.get(i));
+//                approval.setDocument(approvalDTO.getDocumentId());
+//
+//                savedApproval = approvalRepository.save(approval);
 //                return ResponseEntity.ok(savedApproval);
+//
+//
+//            }
+//        } else { //결재자 각각 지정해서 삽입
+//
+//            for(Long approverId : approvalDTO.getApprovers()){
+//                Approval approval = new Approval();
+//                approval.setDocument(approvalDTO.getDocumentId());
+//                approval.setMemberId(approverId);
+//
+//                savedApproval = approvalRepository.save(approval);
+//            }
+//
+//        }
+//        return ResponseEntity.ok(savedApproval);
+//
+//    }
 
-
-            }
-        } else { //결재자 각각 지정해서 삽입
-
-            for(Long approverId : approvalDTO.getApprovers()){
-                Approval approval = new Approval();
-                approval.setDocument(approvalDTO.getDocumentId());
-                approval.setMemberId(approverId);
-
-                savedApproval = approvalRepository.save(approval);
-            }
-
-        }
-        return ResponseEntity.ok(savedApproval);
-
-    }
+//    //결재승인
+//    @PostMapping("/approve")
+//    public ResponseEntity<?> approveDocument(@RequestBody ApprovalDTO approvalDTO) {
+//            if (approvalDTO.getStatus() == 1) {
+//                return ResponseEntity.ok("결재승인");
+//            } else {
+//                return ResponseEntity.ok("Document approval in progress.");
+//            }
+//}
 
 
 
