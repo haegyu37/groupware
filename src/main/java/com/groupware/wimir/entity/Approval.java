@@ -4,12 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 
 
 @Entity
-//@AllArgsConstructor
 @ToString
 @NoArgsConstructor
 @Getter @Setter
@@ -24,28 +21,20 @@ public class Approval {
     @JoinColumn(name = "document_id")
     private Document document;
 
-    @ElementCollection
-    @JoinColumn(name = "approvers_id")
-    private List<Long> approverIds;
-
-//    //엔티티 나누기
-//    @OneToMany(mappedBy = "approval")
-//    private List<ApprovalLine> approvers;
-
+    @ManyToOne
+    @JoinColumn(name = "line_id")
+    private ApprovalLine line;
 
     private int approved; //결재 결과 (0전, 1승인, 2반려)
 
     private LocalDateTime approvalDate;
 
-    private String name; //결재라인 이름
 
-
-    public Approval(Document document, List<Long> approverIds, int approved, LocalDateTime approvalDate, String name) {
+    public Approval(Document document, ApprovalLine line, int approved, LocalDateTime approvalDate) {
         this.document = document;
-        this.approverIds = approverIds;
+        this.line = line;
         this.approved = approved;
         this.approvalDate = approvalDate;
-        this.name = name;
     }
 
 }

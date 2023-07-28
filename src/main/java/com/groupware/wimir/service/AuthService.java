@@ -10,6 +10,8 @@ import com.groupware.wimir.jwt.TokenProvider;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -17,7 +19,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.Collections;
 
 
@@ -93,7 +97,6 @@ public class AuthService {
 
         return tokenDTO;
     }
-
 
     }
 

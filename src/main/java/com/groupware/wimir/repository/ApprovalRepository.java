@@ -14,7 +14,4 @@ import java.util.List;
 @Repository
 public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 
-    @Query("SELECT a FROM Approval a")
-    List<Approval> getAllApprovals();
-
 }

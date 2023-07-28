@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @RequiredArgsConstructor        //TokenProvider 객체를 주입받기 위함
 public class JwtFilter extends OncePerRequestFilter {
-    public static final String AUTHORIZATION_HEADER = "Authorization";      //HTTP 요청 헤더에서 인증정보 전단하기위함
+    public static final String AUTHORIZATION_HEADER = "Authorization";      //HTTP 요청 헤더에서 인증정보 전달하기위함
     public static final String BEARER_PREFIX = "Bearer ";       //JWT 토큰을 HTTP 요청 헤더에서 구분하기 위한 접두사
 
     private final TokenProvider tokenProvider;                  //JWT 토큰의 생성및 검증 담당
@@ -31,7 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response);    // 다음 필터로 제어를 넘김
     }
 
     // Request Header 에서 토큰 정보를 꺼내오기

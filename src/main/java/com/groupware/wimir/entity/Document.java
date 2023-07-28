@@ -40,8 +40,6 @@ public class Document {
 
     private Long sno = 0L; // 문서 임시저장 번호(디폴트 값은 0)
 
-//    @OneToMany(mappedBy = "document", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Approval> approvals = new ArrayList<>();
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,

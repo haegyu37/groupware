@@ -1,5 +1,6 @@
 package com.groupware.wimir.DTO;
 
+//import com.groupware.wimir.entity.ApprovalLine;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
 import lombok.*;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ApprovalDTO {
 
         private Document documentId;
-        private List<Long> approverIds;
+        private List<Long> approvers;
         private String name;
         private LocalDateTime approvalDate;
         private int approved;
