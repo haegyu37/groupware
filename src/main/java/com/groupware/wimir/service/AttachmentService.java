@@ -27,9 +27,19 @@ public class AttachmentService {
     public AttachmentService(AttachmentRepository attachmentRepository, DocumentRepository documentRepository) {
         this.attachmentRepository = attachmentRepository;
         this.documentRepository = documentRepository;
-        // 파일 저장 디렉토리 설정 및 생성 코드 생략
-        this.attachmentStorageLocation = Paths.get("C:\\uploads");
+
+       // 파일 저장 디렉토리 설정
+        String uploadPath = "C:\\uploads";
+        this.attachmentStorageLocation = Paths.get(uploadPath);
+
+        // 파일 저장 디렉토리 생성
+        try {
+            Files.createDirectories(this.attachmentStorageLocation);
+        } catch (IOException e) {
+            throw new RuntimeException("파일 저장 디렉토리를 생성할 수 없습니다.", e);
+        }
     }
+
 
     //  파일 이름 중복시 새로 이름 부여
     private String getUniqueFileName(String originalFileName) {
@@ -46,7 +56,8 @@ public class AttachmentService {
         return uniqueFileName;
     }
 
-    public Long uploadAttachment(MultipartFile file, Long documentId, String originalFileName) {
+    public Long uploadAttachment(MultipartFile file, Long documentId) {
+        String originalFileName = file.getOriginalFilename();
         String savedFileName = getUniqueFileName(originalFileName); // 저장 파일 이름 생성
 
         Path targetLocation = this.attachmentStorageLocation.resolve(savedFileName);
@@ -64,6 +75,7 @@ public class AttachmentService {
         attachmentRepository.save(newAttachment);
         return newAttachment.getId();
     }
+
 
     private String getName(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();

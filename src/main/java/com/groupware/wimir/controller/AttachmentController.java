@@ -21,15 +21,14 @@ public class AttachmentController {
         this.attachmentService = attachmentService;
     }
 
-    // 첨부파일 업로드
-    @PostMapping(value = "/upload")
+    // 첨부파일 업로드(현재 저장 파일명이 원본 파일명으로 저장됨)
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> uploadAttachments(@RequestParam("attachments") List<MultipartFile> files,
-                                                    @RequestParam("documentId") Long documentId,
-                                                    @RequestParam("originalFileName") String originalFileName) {
+                                                    @RequestParam("documentId") Long documentId) {
         try {
             List<Long> attachmentIds = new ArrayList<>();
             for (MultipartFile file : files) {
-                Long attachmentId = attachmentService.uploadAttachment(file, documentId, originalFileName);
+                Long attachmentId = attachmentService.uploadAttachment(file, documentId);
                 attachmentIds.add(attachmentId);
             }
             String response = "첨부파일이 업로드되었습니다. 첨부파일 ID : " + attachmentIds;
@@ -56,7 +55,7 @@ public class AttachmentController {
 //        }
 //    }
 
-    // 첨부파일 다운로드
+    // 첨부파일 다운로드(오류는 없으나, postman에서는 확인 불가능)
     @GetMapping(value = "/download/{id}")
     public ResponseEntity<byte[]> downloadAttachment(@PathVariable Long id) {
         try {
@@ -73,7 +72,7 @@ public class AttachmentController {
         }
     }
 
-    // 첨부파일 삭제
+    // 첨부파일 삭제(db에서 정상 삭제됨)
     @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<String> deleteAttachment(@PathVariable Long id) {
         try {

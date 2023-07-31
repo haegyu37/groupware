@@ -55,7 +55,7 @@ public class TemplateService {
     }
 
     public List<Template> getTemplatesList() {
-        return templatesList;
+        return templateRepository.findAll();
     }
 
     public void setTemplatesList(List<Template> templatesList) {
