@@ -27,6 +27,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member > findByTeam(Team team);
 
     List<Member> findByPosition(Position position);
+
+//    List<Member> findMemberById(List<Long> approvers);
 }
 
 

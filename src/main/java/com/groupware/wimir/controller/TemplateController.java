@@ -1,8 +1,11 @@
 package com.groupware.wimir.controller;
 
+import ch.qos.logback.classic.Logger;
 import com.groupware.wimir.DTO.TemplateDTO;
 import com.groupware.wimir.service.TemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.groupware.wimir.entity.Template;
 
@@ -12,11 +15,13 @@ import java.io.IOException;
 import java.util.List;
 
 
+
 @RestController
 @RequestMapping("/templates")
 public class TemplateController {
 
     private final TemplateService templateService;
+    private Logger logger;
 
     @Autowired
     public TemplateController(TemplateService templateService) {
@@ -25,52 +30,36 @@ public class TemplateController {
 
     // 템플릿 생성
     @PostMapping("/create")
-    public String createTemplate(@RequestBody TemplateDTO templateDTO) throws IOException {
-        // Template 엔티티로 변환하여 저장
-        Template template = Template.builder()
-                .name(templateDTO.getName())
-                .title(templateDTO.getTitle())
-                .content(templateDTO.getContent())
-                .category(templateDTO.getCategory())
-                .data(templateDTO.getData())
-                .build();
-        templateService.createTemplate(template);
-
-        // 모든 내용이 HTML 파일로 저장(pc에도 저장)
+    public ResponseEntity<String> createTemplate(@RequestBody TemplateDTO templateDTO) {
         try {
-            File file = new File("c://templates/" + template.getTitle() + ".html");
-            FileWriter writer = new FileWriter(file);
-            writer.write(template.getContent());
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "redirect:/";    // 작성 누르기 전 페이지 주소 넣음
-    }
+            // db에 양식 데이터에 저장
+            Template template = Template.builder()
+                    .title(templateDTO.getTitle())
+                    .content(templateDTO.getContent())
+                    .category(templateDTO.getCategory())
+                    .build();
+            templateService.createTemplate(template);
 
-    // 템플릿 조회
-    @GetMapping("/get/{id}")
-    public TemplateDTO getTemplate(@PathVariable Long id) {
-        Template template = templateService.getTemplateById(id);
-        // Template 엔티티를 TemplateDTO로 변환하여 반환
-        TemplateDTO templateDTO = new TemplateDTO(
-                template.getId(),
-                template.getName(),
-                template.getTitle(),
-                template.getContent(),
-                template.getCategory(),
-                template.getData()
-        );
-        return templateDTO;
+            // html 파일로 저장
+            File file = new File("c://templates/" + template.getTitle() + ".html");
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write(template.getContent());
+            }
+            
+            return ResponseEntity.ok("양식 등록을 완료했습니다.");
+        } catch (Exception e) {
+            logger.error("양식 등록을 실패했습니다.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("양식 등록을 실패했습니다.");
+        }
     }
 
     // 템플릿 수정
     @PutMapping("/update/{id}")
     public String updateTemplate(@PathVariable Long id, @RequestBody TemplateDTO templateDTO) {
-        // 템플릿 업데이트
+        // db에 양식 데이터 수정
         templateService.updateTemplate(id, templateDTO);
 
-        // HTML 파일로 저장
+        // 수정된 파일을 기존 파일에 덮어쓰기 해서 저장
         Template template = templateService.getTemplateById(id);
         try {
             File file = new File(template.getTitle() + ".html");
@@ -83,17 +72,37 @@ public class TemplateController {
         return "redirect:/";
     }
 
-
     // 템플릿 삭제
     @DeleteMapping("/delete/{id}")
     public String deleteTemplate(@PathVariable Long id) {
-        // 템플릿 삭제
+        // db에 양식 데이터 삭제
         Template template = templateService.getTemplateById(id);
+
         templateService.deleteTemplate(id);
-        // HTML 파일 삭제
+
+        // 저장된 양식 html 파일은 삭제되지 않고 아카이브 폴더로 이동
         File file = new File(template.getTitle() + ".html");
-        file.delete();
+        File archiveDir = new File("c://templates/archive/");
+        if (!archiveDir.exists()) {
+            archiveDir.mkdirs();
+        }
+        file.renameTo(new File(archiveDir, file.getName()));
+
         return "redirect:/";
+    }
+
+    // 템플릿 조회
+    @GetMapping("/get/{id}")
+    public TemplateDTO getTemplate(@PathVariable Long id) {
+        Template template = templateService.getTemplateById(id);
+
+        TemplateDTO templateDTO = new TemplateDTO(
+                template.getId(),
+                template.getTitle(),
+                template.getContent(),
+                template.getCategory()
+        );
+        return templateDTO;
     }
 
     // 템플릿 목록

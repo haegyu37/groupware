@@ -10,11 +10,25 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface ApprovalRepository extends JpaRepository<Approval, Long> {
+    List<Approval> findByName(String name);
 
-    @Query("SELECT a FROM Approval a")
-    List<Approval> getAllApprovals();
+    List<Approval> findAll();
 
+//    Page<Approval> findByWriterIdAndStatus(Long memberId, Pageable pageable);
+
+//    Approval getLineByLineId(Long id);
+
+    List<Approval> findByWriter(Long writerId);
+
+    @Query("SELECT MAX(lineId) FROM Approval")
+    Long findMaxLineId();
+
+    List<Approval> findByLineId(Long lineId);
+
+
+    List<Long> findMemberIdByLineId(Long id);
 }

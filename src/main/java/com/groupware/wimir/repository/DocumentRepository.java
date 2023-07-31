@@ -25,5 +25,8 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
     Page<Document> findByWriterIdAndStatus(Long memberId, int status, Pageable pageable);
 
+    Page<Document> findByTemplateIdAndStatus(Long id, int status, Pageable pageable);
+
+    Page<Document> findByWriterAndTemplateIdAndStatus(Long memberId, Long id, int status, Pageable pageable);
 }
 

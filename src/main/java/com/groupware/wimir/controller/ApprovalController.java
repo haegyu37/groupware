@@ -1,41 +1,19 @@
 package com.groupware.wimir.controller;
 
-import com.google.protobuf.Message;
+import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.ApprovalDTO;
-import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.*;
 import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.MemberRepository;
-//import com.groupware.wimir.service.ApprovalService;
-import com.groupware.wimir.service.ApprovalService;
-import com.groupware.wimir.service.DocumentService;
-import com.groupware.wimir.service.DocumentServiceImpl;
 import com.groupware.wimir.service.MemberService;
-import com.mysql.cj.xdevapi.JsonArray;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -46,13 +24,9 @@ public class ApprovalController {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    private ApprovalService approvalService;
-    @Autowired
     private MemberService memberService;
     @Autowired
-    private DocumentServiceImpl documentService;
-    @Autowired
-    private ApprovalRepository approvalRepository;
+    ApprovalRepository approvalRepository;
 
     //팀 모두 출력
     @GetMapping("/team")
@@ -112,62 +86,38 @@ public class ApprovalController {
         return outputList;
     }
 
-    //결재라인 저장하기
-    @PostMapping("/save")
-    public List<Long> saveApprovalLine(@RequestBody ApprovalDTO approvalDTO) {
+    //결재라인 지정(미리 저장한 결재라인을 불러와서 지정하기)
+    @PostMapping("/create")
+    public ResponseEntity<Approval> setApproval(@RequestBody ApprovalDTO approvalDTO) {
 
-        Approval approval = new Approval();
+        List<Approval> approvals = approvalRepository.findByLineId(approvalDTO.getLineId());
+//        System.out.println("결재자들: " + approvals);
 
-        approval.setDocument(approvalDTO.getDocumentId());
-        approval.setApproverIds(approvalDTO.getApproverIds());
-        approval.setApprovalDate(approvalDTO.getApprovalDate());
-        approval.setApproved(approvalDTO.getApproved());
-        approval.setName(approvalDTO.getName());
+//        List<Long> lineIds = approvals.stream().map(Approval::getLineId).collect(Collectors.toList());
+        List<Long> memberIds = approvals.stream().map(Approval::getMemberId).collect(Collectors.toList());
+        List<Long> writers = approvals.stream().map(Approval::getWriter).collect(Collectors.toList());
+        List<String> names = approvals.stream().map(Approval::getName).collect(Collectors.toList());
+// 다른 필드들에 대해서도 필요한 경우에 리스트로 추출
 
-        return approvalService.saveApprovalIds(approval);
+// 리스트로 만들어진 각 칼럼들의 값들을 approval 엔티티에 삽입
+        Approval savedApproval = null;
+        for (int i = 0; i < approvals.size(); i++) {
+            Approval approval = new Approval();
+//            approval.setLineId(lineIds.get(i));
+            approval.setMemberId(memberIds.get(i));
+            approval.setWriter(writers.get(i));
+            approval.setName(names.get(i));
+//            System.out.println("문서아이디" + approvalDTO.getDocumentId());
+            approval.setDocument(approvalDTO.getDocumentId());
+
+            savedApproval = approvalRepository.save(approval);
+
+        }
+
+        return ResponseEntity.ok(savedApproval);
     }
-
-//    @PostMapping("/save")
-//    public List<Long> saveApprovalLine(@RequestBody ApprovalDTO approvalDTO) {
-//
-//        // Convert the Document ID to a Document entity (assuming you have a method to fetch the Document entity)
-//        Document document = documentService.getDocumentById(approvalDTO.getDocumentId());
-//
-//        // Create a list to hold the Approvers
-//        List<ApprovalLine> approvers = new ArrayList<>();
-//
-//        // Loop through the list of approver IDs and create Approvers for each ID
-//        for (Long approverId : approvalDTO.getApproverIds()) {
-//            ApprovalLine line = new ApprovalLine();
-//            line.setApproverId(approverId);
-//            line.setApproval(ap proval); // Set the relationship with the Approval entity
-//            approvers.add(line);
-//        }
-//
-//        // Create the Approval entity
-//        Approval approval = new Approval();
-//        approval.setDocument(document);
-//        approval.setApprovers(approvers); // Set the list of Approvers
-//        approval.setApprovalDate(approvalDTO.getApprovalDate());
-//        approval.setApproved(approvalDTO.getApproved());
-//        approval.setName(approvalDTO.getName());
-//
-//        // Save the Approval entity, including the Approvers
-//        approvalService.saveApproval(approval);
-//
-//        // Return the list of Approver IDs for response (if needed)
-//        return approvalDTO.getApproverIds();
-//    }
-
-    //저장한 결재라인 모두 불러오기
-    @GetMapping("/lineList")
-    public ResponseEntity<List<Approval>> getAllApprovals() {
-        List<Approval> approvals = approvalService.getAllApprovals();
-        return new ResponseEntity<>(approvals, HttpStatus.OK);
-    }
-
-
-
-
-
 }
+
+
+
+

@@ -5,24 +5,27 @@ import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
+import com.groupware.wimir.repository.TemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
 public class DocumentServiceImpl implements DocumentService {
-
     @Autowired
     private DocumentRepository documentRepository;
     @Autowired
     private MemberRepository memberRepository;
-
     @Autowired
     private AttachmentService attachmentService;
+
+    @Autowired
+    private TemplateRepository templateRepository;
 
     @Override
     public Document findDocumentById(Long id) {
@@ -124,6 +127,15 @@ public class DocumentServiceImpl implements DocumentService {
     public Page<Document> findDocumentListByWriterAndStatus(Long memberId, int status, Pageable pageable) {
         return documentRepository.findByWriterIdAndStatus(memberId, status, pageable);
     }
+    @Override
+    public Page<Document> findDocumentListByTemplateIdAndStatus(Long id, int status, Pageable pageable) {
+        return documentRepository.findByTemplateIdAndStatus(id, status, pageable);
+    }
+
+    @Override
+    public Page<Document> findDocumentListByWriterAndTemplateIdAndStatus(Long memberId, Long id, int status, Pageable pageable) {
+        return documentRepository.findByWriterAndTemplateIdAndStatus(memberId, id, status, pageable);
+    }
 
 //    public Document getDocumentById(Long documentId) {
 //        // findById 메서드는 Optional<Document>를 반환한다고 가정합니다.
@@ -134,12 +146,6 @@ public class DocumentServiceImpl implements DocumentService {
 ////        // 여기에서는 orElseThrow를 사용하여 문서를 찾지 못한 경우 예외를 던집니다.
 ////        return optionalDocument.orElseThrow(() -> new RuntimeException("ID " + documentId + "에 해당하는 문서를 찾을 수 없습니다."));
 //    }
-
-
-
-
-
-
 
 
 }
