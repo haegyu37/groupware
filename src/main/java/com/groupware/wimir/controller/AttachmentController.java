@@ -1,5 +1,6 @@
 package com.groupware.wimir.controller;
 
+import com.groupware.wimir.entity.Attachment;
 import com.groupware.wimir.service.AttachmentService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,14 +24,15 @@ public class AttachmentController {
     // 첨부파일 업로드
     @PostMapping(value = "/upload")
     public ResponseEntity<String> uploadAttachments(@RequestParam("attachments") List<MultipartFile> files,
-                                                    @RequestParam("documentId") Long documentId) {
+                                                    @RequestParam("documentId") Long documentId,
+                                                    @RequestParam("originalFileName") String originalFileName) {
         try {
             List<Long> attachmentIds = new ArrayList<>();
             for (MultipartFile file : files) {
-                Long attachmentId = attachmentService.uploadAttachment(file, documentId);
+                Long attachmentId = attachmentService.uploadAttachment(file, documentId, originalFileName);
                 attachmentIds.add(attachmentId);
             }
-            String response = "첨부파일이 업로드되었습니다. 첨부파일 ID 목록 : " + attachmentIds;
+            String response = "첨부파일이 업로드되었습니다. 첨부파일 ID : " + attachmentIds;
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -39,15 +41,31 @@ public class AttachmentController {
         }
     }
 
+//    @GetMapping(value = "/download/{id}")
+//    public ResponseEntity<byte[]> downloadAttachment(@PathVariable Long id) {
+//        try {
+//            byte[] fileBytes = attachmentService.downloadAttachment(id);
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//            headers.setContentDispositionFormData("attachment", "attachment");
+//            return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+//    }
+
     // 첨부파일 다운로드
     @GetMapping(value = "/download/{id}")
     public ResponseEntity<byte[]> downloadAttachment(@PathVariable Long id) {
         try {
             byte[] fileBytes = attachmentService.downloadAttachment(id);
+            Attachment attachment = attachmentService.getAttachmentById(id);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "attachment");
+            headers.setContentDispositionFormData("attachment", attachment.getOriginalName()); // 기본적으로 원본 파일명으로 저장
             return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();

@@ -4,6 +4,7 @@ import com.groupware.wimir.entity.Attachment;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.repository.AttachmentRepository;
 import com.groupware.wimir.repository.DocumentRepository;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,18 +31,35 @@ public class AttachmentService {
         this.attachmentStorageLocation = Paths.get("C:\\uploads");
     }
 
-    public Long uploadAttachment(MultipartFile file, Long documentId) {
-        String name = getName(file);
-        Path targetLocation = this.attachmentStorageLocation.resolve(name);
+    //  파일 이름 중복시 새로 이름 부여
+    private String getUniqueFileName(String originalFileName) {
+        String baseName = FilenameUtils.getBaseName(originalFileName);
+        String extension = FilenameUtils.getExtension(originalFileName);
+        int count = 1;
+
+        String uniqueFileName = originalFileName;
+        while (Files.exists(this.attachmentStorageLocation.resolve(uniqueFileName))) {
+            uniqueFileName = baseName + "(" + count + ")." + extension;
+            count++;
+        }
+
+        return uniqueFileName;
+    }
+
+    public Long uploadAttachment(MultipartFile file, Long documentId, String originalFileName) {
+        String savedFileName = getUniqueFileName(originalFileName); // 저장 파일 이름 생성
+
+        Path targetLocation = this.attachmentStorageLocation.resolve(savedFileName);
 
         // 문서 id에 해당하는 Document 엔티티를 찾아옴
         Document document = findDocumentById(documentId);
+
         Attachment newAttachment = Attachment.builder()
-                .originalName(name)
-                .savedName(name)
+                .originalName(originalFileName) // 원본 파일 이름 설정
+                .savedName(savedFileName) // 저장 파일 이름 설정
                 .size(file.getSize())
                 .path(targetLocation.getParent().toString())
-                .document(document) // 문서 정보를 설정해줌
+                .document(document)
                 .build();
         attachmentRepository.save(newAttachment);
         return newAttachment.getId();
@@ -73,13 +91,14 @@ public class AttachmentService {
 
     public void deleteAttachment(Long attachmentId) {
         Attachment attachment = getAttachmentById(attachmentId);
-        Path attachmentPath = Paths.get(attachment.getPath(), attachment.getSavedName());
-        try {
-            Files.delete(attachmentPath);
-            attachmentRepository.delete(attachment);
-        } catch (IOException ex) {
-            throw new RuntimeException("첨부파일을 삭제할 수 없습니다.", ex);
-        }
+//        Path attachmentPath = Paths.get(attachment.getPath(), attachment.getSavedName());
+//        try {
+//            Files.delete(attachmentPath);
+//            attachmentRepository.delete(attachment);
+//        } catch (IOException ex) {
+//            throw new RuntimeException("첨부파일을 삭제할 수 없습니다.", ex);
+//        }
+        attachmentRepository.delete(attachment); // 파일 정보만 DB에서 삭제
     }
 
     public void saveAttachments(List<Attachment> attachments, Long documentId) {
