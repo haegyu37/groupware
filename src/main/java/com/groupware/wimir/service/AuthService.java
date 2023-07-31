@@ -4,6 +4,7 @@ import com.groupware.wimir.DTO.MemberRequestDTO;
 import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.DTO.TokenRequestDTO;
 import com.groupware.wimir.DTO.TokenDTO;
+import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.RefreshToken;
 import com.groupware.wimir.jwt.TokenProvider;
@@ -98,7 +99,22 @@ public class AuthService {
         return tokenDTO;
     }
 
+    // 사용자의 권한을 ROLE_BLOCK으로 업데이트하는 메서드 추가
+    public void updateUserAuthorityToBlock(Long userId) {
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        member.setAuthority(Authority.ROLE_BLOCK);
+        memberRepository.save(member);
     }
+
+
+
+
+    }
+//    public void logout() {
+//
+//    }
 
 
 

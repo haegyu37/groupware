@@ -1,6 +1,7 @@
 package com.groupware.wimir.controller;
 
 import com.groupware.wimir.DTO.*;
+import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.AuthService;
@@ -65,8 +66,18 @@ public class AuthController {
     //로그인
     @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody MemberRequestDTO requestDto) {
+        Member member = memberRepository.findByNo(requestDto.getNo())
+                .orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
+
+        // 계정이 차단된 경우 토큰 발급하지 않고 접속 차단 응답 반환
+        if (member.getAuthority() == Authority.ROLE_BLOCK) {
+            log.info("접속이 차단된 계정입니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         return ResponseEntity.ok(authService.login(requestDto));
     }
+
 
     //로그아웃
     @PostMapping("/logout")
@@ -132,6 +143,19 @@ public class AuthController {
         }
     }
 
-
-
+    // 사용자의 권한을 ROLE_BLOCK으로 업데이트
+    @PostMapping("/admin/members/{memberId}/block")
+    public ResponseEntity<String> blockUser(@PathVariable Long memberId) {
+        try {
+            Optional<Member> memberOptional = memberRepository.findById(memberId);
+            if (memberOptional.isPresent()) {
+                authService.updateUserAuthorityToBlock(memberId);
+                return ResponseEntity.ok("사용자의 권한이 ROLE_BLOCK으로 업데이트되었습니다.");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
