@@ -47,7 +47,7 @@ public class AttachmentService {
         }
     }
 
-    // 첨부파일의 내용을 바이트 배열로 가져오는 메서드
+    // 첨부파일의 내용을 바이트로 가져오는 메서드
     public byte[] downloadAttachmentFileBytes(Long id) throws IOException {
         Attachment attachment = getAttachmentById(id);
         Path attachmentPath = Paths.get(DOWNLOAD_PATH, attachment.getSavedName());

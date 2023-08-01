@@ -21,12 +21,13 @@ public class DocumentDTO {
     private int status; // 1: 작성 상태, 0: 임시저장 상태
     private Approval approvalId;
     private Template template; // 양식명
+    private Long tempNo;    // 양식별 문서번호
 
     public Template getTemplate() {
         return template;
     }
 
-    public void setTemplate(Long templateId) {
-        this.template = template;
-    }
+    public void setTemplate(Template template) { this.template = template; }
+
+
 }

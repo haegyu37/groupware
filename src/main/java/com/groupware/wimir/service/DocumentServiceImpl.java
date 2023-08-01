@@ -1,17 +1,28 @@
 package com.groupware.wimir.service;
 
 import com.groupware.wimir.Config.SecurityUtil;
+import com.groupware.wimir.DTO.DocumentDTO;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
+import com.groupware.wimir.entity.Template;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.TemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,6 +31,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Autowired
     private DocumentRepository documentRepository;
+
     @Autowired
     private MemberRepository memberRepository;
 
@@ -28,6 +40,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Autowired
     private TemplateRepository templateRepository;
+    private DocumentDTO documentDTO;
 
     @Override
     public Document findDocumentById(Long id) {
@@ -64,8 +77,16 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document saveDocument(Document document) {
-        if (document.getStatus() == 0) {
-            // 임시저장 상태인 경우 id는 null
+        document.setCreateDate(LocalDateTime.now());
+
+        if (document.getStatus() == 1) {
+            Template template = documentDTO.getTemplate();
+            if (template != null) {
+                Long id = document.getId();
+                Long tempNo = documentRepository.countByTempNo(template, id);
+                document.setTempNo(tempNo + 1L);
+            }
+        } else if (document.getStatus() == 0) {
             document.setDno(null);
         }
         return documentRepository.save(document);

@@ -86,7 +86,6 @@ public class DocumentController {
         document.setDno(document.getDno()); //문서번호
         document.setSno(document.getSno()); //임시저장 번호
         document.setTemplate(documentDTO.getTemplate());    // 양식명
-        System.out.println(documentDTO.getTemplate());
 
         if (document.getStatus() == 0) {
             // 임시저장인 경우
@@ -109,7 +108,6 @@ public class DocumentController {
 
         return ResponseEntity.ok(document);
     }
-
 
     // 문서 상세 조회
     @GetMapping(value = "/read/{id}")
