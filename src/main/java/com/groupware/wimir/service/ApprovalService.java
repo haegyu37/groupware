@@ -169,7 +169,6 @@ public class ApprovalService {
     //결재승인
     public void approveDocument(Long documentId) {
         List<Approval> approvals = approvalRepository.findByDocument(documentId);
-        boolean foundCurrent = false; // current가 Y인 결재자를 찾았는지 여부를 저장하는 변수
 
         for (int i = 0; i < approvals.size(); i++) {
             Approval approval = approvals.get(i);
@@ -179,7 +178,6 @@ public class ApprovalService {
                 approval.setAppDate(now());
                 approval.setStatus(1);
                 approval.setCurrent("N");
-                foundCurrent = true;
 
                 // 다음 결재자가 있을 경우 current를 Y로 지정
                 if (i + 1 < approvals.size()) {
@@ -205,24 +203,32 @@ public class ApprovalService {
 
 //
 //    //결재 반려
-//    public void rejectDocument(Document document, Member currentApprover) {
-//        int status = document.getStatus();
-//        if (status == 0) {
-//            // 현재 문서가 결재 중인 경우에만 반려 처리
-//            document.setStatus(2); // 반려 상태로 변경
-//            document.setLastApprovedBy(currentApprover); // 반려한 멤버 설정
-//
-//            document.setCurrentApprover(null); // 다음 담당자 없음 (결재 종료)
-//
-//            // 반려 처리 시 추가로 해야할 작업이 있다면 여기에 추가
-//            // 예: 알림 메일 발송, 반려 사유 입력 등
-//
-//            documentRepository.save(document); // 변경 사항 저장
-//        } else {
-//            // 이미 승인 또는 반려된 문서인 경우 처리할 내용 추가
-//            // 예: 이미 반려된 문서에 대한 예외 처리, 알림 메시지 등
-//        }
-//    }
+public void rejectDocument(ApprovalDTO approvalDTO, Long documentId) {
+    List<Approval> approvals = approvalRepository.findByDocument(documentId);
+
+    for (int i = 0; i < approvals.size(); i++) {
+        Approval approval = approvals.get(i);
+
+        if (approval.getCurrent().equals("Y")) {
+            // 현재 결재자를 찾았을 경우
+            approval.setAppDate(now());
+            approval.setStatus(2);
+            approval.setCurrent("N");
+            approval.setReason(approvalDTO.getReason());
+
+                Optional<Document> documentOptional = documentRepository.findById(documentId);
+                Document document = documentOptional.orElse(null);
+
+                if (document != null) {
+                    document.setResult(2);
+                    document.setAppDate(LocalDateTime.now());
+                    documentRepository.save(document);
+                }
+            break;
+        }
+    }
+}
+
 
 
 
