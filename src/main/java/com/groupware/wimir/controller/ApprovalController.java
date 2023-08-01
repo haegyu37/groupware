@@ -1,12 +1,11 @@
 package com.groupware.wimir.controller;
 
-import com.groupware.wimir.DTO.LineDTO;
+import com.groupware.wimir.Config.SecurityUtil;
+import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.entity.*;
-import com.groupware.wimir.repository.LineRepository;
+import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.MemberRepository;
-//import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.ApprovalService;
-import com.groupware.wimir.service.LineService;
 import com.groupware.wimir.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,13 +28,11 @@ public class ApprovalController {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    private ApprovalService approvalService;
-    @Autowired
     private MemberService memberService;
+//    @Autowired
+//    ApprovalRepository approvalRepository;
     @Autowired
-    private LineRepository lineRepository;
-    @Autowired
-    private LineService lineService;
+    ApprovalService approvalService;
 
     //팀 모두 출력
     @GetMapping("/team")
@@ -95,9 +92,38 @@ public class ApprovalController {
         return outputList;
     }
 
-
-
+    //내가 결재라인인 문서 목록
+    @GetMapping("/mylist")
+    public List<Document> getMyApprovals() {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        //id를 기준으로 Approval을 찾는 메소드
+        List<Document> myAppDocs = approvalService.getApprovals(currentMemberId);
+        return myAppDocs;
     }
+
+    //결재 승인 앤나 반려
+    @PostMapping("/approve")
+    public ResponseEntity<String> approveDocument(@RequestBody ApprovalDTO approvalDTO) {
+            if (approvalDTO.getStatus() == 1) {
+                approvalService.approveDocument(approvalDTO.getDocument());
+                return ResponseEntity.ok("결재가 승인되었습니다.");
+            } else if(approvalDTO.getStatus() == 2){
+                approvalService.rejectDocument(approvalDTO, approvalDTO.getDocument());
+                return ResponseEntity.ok("결재가 반려되었습니다.");
+            } else {
+                return ResponseEntity.ok("결재 중 오류가 발생했습니다.");
+            }
+    }
+
+
+
+
+
+
+
+
+
+}
 
 
 

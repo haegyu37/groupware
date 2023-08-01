@@ -40,11 +40,14 @@ public class Document {
 
     private Long sno = 0L; // 문서 임시저장 번호(디폴트 값은 0)
 
-    private Long tempNo;    // 카테고리 별 문서 번호
+    private int result; //결재결과(0결재전, 1승인, 2반려)
+
+    private LocalDateTime appDate; //결재완료일
+
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
-                    LocalDateTime updateDate, Member writer, Template template, int status, Long dno, Long sno, Long tempNo) {
+                    LocalDateTime updateDate, Member writer, Template template, int status, Long dno, Long sno) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -55,8 +58,6 @@ public class Document {
         this.status = status;
         this.dno = dno;
         this.sno = sno;
-        this.tempNo =  tempNo;
     }
-
 }
 

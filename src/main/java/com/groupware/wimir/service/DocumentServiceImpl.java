@@ -28,13 +28,11 @@ import java.util.List;
 @Service
 @Transactional
 public class DocumentServiceImpl implements DocumentService {
-
     @Autowired
     private DocumentRepository documentRepository;
 
     @Autowired
     private MemberRepository memberRepository;
-
     @Autowired
     private AttachmentService attachmentService;
 
@@ -44,7 +42,8 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document findDocumentById(Long id) {
-        return documentRepository.findById(id).orElse(null);
+        return documentRepository.findById(id)
+                .orElse(null);
     }
 
 //    @Override
