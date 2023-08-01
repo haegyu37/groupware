@@ -54,6 +54,13 @@ public class DocumentController {
         return documentService.findDocumentListByWriterAndStatus(currentMemberId, 0, pageable);
     }
 
+//    //내가 작성한 저장 리스트
+//    @GetMapping(value = "/mylist")
+//    public Page<Document> getMyList(@PageableDefault Pageable pageable) {
+//        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+//        return documentService.findDocumentListByWriterAndStatus(currentMemberId, 1, pageable);
+//    }
+
     //내가 작성한 저장 리스트
     @GetMapping(value = "/mylist")
     public Page<Document> getMyList(@PageableDefault Pageable pageable) {
@@ -61,18 +68,19 @@ public class DocumentController {
         return documentService.findDocumentListByWriterAndStatus(currentMemberId, 1, pageable);
     }
 
-    // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
-    @GetMapping(value ="/categorylist/{id}")
-    public Page<Document> getDocumentsByTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
-        return documentService.findDocumentListByTemplateIdAndStatus(id, 1, pageable);
-    }
 
-    // 카테고리별 자신이 작성한 문서 리스트(fun8번 결재 상태 추가되어야 함)
-    @GetMapping(value = "/categorymylist/{id}")
-    public Page<Document> getDocumentsByMyTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
-        Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        return documentService.findDocumentListByWriterAndTemplateIdAndStatus(currentMemberId, id, 1, pageable);
-    }
+//    // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
+//    @GetMapping(value ="/categorylist/{id}")
+//    public Page<Document> getDocumentsByTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
+//        return documentService.findDocumentListByTemplateIdAndStatus(id, 1, pageable);
+//    }
+//
+//    // 카테고리별 자신이 작성한 문서 리스트(fun8번 결재 상태 추가되어야 함)
+//    @GetMapping(value = "/categorymylist/{id}")
+//    public Page<Document> getDocumentsByMyTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
+//        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+//        return documentService.findDocumentListByWriterAndTemplateIdAndStatus(currentMemberId, id, 1, pageable);
+//    }
 
     // 문서 작성
     @PostMapping(value = "/create")
@@ -88,7 +96,7 @@ public class DocumentController {
 //        document.setSno(document.getSno()); //임시저장 번호
         document.setTemplate(documentDTO.getTemplate());    // 양식명
 //        System.out.println(documentDTO.getTemplate());
-        document.setResult(0);
+        document.setResult("진행중");
         approvalService.setApproval(documentDTO);
 
 
@@ -138,6 +146,12 @@ public class DocumentController {
             updateDocument.setTitle(documentDTO.getTitle());
             updateDocument.setContent(documentDTO.getContent());
             updateDocument.setUpdateDate(LocalDateTime.now());
+            documentService.setWriterByToken(updateDocument);
+            updateDocument.setStatus(documentDTO.getStatus());
+            updateDocument.setResult("진행중");
+
+//            approvalService.updateApproval(documentDTO, id);
+
 
             if (documentDTO.getStatus() == 0) {
                 // 임시저장인 경우 그냥 저장
