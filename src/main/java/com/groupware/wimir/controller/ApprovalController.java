@@ -102,10 +102,10 @@ public class ApprovalController {
     }
 
     //결재승인
-    @PostMapping("/approve/{documentId}")
-    public ResponseEntity<String> approveDocument(@PathVariable Long documentId) {
+    @PostMapping("/approve/{id}")
+    public ResponseEntity<String> approveDocument(@PathVariable Long id) {
         try {
-            approvalService.approveDocument(documentId);
+            approvalService.approveDocument(id);
             return ResponseEntity.ok("결재가 승인되었습니다.");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
