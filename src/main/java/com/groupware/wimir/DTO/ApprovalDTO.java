@@ -21,7 +21,9 @@ public class ApprovalDTO {
 ////        private List<Long> approvers;
 //////        private String name;
 //        private LocalDateTime approvalDate;
-        private int status; //결재자별 결재상태 (0결재전 1승인 2반려)
+        private int status; //결재자별 결재상태 (1승인 2반려)
+        private String reason;
+        private Long document;
 //        private Long lineId;
 
 

@@ -101,17 +101,18 @@ public class ApprovalController {
         return myAppDocs;
     }
 
-    //결재승인
-    @PostMapping("/approve/{documentId}")
-    public ResponseEntity<String> approveDocument(@PathVariable Long documentId) {
-        try {
-            approvalService.approveDocument(documentId);
-            return ResponseEntity.ok("결재가 승인되었습니다.");
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("결재 승인 중 오류가 발생했습니다.");
-        }
+    //결재 승인 앤나 반려
+    @PostMapping("/approve")
+    public ResponseEntity<String> approveDocument(@RequestBody ApprovalDTO approvalDTO) {
+            if (approvalDTO.getStatus() == 1) {
+                approvalService.approveDocument(approvalDTO.getDocument());
+                return ResponseEntity.ok("결재가 승인되었습니다.");
+            } else if(approvalDTO.getStatus() == 2){
+                approvalService.rejectDocument(approvalDTO, approvalDTO.getDocument());
+                return ResponseEntity.ok("결재가 반려되었습니다.");
+            } else {
+                return ResponseEntity.ok("결재 중 오류가 발생했습니다.");
+            }
     }
 
 
