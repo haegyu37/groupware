@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,8 +29,8 @@ public class ApprovalController {
     private MemberRepository memberRepository;
     @Autowired
     private MemberService memberService;
-    @Autowired
-    ApprovalRepository approvalRepository;
+//    @Autowired
+//    ApprovalRepository approvalRepository;
     @Autowired
     ApprovalService approvalService;
 
@@ -100,12 +101,19 @@ public class ApprovalController {
         return myAppDocs;
     }
 
-//    //내가 결재라인인 문서 조회
-//    @GetMapping("/{id}")
-//    public Document getMyApproval(@PathVariable Long id) {
-//        return Approval.groupByLineId(lineService.getLineByLineId(id));
-//
-//    }
+    //결재승인
+    @PostMapping("/approve/{documentId}")
+    public ResponseEntity<String> approveDocument(@PathVariable Long documentId) {
+        try {
+            approvalService.approveDocument(documentId);
+            return ResponseEntity.ok("결재가 승인되었습니다.");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("결재 승인 중 오류가 발생했습니다.");
+        }
+    }
+
 
 
 

@@ -36,7 +36,7 @@ public class Approval {
 
     private String name; //결재라인 이름
 
-    private LocalDateTime doneDate; //결재자별 결재완료일
+//    private LocalDateTime doneDate; //결재자별 결재완료일
 
     private Long writer; //결재라인 작성자
 
