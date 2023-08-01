@@ -34,5 +34,5 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 
     List<Approval> findByMemberId(Long id);
 
-    List<Approval> findByDocumentId(Long documentId);
+    List<Approval> findByDocument(Long document);
 }

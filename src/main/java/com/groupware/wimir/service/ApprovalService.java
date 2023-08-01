@@ -15,11 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.time.LocalDateTime.now;
 
 @Service
 @RequiredArgsConstructor
@@ -30,21 +33,67 @@ public class ApprovalService {
     @Autowired
     private DocumentRepository documentRepository;
     @Autowired
-    private ApprovalService approvalService;
+    private LineService lineService;
+
+//    //결재 전송
+//    public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {
+//        Approval savedApproval = null;
+//
+//        Long maxDocId = documentRepository.findMaxDocId(); // DB에서 문서아이디의 최대값을 가져옴
+//        if(maxDocId == null) {
+//            maxDocId = 1L;
+//        } else {
+//            maxDocId = maxDocId + 1;
+//        }
+//
+//
+//        if(documentDTO.getLineId() !=  null) {
+//            List<Approval> approvals = approvalRepository.findByLineId(documentDTO.getLineId());
+//
+//            List<Long> memberIds = approvals.stream().map(Approval::getMemberId).collect(Collectors.toList());
+//            List<Long> writers = approvals.stream().map(Approval::getWriter).collect(Collectors.toList());
+//            List<String> names = approvals.stream().map(Approval::getName).collect(Collectors.toList());
+//            // 다른 필드들에 대해서도 필요한 경우에 리스트로 추출
+//
+//            // 리스트로 만들어진 각 칼럼들의 값들을 approval 엔티티에 삽입
+//            for (int i = 0; i < approvals.size(); i++) {
+//                Approval approval = new Approval();
+//                approval.setMemberId(memberIds.get(i));
+//                approval.setWriter(writers.get(i));
+//                approval.setName(names.get(i));
+//                approval.setDocument(maxDocId);
+//
+//                savedApproval = approvalRepository.save(approval);
+//
+//            }
+//            return ResponseEntity.ok(savedApproval);
+//        } else { //결재자 각각 지정해서 삽입
+//
+//            for(Long approverId : documentDTO.getApprovers()){
+//                Approval approval = new Approval();
+//                approval.setDocument(maxDocId);
+//                approval.setMemberId(approverId);
+//
+//                savedApproval = approvalRepository.save(approval);
+//            }
+//
+//        }
+//        return ResponseEntity.ok(savedApproval);
+//    }
+
 
     //결재 전송
     public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {
         Approval savedApproval = null;
 
         Long maxDocId = documentRepository.findMaxDocId(); // DB에서 문서아이디의 최대값을 가져옴
-        if(maxDocId == null) {
+        if (maxDocId == null) {
             maxDocId = 1L;
         } else {
             maxDocId = maxDocId + 1;
         }
 
-
-        if(documentDTO.getLineId() !=  null) {
+        if (documentDTO.getLineId() != null) {
             List<Approval> approvals = approvalRepository.findByLineId(documentDTO.getLineId());
 
             List<Long> memberIds = approvals.stream().map(Approval::getMemberId).collect(Collectors.toList());
@@ -60,16 +109,28 @@ public class ApprovalService {
                 approval.setName(names.get(i));
                 approval.setDocument(maxDocId);
 
-                savedApproval = approvalRepository.save(approval);
+                if (i == 0) {
+                    approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
+                } else {
+                    approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
+                }
 
+                savedApproval = approvalRepository.save(approval);
             }
             return ResponseEntity.ok(savedApproval);
         } else { //결재자 각각 지정해서 삽입
-
-            for(Long approverId : documentDTO.getApprovers()){
+            List<Long> approvers = documentDTO.getApprovers();
+            for (int i = 0; i < approvers.size(); i++) {
+                Long approverId = approvers.get(i);
                 Approval approval = new Approval();
                 approval.setDocument(maxDocId);
                 approval.setMemberId(approverId);
+
+                if (i == 0) {
+                    approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
+                } else {
+                    approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
+                }
 
                 savedApproval = approvalRepository.save(approval);
             }
@@ -95,7 +156,8 @@ public class ApprovalService {
         List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
 
         for (Long docId : docIds) {
-            Document document = documentRepository.findById(docId).orElse(null); //id로 Document 찾음
+            Document document = documentRepository.findById(docId)
+                    .orElse(null); //id로 Document 찾음
             if (document != null) {
                 myAppDocs.add(document); //Document 리스트에 추가
             }
@@ -104,47 +166,43 @@ public class ApprovalService {
         return myAppDocs; // 리스트 반환
     }
 
-    // Document ID에 해당하는 모든 Approval의 Member ID를 리스트로 가져오는 메서드
-    public List<Long> getMemberIdsByDocumentId(Long documentId) {
-        List<Approval> approvals = approvalRepository.findByDocumentId(documentId); //document로 approval 리스트 만듦
-        List<Long> memberIds = new ArrayList<>();
+    //결재승인
+    public void approveDocument(Long documentId) {
+        List<Approval> approvals = approvalRepository.findByDocument(documentId);
+        boolean foundCurrent = false; // current가 Y인 결재자를 찾았는지 여부를 저장하는 변수
 
-        for (Approval approval : approvals) {
-            memberIds.add(approval.getMemberId()); //memberId만 찾아서 리스트 만들어줌
+        for (int i = 0; i < approvals.size(); i++) {
+            Approval approval = approvals.get(i);
+
+            if (approval.getCurrent().equals("Y")) {
+                // 현재 결재자를 찾았을 경우
+                approval.setAppDate(now());
+                approval.setStatus(1);
+                approval.setCurrent("N");
+                foundCurrent = true;
+
+                // 다음 결재자가 있을 경우 current를 Y로 지정
+                if (i + 1 < approvals.size()) {
+                    Approval nextApproval = approvals.get(i + 1);
+                    nextApproval.setCurrent("Y");
+                } else {
+                    // 다음 결재자가 없는 경우, 즉 리스트의 마지막 결재자인 경우
+                    // document의 result를 1로 set
+                    Optional<Document> documentOptional = documentRepository.findById(documentId);
+                    Document document = documentOptional.orElse(null);
+
+                    if (document != null) {
+                        document.setResult(1);
+                        document.setAppDate(LocalDateTime.now());
+                        documentRepository.save(document);
+                    }
+                }
+                break;
+            }
         }
-
-        return memberIds;
     }
 
-//    //결재 승인
-//    public void updateApprovalStatus(Long documentId, Long currentMemberId) {
-//        List<Long> approvers = approvalService.getMemberIdsByDocumentId(documentId); //문서에 해당된 결재자 memberId 리스트
-//
-////        // 문서 아이디에 해당하는 승인 목록을 찾아서 lineId와 appDate 기준으로 정렬
-////        List<Approval> documentApprovals = approvals.stream()
-////                .filter(approval -> approval.getDocument().equals(documentId))
-////                .sorted(Comparator.comparing(Approval::getLineId).thenComparing(Approval::getAppDate))
-////                .collect(Collectors.toList());
-//
-////        boolean foundCurrent = false;
-//
-//        // 정렬된 승인 목록을 순회하며 현재 결재자의 다음 결재자를 찾고 current 상태를 업데이트
-//        for (int i = 0; i < approvers.size(); i++) {
-//            if (foundCurrent) {
-//                // 다음 결재자의 current 상태를 "Y"로 설정
-//                approval.setCurrent("Y");
-//                approvalRepository.save(approval);
-//                break;
-//            }
-//
-//            // 현재 결재자를 찾아서 상태를 승인(1)으로 변경하고 foundCurrent를 true로 설정
-//            if (approval.getMemberId().equals(currentMemberId)) {
-//                approval.setStatus(1);
-//                foundCurrent = true;
-//                approvalRepository.save(approval);
-//            }
-//        }
-//    }
+
 //
 //    //결재 반려
 //    public void rejectDocument(Document document, Member currentApprover) {
@@ -165,6 +223,7 @@ public class ApprovalService {
 //            // 예: 이미 반려된 문서에 대한 예외 처리, 알림 메시지 등
 //        }
 //    }
+
 
 
 }

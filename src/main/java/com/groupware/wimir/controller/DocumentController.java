@@ -79,7 +79,6 @@ public class DocumentController {
     public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO) {
         Document document = new Document();
 
-        System.out.println("즐찾"+documentDTO.getLineId());
         document.setTitle(documentDTO.getTitle());
         document.setContent(documentDTO.getContent());
         documentService.setWriterByToken(document);

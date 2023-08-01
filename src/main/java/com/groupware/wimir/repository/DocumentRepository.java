@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
@@ -32,6 +32,6 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     @Query("SELECT MAX(id) FROM Document")
     Long findMaxDocId();
 
-//    Document findById(Long id);
+    Optional<Document> findById(Long id);
 }
 

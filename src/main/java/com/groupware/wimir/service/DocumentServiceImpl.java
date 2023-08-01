@@ -29,7 +29,8 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document findDocumentById(Long id) {
-        return documentRepository.findById(id).orElse(null);
+        return documentRepository.findById(id)
+                .orElse(null);
     }
 
 //    @Override

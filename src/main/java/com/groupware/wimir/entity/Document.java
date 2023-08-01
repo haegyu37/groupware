@@ -40,7 +40,9 @@ public class Document {
 
     private Long sno = 0L; // 문서 임시저장 번호(디폴트 값은 0)
 
-    private int result; //결재결과
+    private int result; //결재결과(0결재전, 1승인, 2반려)
+
+    private LocalDateTime appDate; //결재완료일
 
 
     @Builder
