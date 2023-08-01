@@ -30,9 +30,8 @@ public class TemplateController {
             // 필수 필드인지 확인하고 유효성 검사
             String title = templateDTO.getTitle();
             String content = templateDTO.getContent();
-            String category = templateDTO.getCategory();
 
-            if (title == null || content == null || category == null) {
+            if (title == null || content == null) {
                 return ResponseEntity.badRequest().body("제목, 내용, 카테고리는 필수 필드입니다.");
             }
 
@@ -40,7 +39,6 @@ public class TemplateController {
             Template template = Template.builder()
                     .title(title)
                     .content(content)
-                    .category(category)
                     .build();
             templateService.createTemplate(template);
 
@@ -73,7 +71,8 @@ public class TemplateController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "redirect:/";
+        // 수정된 글의 상세 조회 페이지로 리다이렉트
+        return "redirect:/get/" + id;
     }
 
     // 템플릿 삭제
@@ -84,7 +83,7 @@ public class TemplateController {
 
         templateService.deleteTemplate(id);
 
-        // 저장된 양식 html 파일은 삭제되지 않고 아카이브 폴더로 이동
+        // 저장된 양식 html 파일은 삭제되지 않고 아카이브 폴더로 이동(현재 폴더로 이동되지 않음)
         File file = new File(template.getTitle() + ".html");
         File archiveDir = new File("c://templates/archive/");
         if (!archiveDir.exists()) {
@@ -92,7 +91,7 @@ public class TemplateController {
         }
         file.renameTo(new File(archiveDir, file.getName()));
 
-        return "redirect:/";
+        return "redirect:/list";
     }
 
     // 템플릿 조회
@@ -103,8 +102,7 @@ public class TemplateController {
         TemplateDTO templateDTO = new TemplateDTO(
                 template.getId(),
                 template.getTitle(),
-                template.getContent(),
-                template.getCategory()
+                template.getContent()
         );
         return templateDTO;
     }
