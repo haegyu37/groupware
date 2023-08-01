@@ -90,6 +90,13 @@ public class LineController {
 
     }
 
+   //결재라인 삭제
+    @DeleteMapping("/delete/{id}")
+    public void deleteDocument(@PathVariable("id") Long id) {
+        lineService.deleteDocumentByLineId(id);
+    }
+
+
 
 
 
