@@ -5,6 +5,10 @@ import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.repository.AttachmentRepository;
 import com.groupware.wimir.repository.DocumentRepository;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +28,9 @@ public class AttachmentService {
     private final Path attachmentStorageLocation;
     private final DocumentRepository documentRepository;
 
+    // 첨부파일 저장 경로(현재 컴퓨터의 다운로드 폴더)
+    private static final String DOWNLOAD_PATH = "C:\\Users\\codepc\\Downloads";
+
     public AttachmentService(AttachmentRepository attachmentRepository, DocumentRepository documentRepository) {
         this.attachmentRepository = attachmentRepository;
         this.documentRepository = documentRepository;
@@ -40,6 +47,13 @@ public class AttachmentService {
         }
     }
 
+    // 첨부파일의 내용을 바이트 배열로 가져오는 메서드
+    public byte[] downloadAttachmentFileBytes(Long id) throws IOException {
+        Attachment attachment = getAttachmentById(id);
+        Path attachmentPath = Paths.get(DOWNLOAD_PATH, attachment.getSavedName());
+        return Files.readAllBytes(attachmentPath);
+    }
+
 
     //  파일 이름 중복시 새로 이름 부여
     private String getUniqueFileName(String originalFileName) {
@@ -52,7 +66,6 @@ public class AttachmentService {
             uniqueFileName = baseName + "(" + count + ")." + extension;
             count++;
         }
-
         return uniqueFileName;
     }
 
@@ -76,7 +89,6 @@ public class AttachmentService {
         return newAttachment.getId();
     }
 
-
     private String getName(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
         if (StringUtils.hasText(originalFilename)) {
@@ -91,15 +103,22 @@ public class AttachmentService {
         return attachmentOptional.orElseThrow(() -> new RuntimeException("해당 첨부파일을 찾을 수 없습니다."));
     }
 
-    public byte[] downloadAttachment(Long id) {
-        Attachment attachment = getAttachmentById(id);
-        Path attachmentPath = Paths.get(attachment.getPath(), attachment.getSavedName());
-        try {
-            return Files.readAllBytes(attachmentPath);
-        } catch (IOException ex) {
-            throw new RuntimeException("첨부파일을 다운로드할 수 없습니다.", ex);
-        }
-    }
+//    public ResponseEntity<byte[]> downloadAttachment(Long id, String savedFileName) {
+//        Attachment attachment = getAttachmentById(id);
+//        Path attachmentPath = Paths.get(attachment.getPath(), attachment.getSavedName());
+//        try {
+//            byte[] fileBytes = Files.readAllBytes(attachmentPath);
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//            // 다운로드 창에 보여줄 파일 이름 설정
+//            headers.setContentDispositionFormData("attachment", savedFileName);
+//
+//            return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
+//        } catch (IOException ex) {
+//            throw new RuntimeException("첨부파일을 다운로드할 수 없습니다.", ex);
+//        }
+//    }
 
     public void deleteAttachment(Long attachmentId) {
         Attachment attachment = getAttachmentById(attachmentId);

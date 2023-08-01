@@ -24,7 +24,7 @@ public class TemplateController {
     }
 
     // 템플릿 생성
-    @PostMapping("/create")
+    @PostMapping(value = "/create")
     public ResponseEntity<String> createTemplate(@RequestBody TemplateDTO templateDTO) {
         try {
             // 필수 필드인지 확인하고 유효성 검사
@@ -50,13 +50,13 @@ public class TemplateController {
 
             return ResponseEntity.ok("양식 등록을 완료했습니다.");
         } catch (Exception e) {
-            e.printStackTrace(); // 오류가 발생하면 콘솔에 간단한 오류 메시지를 출력
+            e.printStackTrace(); // 오류가 발생하면 메시지를 출력
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("양식 등록을 실패했습니다.");
         }
     }
 
     // 템플릿 수정
-    @PutMapping("/update/{id}")
+    @PutMapping(value = "/update/{id}")
     public String updateTemplate(@PathVariable Long id, @RequestBody TemplateDTO templateDTO) {
         // db에 양식 데이터 수정
         templateService.updateTemplate(id, templateDTO);
@@ -76,7 +76,7 @@ public class TemplateController {
     }
 
     // 템플릿 삭제
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}")
     public String deleteTemplate(@PathVariable Long id) {
         // db에 양식 데이터 삭제
         Template template = templateService.getTemplateById(id);
@@ -95,8 +95,8 @@ public class TemplateController {
     }
 
     // 템플릿 조회
-    @GetMapping("/get/{id}")
-    public TemplateDTO getTemplate(@PathVariable Long id) {
+    @GetMapping(value = "/read/{id}")
+    public TemplateDTO readTemplate(@PathVariable Long id) {
         Template template = templateService.getTemplateById(id);
 
         TemplateDTO templateDTO = new TemplateDTO(
@@ -108,7 +108,7 @@ public class TemplateController {
     }
 
     // 템플릿 목록
-    @GetMapping("/list")
+    @GetMapping(value = "/list")
     public ResponseEntity<List<Template>> getTemplatesList() {
         try {
             List<Template> templates = templateService.getAllTemplates();
