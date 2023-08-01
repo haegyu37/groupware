@@ -17,12 +17,12 @@ import java.util.List;
 @Getter @Setter
 public class ApprovalDTO {
 
-        private Long documentId;
-        private List<Long> approvers;
-//        private String name;
-        private LocalDateTime approvalDate;
+////        private Long documentId;
+////        private List<Long> approvers;
+//////        private String name;
+//        private LocalDateTime approvalDate;
         private int status; //결재자별 결재상태 (0결재전 1승인 2반려)
-        private Long lineId;
+//        private Long lineId;
 
 
 

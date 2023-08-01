@@ -31,5 +31,7 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
     @Query("SELECT MAX(id) FROM Document")
     Long findMaxDocId();
+
+//    Document findById(Long id);
 }
 

@@ -46,6 +46,8 @@ public class Approval {
 
     private int status; //결재자별 결재상태 (0전, 1승인, 2반려)
 
+    private String current; //현재 결재순서(Y/N)
+
     public static Map<Long, List<Approval>> groupByLineId(List<Approval> approvals) {
         return approvals.stream()
                 .filter(approval -> approval.getLineId() != null) // lineId가 null이 아닌 경우만 필터링
