@@ -101,6 +101,24 @@ public class ApprovalController {
         return myAppDocs;
     }
 
+    //내가 결재라인인 문서 목록 근데 이제 내 차례인 ..
+    @GetMapping("/mylistnow")
+    public List<Document> getMyApprovalsNow() {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        //id를 기준으로 Approval을 찾는 메소드
+        List<Document> myAppDocs = approvalService.getApprovalsNow(currentMemberId);
+        return myAppDocs;
+    }
+
+    //내가 결재한 문서
+    @GetMapping("/approvedlist")
+    public List<Document> getMyApproved() {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        //id를 기준으로 Approval을 찾는 메소드
+        List<Document> myAppDocs = approvalService.getApproved(currentMemberId);
+        return myAppDocs;
+    }
+
     //결재 승인 앤나 반려
     @PostMapping("/approve")
     public ResponseEntity<String> approveDocument(@RequestBody ApprovalDTO approvalDTO) {
