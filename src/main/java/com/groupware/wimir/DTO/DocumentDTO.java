@@ -6,6 +6,7 @@ import com.groupware.wimir.entity.Template;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,6 +22,9 @@ public class DocumentDTO {
     private int status; // 1: 작성 상태, 0: 임시저장 상태
     private Approval approvalId;
     private Template template; // 양식명
+    private List<Long> approvers; //결재라인 아이디
+    private int result; //결재결과
+    private Long lineId; //즐겨찾기 결재라인 아이디
 
     public Template getTemplate() {
         return template;

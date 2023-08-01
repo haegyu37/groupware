@@ -9,14 +9,19 @@ import java.util.Map;
 @Getter
 @Setter
 public class TemplateDTO {
-    private Long id; //양식 아이디
+    private Long id;
+    private String title;
+    private String content;
 
-    private String title; //양식 제목
+    // 기본 생성자
+    public TemplateDTO() {
+    }
 
-    private String content; //양식 내용
-
-    private String category; //양식명
-
-    public TemplateDTO(Long id, String title, String content, String category) {
+    // 모든 필드를 받는 생성자
+    public TemplateDTO(Long id, String title, String content) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
     }
 }
+

@@ -32,8 +32,6 @@ public class LineController {
     private LineService lineService;
     @Autowired
     private ApprovalRepository approvalRepository;
-    @Autowired
-    private MemberRepository memberRepository;
 
     //마이페이지에서 결재라인 저장하기
     @PostMapping("/create")
@@ -41,7 +39,7 @@ public class LineController {
 
         Long maxLineId = approvalRepository.findMaxLineId(); // DB에서 결재라인아이디의 최대값을 가져옴
         if(maxLineId == null) {
-            maxLineId = 0L;
+            maxLineId = 1L;
         } else {
             maxLineId = maxLineId + 1;
         }
@@ -57,12 +55,6 @@ public class LineController {
                 approval.setCategory(lineDTO.getCategory());
                 approval.setLineId(maxLineId);
 
-//                if (maxLineId != null) {
-//                    approval.setLineId(maxLineId);
-//                } else {
-//                    approval.setLineId(0L);
-//                }
-
                 approvalRepository.save(approval); //MemberId, Name, Writer값 각각 저장
 
             } else {
@@ -74,33 +66,15 @@ public class LineController {
         return ResponseEntity.ok("결재라인을 저장했습니다. ");
     }
 
-//    //모든 저장된 결재라인 불러오기
-//    @GetMapping("/list")
-//    public List<Approval> getAllLines() {
-//        return approvalRepository.findAll();
-//    }
-//
-//    //모든 저장된 결재라인 불러오기(토큰값으로 제한)
-//    @GetMapping(value = "/mylist")
-//    public Approval getMyLines() {
-//        Long currentMemberId = SecurityUtil.getCurrentMemberId();
-//        return lineService.findByWriter(currentMemberId);
-//    }
-
-
-    //모든 결재라인 불러오기
-//    @GetMapping(value = "/list")
-//    public List<Approval> groupApprovalsByLineId() {
-//        return approvalRepository.findAll();
-//    }
-
-    @GetMapping(value = "/list")
+    //모든 결재라인
+    @GetMapping("/list")
     public Map<Long, List<Approval>> groupApprovalsByLineId() {
         List<Approval> allApprovals = approvalRepository.findAll();
         return Approval.groupByLineId(allApprovals);
     }
 
-    @GetMapping(value = "/mylist")
+    //내 결재라인
+    @GetMapping("/mylist")
     public Map<Long, List<Approval>> getMyLines() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         //id를 기준으로 Approval을 찾는 메소드
@@ -109,25 +83,12 @@ public class LineController {
 
     }
 
-    @GetMapping(value = "/{id}")
+    //결재라인 조회
+    @GetMapping("/{id}")
     public Map<Long, List<Approval>> getApprovalLineById(@PathVariable Long id) {
         return Approval.groupByLineId(lineService.getLineByLineId(id));
 
     }
-
-
-//    //모든 결재라인 불러오기(토큰값으로 제한)
-//    @GetMapping(value = "/mylist")
-//    public List<Approval> getMyLines() {
-//        Long currentMemberId = SecurityUtil.getCurrentMemberId();
-//        return lineService.findByWriter(currentMemberId);
-//    }
-//
-//    //저장한 결재라인을 lineid로 출력
-//    @GetMapping("/{id}")
-//    public List<Approval> getApprovalLineById(@PathVariable Long id) {
-//        return lineService.getLineByLineId(id);
-//    }
 
 
 

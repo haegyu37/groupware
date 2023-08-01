@@ -29,10 +29,6 @@ public class LineService {
     @Autowired
     private ApprovalRepository approvalRepository;
 
-//    public List<Approval> findByWriter(Long memberId) {
-//        return approvalRepository.findByWriter(memberId);
-//    }
-
     public List<Approval> getLineByLineId(Long id) {
         return approvalRepository.findByLineId(id);
     }

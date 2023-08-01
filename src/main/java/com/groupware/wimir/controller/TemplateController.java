@@ -9,19 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.groupware.wimir.entity.Template;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
-
-
 
 @RestController
 @RequestMapping("/templates")
 public class TemplateController {
 
     private final TemplateService templateService;
-    private Logger logger;
 
     @Autowired
     public TemplateController(TemplateService templateService) {
@@ -29,58 +24,66 @@ public class TemplateController {
     }
 
     // 템플릿 생성
-    @PostMapping("/create")
+    @PostMapping(value = "/create")
     public ResponseEntity<String> createTemplate(@RequestBody TemplateDTO templateDTO) {
         try {
+            // 필수 필드인지 확인하고 유효성 검사
+            String title = templateDTO.getTitle();
+            String content = templateDTO.getContent();
+
+            if (title == null || content == null) {
+                return ResponseEntity.badRequest().body("제목, 내용, 카테고리는 필수 필드입니다.");
+            }
+
             // db에 양식 데이터에 저장
             Template template = Template.builder()
-                    .title(templateDTO.getTitle())
-                    .content(templateDTO.getContent())
-                    .category(templateDTO.getCategory())
+                    .title(title)
+                    .content(content)
                     .build();
             templateService.createTemplate(template);
 
             // html 파일로 저장
-            File file = new File("c://templates/" + template.getTitle() + ".html");
+            File file = new File("c://templates/" + title + ".html");
             try (FileWriter writer = new FileWriter(file)) {
-                writer.write(template.getContent());
+                writer.write(content);
             }
-            
+
             return ResponseEntity.ok("양식 등록을 완료했습니다.");
         } catch (Exception e) {
-            logger.error("양식 등록을 실패했습니다.", e);
+            e.printStackTrace(); // 오류가 발생하면 메시지를 출력
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("양식 등록을 실패했습니다.");
         }
     }
 
     // 템플릿 수정
-    @PutMapping("/update/{id}")
+    @PutMapping(value = "/update/{id}")
     public String updateTemplate(@PathVariable Long id, @RequestBody TemplateDTO templateDTO) {
         // db에 양식 데이터 수정
         templateService.updateTemplate(id, templateDTO);
 
-        // 수정된 파일을 기존 파일에 덮어쓰기 해서 저장
+        // 수정된 파일을 기존 파일에 덮어쓰기 해서 저장(오류있음. 덮어쓰기가 아니라 새 파일 생성)
         Template template = templateService.getTemplateById(id);
-        try {
-            File file = new File(template.getTitle() + ".html");
-            FileWriter writer = new FileWriter(file);
+        String fileName = template.getTitle() + ".html";
+        File file = new File("c://templates/" + fileName);
+        try (OutputStream outputStream = new FileOutputStream(file);
+             OutputStreamWriter writer = new OutputStreamWriter(outputStream)) {
             writer.write(template.getContent());
-            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "redirect:/";
+        // 수정된 글의 상세 조회 페이지로 리다이렉트
+        return "redirect:/get/" + id;
     }
 
     // 템플릿 삭제
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}")
     public String deleteTemplate(@PathVariable Long id) {
         // db에 양식 데이터 삭제
         Template template = templateService.getTemplateById(id);
 
         templateService.deleteTemplate(id);
 
-        // 저장된 양식 html 파일은 삭제되지 않고 아카이브 폴더로 이동
+        // 저장된 양식 html 파일은 삭제되지 않고 아카이브 폴더로 이동(현재 폴더로 이동되지 않음)
         File file = new File(template.getTitle() + ".html");
         File archiveDir = new File("c://templates/archive/");
         if (!archiveDir.exists()) {
@@ -88,26 +91,32 @@ public class TemplateController {
         }
         file.renameTo(new File(archiveDir, file.getName()));
 
-        return "redirect:/";
+        return "redirect:/list";
     }
 
     // 템플릿 조회
-    @GetMapping("/get/{id}")
-    public TemplateDTO getTemplate(@PathVariable Long id) {
+    @GetMapping(value = "/read/{id}")
+    public TemplateDTO readTemplate(@PathVariable Long id) {
         Template template = templateService.getTemplateById(id);
 
         TemplateDTO templateDTO = new TemplateDTO(
                 template.getId(),
                 template.getTitle(),
-                template.getContent(),
-                template.getCategory()
+                template.getContent()
         );
         return templateDTO;
     }
 
     // 템플릿 목록
-    @GetMapping("/list")
-    public List<Template> getTemplatesList() {
-        return templateService.getTemplatesList();
+    @GetMapping(value = "/list")
+    public ResponseEntity<List<Template>> getTemplatesList() {
+        try {
+            List<Template> templates = templateService.getAllTemplates();
+            return ResponseEntity.ok(templates);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
+
 }

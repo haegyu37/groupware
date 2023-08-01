@@ -1,5 +1,6 @@
 package com.groupware.wimir.controller;
 
+import com.groupware.wimir.entity.Attachment;
 import com.groupware.wimir.service.AttachmentService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,8 @@ public class AttachmentController {
         this.attachmentService = attachmentService;
     }
 
-    // 첨부파일 업로드
-    @PostMapping(value = "/upload")
+    // 첨부파일 업로드(현재 저장 파일명이 원본 파일명으로 저장됨, savedName은 저장시 임의로 저장하는 이름이라 업로드에서는 null로 해도 될듯)
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> uploadAttachments(@RequestParam("attachments") List<MultipartFile> files,
                                                     @RequestParam("documentId") Long documentId) {
         try {
@@ -30,7 +31,7 @@ public class AttachmentController {
                 Long attachmentId = attachmentService.uploadAttachment(file, documentId);
                 attachmentIds.add(attachmentId);
             }
-            String response = "첨부파일이 업로드되었습니다. 첨부파일 ID 목록 : " + attachmentIds;
+            String response = "첨부파일이 업로드되었습니다. 첨부파일 ID : " + attachmentIds;
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -39,15 +40,39 @@ public class AttachmentController {
         }
     }
 
-    // 첨부파일 다운로드
+//    @GetMapping(value = "/download/{id}")
+//    public ResponseEntity<byte[]> downloadAttachment(@PathVariable Long id) {
+//        try {
+//            byte[] fileBytes = attachmentService.downloadAttachment(id);
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//            headers.setContentDispositionFormData("attachment", "attachment");
+//            return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+//    }
+
+    // 첨부파일 다운로드(오류는 없으나, postman에서는 확인 불가능)
     @GetMapping(value = "/download/{id}")
-    public ResponseEntity<byte[]> downloadAttachment(@PathVariable Long id) {
+    public ResponseEntity<byte[]> downloadAttachment(@PathVariable Long id, @RequestParam(required = false) String savedFileName) {
         try {
-            byte[] fileBytes = attachmentService.downloadAttachment(id);
+            Attachment attachment = attachmentService.getAttachmentById(id);
+            byte[] fileBytes = attachmentService.downloadAttachmentFileBytes(id);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "attachment");
+
+            if (savedFileName == null) {
+                // 사용자가 파일 이름을 지정하지 않은 경우 기본적으로 원본 파일명으로 저장
+                headers.setContentDispositionFormData("attachment", attachment.getOriginalName());
+            } else {
+                // 사용자가 파일 이름을 지정한 경우 해당 이름으로 저장
+                headers.setContentDispositionFormData("attachment", savedFileName);
+            }
+
             return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,7 +80,7 @@ public class AttachmentController {
         }
     }
 
-    // 첨부파일 삭제
+    // 첨부파일 삭제(db에서 정상 삭제됨)
     @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<String> deleteAttachment(@PathVariable Long id) {
         try {
