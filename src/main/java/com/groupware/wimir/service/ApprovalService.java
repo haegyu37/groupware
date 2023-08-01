@@ -7,6 +7,7 @@ import com.groupware.wimir.entity.Approval;
 //import com.groupware.wimir.entity.ApprovalLine;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.repository.ApprovalRepository;
+import com.groupware.wimir.repository.DocumentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 public class ApprovalService {
     @Autowired
     private ApprovalRepository approvalRepository;
+    @Autowired
+    private DocumentRepository documentRepository;
 //    @Autowired
 //    private DocumentService documentService;
 //    @Autowired
@@ -61,7 +64,15 @@ public class ApprovalService {
     public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {
         Approval savedApproval = null;
         System.out.println("즐찾2"+documentDTO.getLineId());
-        System.out.println("문서번호1`"+documentDTO.getId());
+        System.out.println("문서번호1"+documentDTO.getId());
+
+        Long maxDocId = documentRepository.findMaxDocId(); // DB에서 문서아이디의 최대값을 가져옴
+        if(maxDocId == null) {
+            maxDocId = 1L;
+        } else {
+            maxDocId = maxDocId + 1;
+        }
+
 
         if(documentDTO.getLineId() !=  null) {
             System.out.println("즐찾3"+documentDTO.getLineId());
@@ -79,7 +90,9 @@ public class ApprovalService {
                 approval.setMemberId(memberIds.get(i));
                 approval.setWriter(writers.get(i));
                 approval.setName(names.get(i));
-                approval.setDocument(documentDTO.getId());
+                approval.setDocument(maxDocId);
+
+//                approval.setDocument(documentDTO.getId());
 
 //                approval.setLineId(documentDTO.getLineId());
 
@@ -96,7 +109,7 @@ public class ApprovalService {
 
             for(Long approverId : documentDTO.getApprovers()){
                 Approval approval = new Approval();
-                approval.setDocument(documentDTO.getId());
+                approval.setDocument(maxDocId);
                 approval.setMemberId(approverId);
 
                 savedApproval = approvalRepository.save(approval);

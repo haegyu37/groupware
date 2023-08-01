@@ -41,7 +41,7 @@ public class LineController {
 
         Long maxLineId = approvalRepository.findMaxLineId(); // DB에서 결재라인아이디의 최대값을 가져옴
         if(maxLineId == null) {
-            maxLineId = 0L;
+            maxLineId = 1L;
         } else {
             maxLineId = maxLineId + 1;
         }
@@ -94,12 +94,14 @@ public class LineController {
 //        return approvalRepository.findAll();
 //    }
 
+    //모든 결재라인
     @GetMapping(value = "/list")
     public Map<Long, List<Approval>> groupApprovalsByLineId() {
         List<Approval> allApprovals = approvalRepository.findAll();
         return Approval.groupByLineId(allApprovals);
     }
 
+    //내 결재라인
     @GetMapping(value = "/mylist")
     public Map<Long, List<Approval>> getMyLines() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
@@ -109,6 +111,7 @@ public class LineController {
 
     }
 
+    //결재라인 조회
     @GetMapping(value = "/{id}")
     public Map<Long, List<Approval>> getApprovalLineById(@PathVariable Long id) {
         return Approval.groupByLineId(lineService.getLineByLineId(id));
