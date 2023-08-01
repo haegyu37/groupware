@@ -1,9 +1,11 @@
 package com.groupware.wimir.controller;
 
 import com.groupware.wimir.DTO.*;
+import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.AuthService;
+import com.groupware.wimir.service.DocumentService;
 import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
@@ -32,6 +34,7 @@ public class AuthController {
     private final AuthService authService;
     private final MemberRepository memberRepository;
     private final MemberService memberService;
+    private final DocumentService documentService;
 
     //직원 등록
     @PostMapping("/admin/signup")
@@ -130,6 +133,13 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    //결재완료된 모든 문서 조회
+    @GetMapping("/appdocs")
+    public List<Document> approvedDocs(){
+        List<Document> approvedDocs = documentService.getApprovedDocuments();
+        return approvedDocs;
     }
 
 

@@ -4,6 +4,8 @@ import com.groupware.wimir.entity.Document;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 
 public interface DocumentService {
 
@@ -26,6 +28,8 @@ public interface DocumentService {
     Page<Document> findDocumentListByTemplateIdAndStatus(Long id, int status, Pageable pageable);
 
     Page<Document> findDocumentListByWriterAndTemplateIdAndStatus(Long memberId, Long id, int status, Pageable pageable);
+
+    List<Document> getApprovedDocuments();
 
 
 //    List<Document> getDocumentsByCategory(String category);

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -136,6 +137,15 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public Page<Document> findDocumentListByWriterAndTemplateIdAndStatus(Long memberId, Long id, int status, Pageable pageable) {
         return documentRepository.findByWriterAndTemplateIdAndStatus(memberId, id, status, pageable);
+    }
+
+    @Override
+    public List<Document> getApprovedDocuments() {
+        List<Document> allDocs = documentRepository.findAll();
+
+        return allDocs.stream()
+                .filter(document -> document.getResult() != 0 && document.getAppDate() != null)
+                .collect(Collectors.toList());
     }
 
 //    public Document getDocumentById(Long documentId) {
