@@ -79,7 +79,7 @@ public class DocumentServiceImpl implements DocumentService {
         document.setCreateDate(LocalDateTime.now());
 
         if (document.getStatus() == 1) {
-            Template template = documentDTO.getTemplate();
+            Template template = document.getTemplate();
             if (template != null) {
                 Long id = document.getId();
                 Long tempNo = documentRepository.countByTempNo(template, id);
@@ -90,6 +90,8 @@ public class DocumentServiceImpl implements DocumentService {
         }
         return documentRepository.save(document);
     }
+
+
 
     @Override
     public void deleteDocument(Long id) {

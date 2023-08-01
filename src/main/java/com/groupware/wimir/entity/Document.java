@@ -44,10 +44,12 @@ public class Document {
 
     private LocalDateTime appDate; //결재완료일
 
+    private Long tempNo; // 양식별 문서번호
+
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
-                    LocalDateTime updateDate, Member writer, Template template, int status, Long dno, Long sno) {
+                    LocalDateTime updateDate, Member writer, Template template, int status, Long dno, Long sno, Long tempNo) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -58,6 +60,7 @@ public class Document {
         this.status = status;
         this.dno = dno;
         this.sno = sno;
+        this.tempNo = tempNo;
     }
 }
 

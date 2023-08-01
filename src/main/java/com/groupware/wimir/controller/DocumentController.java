@@ -14,7 +14,7 @@ import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 //import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.repository.TemplateRepository;
-import com.groupware.wimir.service.ApprovalService;
+//import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.DocumentService;
 import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class DocumentController {
     private final DocumentRepository documentRepository;
     private final MemberRepository memberRepository;
     private final MemberService memberService;
-    private final ApprovalService approvalService;
+//    private final ApprovalService approvalService;
     private final TemplateRepository templateRepository;
 
     // 문서 목록(정상 저장 전체 다 보도록)
@@ -87,9 +87,10 @@ public class DocumentController {
 //        document.setDno(document.getDno()); //문서번호
 //        document.setSno(document.getSno()); //임시저장 번호
         document.setTemplate(documentDTO.getTemplate());    // 양식명
+        System.out.println(documentDTO.getTemplate());
 //        System.out.println(documentDTO.getTemplate());
         document.setResult(0);
-        approvalService.setApproval(documentDTO);
+//        approvalService.setApproval(documentDTO);
 
 
 //        int result = approvalService.submitApproval(documentDTO);
