@@ -36,10 +36,7 @@ public class TemplateService {
         Template template = templateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("양식을 찾을 수 없습니다 : " + id));
 
-        // TemplateDTO에 담긴 정보로 Template 엔티티를 업데이트
-        template.setCategory(templateDTO.getCategory());
-
-        // title과 content가 비어있지 않다면 해당 정보도 업데이트
+        // title과 content 업데이트
         if (templateDTO.getTitle() != null) {
             template.setTitle(templateDTO.getTitle());
         }
@@ -55,7 +52,7 @@ public class TemplateService {
     }
 
     public List<Template> getTemplatesList() {
-        return templatesList;
+        return templateRepository.findAll();
     }
 
     public void setTemplatesList(List<Template> templatesList) {
