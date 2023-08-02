@@ -2,7 +2,6 @@ package com.groupware.wimir.DTO;
 import com.groupware.wimir.entity.*;
 import lombok.*;
 
-import java.util.List;
 
 
 //Response를 보낼때 쓰이는 dto다.

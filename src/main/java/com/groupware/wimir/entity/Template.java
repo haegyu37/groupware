@@ -7,7 +7,8 @@ import javax.persistence.*;
 @Entity
 @ToString
 @NoArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 @Table(name = "template")
 public class Template {
     @Id

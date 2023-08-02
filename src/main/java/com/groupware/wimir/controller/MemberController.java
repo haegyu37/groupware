@@ -4,7 +4,6 @@ package com.groupware.wimir.controller;
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Member;
-//import com.groupware.wimir.entity.Team;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +24,6 @@ public class MemberController {
 
     @Autowired
     private MemberService memberService;
-    @Autowired
-    private Member member;
     @Autowired
     private MemberRepository memberRepository;
 

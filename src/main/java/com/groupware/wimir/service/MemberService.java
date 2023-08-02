@@ -4,7 +4,6 @@ import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Position;
-import com.groupware.wimir.entity.Team;
 import com.groupware.wimir.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,6 +54,7 @@ public class MemberService {
         return MemberResponseDTO.of(updatedMember);
 
     }
+
     @Transactional
     public MemberResponseDTO changeUserPasswordByAdmin(Long memberId, String newPassword) {
         Member member = memberRepository.findById(memberId)

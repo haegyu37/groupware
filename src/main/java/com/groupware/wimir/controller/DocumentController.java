@@ -1,18 +1,11 @@
 package com.groupware.wimir.controller;
 
 import com.groupware.wimir.Config.SecurityUtil;
-import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.DTO.DocumentDTO;
-import com.groupware.wimir.DTO.MemberResponseDTO;
-import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
-import com.groupware.wimir.entity.Member;
-import com.groupware.wimir.entity.Template;
 import com.groupware.wimir.exception.ResourceNotFoundException;
-//import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
-//import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.repository.TemplateRepository;
 import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.DocumentService;
@@ -26,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/documents")
@@ -53,13 +45,6 @@ public class DocumentController {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         return documentService.findDocumentListByWriterAndStatus(currentMemberId, 0, pageable);
     }
-
-//    //내가 작성한 저장 리스트
-//    @GetMapping(value = "/mylist")
-//    public Page<Document> getMyList(@PageableDefault Pageable pageable) {
-//        Long currentMemberId = SecurityUtil.getCurrentMemberId();
-//        return documentService.findDocumentListByWriterAndStatus(currentMemberId, 1, pageable);
-//    }
 
     //내가 작성한 저장 리스트
     @GetMapping(value = "/mylist")
@@ -92,13 +77,10 @@ public class DocumentController {
         documentService.setWriterByToken(document);
         document.setCreateDate(LocalDateTime.now());
         document.setStatus(documentDTO.getStatus());
-//        document.setDno(document.getDno()); //문서번호
-//        document.setSno(document.getSno()); //임시저장 번호
         document.setTemplate(documentDTO.getTemplate());    // 양식명
 //        System.out.println(documentDTO.getTemplate());
         document.setResult("진행중");
         approvalService.setApproval(documentDTO);
-
 
 //        int result = approvalService.submitApproval(documentDTO);
 

@@ -119,7 +119,7 @@ public class DocumentServiceImpl implements DocumentService {
 
         // 멤버 아이디를 이용하여 데이터베이스에서 멤버 정보를 조회합니다.
         Member writer = memberRepository.findById(SecurityUtil.getCurrentMemberId())
-                .orElseThrow(() -> new RuntimeException("작성자를 찾을 수 없습니다." ));
+                .orElseThrow(() -> new RuntimeException("작성자를 찾을 수 없습니다."));
 
         // 문서의 작성자를 설정합니다.
         document.setWriter(writer);
@@ -129,6 +129,7 @@ public class DocumentServiceImpl implements DocumentService {
     public Page<Document> findDocumentListByWriterAndStatus(Long memberId, int status, Pageable pageable) {
         return documentRepository.findByWriterIdAndStatus(memberId, status, pageable);
     }
+
     @Override
     public Page<Document> findDocumentListByTemplateIdAndStatus(Long id, int status, Pageable pageable) {
         return documentRepository.findByTemplateIdAndStatus(id, status, pageable);
@@ -144,7 +145,7 @@ public class DocumentServiceImpl implements DocumentService {
         List<Document> allDocs = documentRepository.findAll();
 
         return allDocs.stream()
-                .filter(document -> document.getResult() != "진행중" && document.getAppDate() != null)
+                .filter(document -> !document.getResult().equals("진행중") && document.getAppDate() != null)
                 .collect(Collectors.toList());
     }
 

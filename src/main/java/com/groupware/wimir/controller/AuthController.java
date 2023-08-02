@@ -11,10 +11,8 @@ import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -66,6 +64,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     //로그인
     @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody MemberRequestDTO requestDto) {
@@ -161,13 +160,13 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     //결재완료된 모든 문서 목록
     @GetMapping("/listdone")
-    public List<Document> approvedDocs(){
+    public List<Document> approvedDocs() {
         List<Document> approvedDocs = documentService.getApprovedDocuments();
         return approvedDocs;
     }
-
 
 
 }

@@ -19,4 +19,5 @@ public enum Position {
 
     public int getValue() {
         return value;
-    }}
+    }
+}

@@ -1,6 +1,5 @@
 package com.groupware.wimir.entity;
 
-import javax.persistence.Enumerated;
 
 public enum Team {
 
