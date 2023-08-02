@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -37,11 +38,19 @@ public class LineController {
         }
 
         int lastIndex = lineDTO.getApprovers().size() - 1; // 배열의 맨 마지막 인덱스
+        List<Long> curAppList = lineDTO.getApprovers();
+        curAppList.add(0, SecurityUtil.getCurrentMemberId());
 
-        for (int i = 0; i < lineDTO.getApprovers().size(); i++) {
-            Long approverId = lineDTO.getApprovers().get(i);
+        for (int i = 0; i < curAppList.size(); i++) {
+            Long approverId =curAppList.get(i);
             if (approverId != null) {
                 Approval approval = new Approval();
+
+                //첫번째 결재자는 기안자
+                if (i == 0) {
+                    approval.setMemberId(SecurityUtil.getCurrentMemberId());
+                }
+
                 approval.setMemberId(approverId);
                 approval.setName(lineDTO.getName());
                 approval.setWriter(SecurityUtil.getCurrentMemberId());
