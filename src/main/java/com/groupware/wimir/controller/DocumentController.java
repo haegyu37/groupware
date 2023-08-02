@@ -3,6 +3,7 @@ package com.groupware.wimir.controller;
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.DocumentDTO;
 import com.groupware.wimir.entity.Document;
+import com.groupware.wimir.entity.Template;
 import com.groupware.wimir.exception.ResourceNotFoundException;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
@@ -79,7 +80,7 @@ public class DocumentController {
         document.setStatus(documentDTO.getStatus());
         document.setTemplate(documentDTO.getTemplate());    // 양식명
         System.out.println(documentDTO.getTemplate());
-        document.setResult(0);
+        document.setResult("진행중");
 //        approvalService.setApproval(documentDTO);
 
 //        int result = approvalService.submitApproval(documentDTO);
