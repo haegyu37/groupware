@@ -161,8 +161,8 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    //결재완료된 모든 문서 조회
-    @GetMapping("/appdocs")
+    //결재완료된 모든 문서 목록
+    @GetMapping("/listdone")
     public List<Document> approvedDocs(){
         List<Document> approvedDocs = documentService.getApprovedDocuments();
         return approvedDocs;

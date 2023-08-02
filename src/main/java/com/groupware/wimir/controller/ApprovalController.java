@@ -29,8 +29,8 @@ public class ApprovalController {
     private MemberRepository memberRepository;
     @Autowired
     private MemberService memberService;
-//    @Autowired
-//    ApprovalRepository approvalRepository;
+    @Autowired
+    ApprovalRepository approvalRepository;
     @Autowired
     ApprovalService approvalService;
 
@@ -93,7 +93,7 @@ public class ApprovalController {
     }
 
     //내가 결재라인인 문서 목록
-    @GetMapping("/mylist")
+    @GetMapping("/list")
     public List<Document> getMyApprovals() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         //id를 기준으로 Approval을 찾는 메소드
@@ -102,7 +102,7 @@ public class ApprovalController {
     }
 
     //내가 결재라인인 문서 목록 근데 이제 내 차례인 ..
-    @GetMapping("/mylistnow")
+    @GetMapping("/listnow")
     public List<Document> getMyApprovalsNow() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         //id를 기준으로 Approval을 찾는 메소드
@@ -110,8 +110,8 @@ public class ApprovalController {
         return myAppDocs;
     }
 
-    //내가 결재한 문서
-    @GetMapping("/approvedlist")
+    //내가 승인 앤나 반려한 리스트 just 내가 승인/반려 한 문서 리스트
+    @GetMapping("/listdone")
     public List<Document> getMyApproved() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         //id를 기준으로 Approval을 찾는 메소드
