@@ -3,17 +3,13 @@ package com.groupware.wimir.repository;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Position;
 import com.groupware.wimir.entity.Team;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import java.util.Optional;
 
 
 import java.util.List;
-import java.util.stream.DoubleStream;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -28,7 +24,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     List<Member> findByPosition(Position position);
 
-//    List<Member> findMemberById(List<Long> approvers);
 }
 
 

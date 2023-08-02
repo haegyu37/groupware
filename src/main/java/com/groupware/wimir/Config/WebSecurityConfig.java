@@ -1,6 +1,5 @@
 package com.groupware.wimir.Config;
 
-import com.groupware.wimir.Config.JwtSecurityConfig;
 import com.groupware.wimir.jwt.JwtAccessDeniedHandler;
 import com.groupware.wimir.jwt.JwtAuthenticationEntryPoint;
 import com.groupware.wimir.jwt.TokenProvider;
@@ -62,7 +61,7 @@ public class WebSecurityConfig {
                 .and()
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers("/auth/**","/member/**").permitAll()
+                .antMatchers("/auth/**", "/member/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
@@ -73,6 +72,7 @@ public class WebSecurityConfig {
 
         return http.build();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();

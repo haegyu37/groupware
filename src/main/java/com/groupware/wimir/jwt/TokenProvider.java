@@ -12,11 +12,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Cookie;
 
 
 import java.security.Key;
@@ -24,8 +19,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
-import java.util.logging.Logger;
+
+
 @Slf4j
 @Component
 public class TokenProvider {
@@ -37,8 +34,6 @@ public class TokenProvider {
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일 리프레쉬토큰
 
     private final Key key;  //토큰 생성시 사용할 키
-
-
 
 
     // @Value는 `springframework.beans.factory.annotation.Value` jwt.secret 프로퍼티 값을 주입받기 위해 사용
@@ -83,7 +78,7 @@ public class TokenProvider {
                 .build();
     }       // 주어진 인증정보 기반으로 액세스 토큰 생성하고 TokenDTO 객체로 변환하여 반환
 
-// 토큰 복호화
+    // 토큰 복호화
     public Authentication getAuthentication(String accessToken) {
         Claims claims = parseClaims(accessToken);
 
@@ -127,4 +122,4 @@ public class TokenProvider {
         }
     }
 
-    }
+}

@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="document")
+@Table(name = "document")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,7 +30,7 @@ public class Document {
     @JoinColumn(name = "member_id")
     private Member writer; // 작성자 (Member와 연관관계)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tem_id")
     private Template template; // 양식명
 
@@ -40,12 +40,16 @@ public class Document {
 
     private Long sno = 0L; // 문서 임시저장 번호(디폴트 값은 0)
 
-    private int result; //결재결과
+    private String result; //결재 전, 승인, 반려
+
+    private LocalDateTime appDate; //결재완료일
+
+    private Long tempNo; // 양식별 문서번호
 
 
     @Builder
     public Document(Long id, String title, String content, LocalDateTime createDate,
-                    LocalDateTime updateDate, Member writer, Template template, int status, Long dno, Long sno) {
+                    LocalDateTime updateDate, Member writer, Template template, int status, Long dno, Long sno, Long tempNo) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -56,6 +60,7 @@ public class Document {
         this.status = status;
         this.dno = dno;
         this.sno = sno;
+        this.tempNo = tempNo;
     }
 }
 

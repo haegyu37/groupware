@@ -1,18 +1,12 @@
 package com.groupware.wimir.controller;
 
 import com.groupware.wimir.Config.SecurityUtil;
-import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.DTO.DocumentDTO;
-import com.groupware.wimir.DTO.MemberResponseDTO;
-import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
-import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Template;
 import com.groupware.wimir.exception.ResourceNotFoundException;
-//import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
-//import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.repository.TemplateRepository;
 import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.DocumentService;
@@ -60,18 +54,19 @@ public class DocumentController {
         return documentService.findDocumentListByWriterAndStatus(currentMemberId, 1, pageable);
     }
 
-    // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
-    @GetMapping(value ="/categorylist/{id}")
-    public Page<Document> getDocumentsByTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
-        return documentService.findDocumentListByTemplateIdAndStatus(id, 1, pageable);
-    }
 
-    // 카테고리별 자신이 작성한 문서 리스트(아직 안됨. fun8번 결재 상태 추가되어야 함)
-    @GetMapping(value = "categorymylist/{id}")
-    public Page<Document> getDocumentsByMyTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id) {
-        Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        return documentService.findDocumentListByWriterAndTemplateIdAndStatus(currentMemberId, id, 1, pageable);
-    }
+//    // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
+//    @GetMapping(value ="/categorylist/{id}")
+//    public Page<Document> getDocumentsByTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
+//        return documentService.findDocumentListByTemplateIdAndStatus(id, 1, pageable);
+//    }
+//
+//    // 카테고리별 자신이 작성한 문서 리스트(fun8번 결재 상태 추가되어야 함)
+//    @GetMapping(value = "/categorymylist/{id}")
+//    public Page<Document> getDocumentsByMyTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
+//        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+//        return documentService.findDocumentListByWriterAndTemplateIdAndStatus(currentMemberId, id, 1, pageable);
+//    }
 
     // 문서 작성
     @PostMapping(value = "/create")
@@ -83,11 +78,14 @@ public class DocumentController {
         documentService.setWriterByToken(document);
         document.setCreateDate(LocalDateTime.now());
         document.setStatus(documentDTO.getStatus());
-        document.setDno(document.getDno()); //문서번호
-        document.setSno(document.getSno()); //임시저장 번호
         document.setTemplate(documentDTO.getTemplate());    // 양식명
         System.out.println(documentDTO.getTemplate());
+        document.setResult("진행중");
+//        approvalService.setApproval(documentDTO);
 
+//        int result = approvalService.submitApproval(documentDTO);
+
+        //임시저장 관련
         if (document.getStatus() == 0) {
             // 임시저장인 경우
             Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장 번호의 최대값을 가져옴
@@ -104,7 +102,7 @@ public class DocumentController {
             document.setDno(maxDno + 1); // 작성 번호 생성
         }
 
-        // 문서를 저장하고 저장된 문서를 반환합니다.
+        // 문서를 저장하고 저장된 문서를 반환
         document = documentService.saveDocument(document);
 
         return ResponseEntity.ok(document);
@@ -131,17 +129,28 @@ public class DocumentController {
             updateDocument.setTitle(documentDTO.getTitle());
             updateDocument.setContent(documentDTO.getContent());
             updateDocument.setUpdateDate(LocalDateTime.now());
+            documentService.setWriterByToken(updateDocument);
+            updateDocument.setStatus(documentDTO.getStatus());
+            updateDocument.setResult("진행중");
+
+//            approvalService.updateApproval(documentDTO, id);
+
 
             if (documentDTO.getStatus() == 0) {
-                // 임시저장인 경우 그냥 저장
+                // status가 0인 경우 임시저장이므로 그냥 저장
             } else {
-                // 작성인 경우
+                // status가 1인 경우 작성인 경우
                 Long maxDno = documentRepository.findMaxDno();
                 if (maxDno == null) {
                     maxDno = 0L;
                 }
                 if (updateDocument.getDno() == null || updateDocument.getDno() == 0) {
                     updateDocument.setDno(maxDno + 1);
+                }
+                Template template = updateDocument.getTemplate();
+                if (template != null) {
+                    Long maxTempNo = documentRepository.findMaxTempNoByTemplate(template);
+                    updateDocument.setTempNo(maxTempNo + 1);
                 }
                 updateDocument.setSno(null);
                 updateDocument.setStatus(1);
@@ -153,10 +162,12 @@ public class DocumentController {
         throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
     }
 
+
     // 문서 삭제
     @DeleteMapping(value = "/delete/{id}")
     public void deleteDocument(@PathVariable("id") Long id) {
         documentService.deleteDocument(id);
     }
+
 
 }

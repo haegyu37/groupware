@@ -30,6 +30,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         writer.flush();
 
     }
+
     // AuthenticationException에서 오류 메시지 추출
     private String extractErrorMessage(AuthenticationException authException) {
         String errorMessage = "인증에 실패하였습니다.";
@@ -48,8 +49,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         }
         return errorMessage;
     }
-
-
 
 
 }

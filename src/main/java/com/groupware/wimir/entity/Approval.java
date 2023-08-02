@@ -22,11 +22,7 @@ public class Approval {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "document_id")
     private Long document; //문서 아이디
-
-//    private int result; //결재 결과 (0전, 1승인, 2반려)
 
     private String reason; //반려사유
 
@@ -36,15 +32,17 @@ public class Approval {
 
     private String name; //결재라인 이름
 
-    private LocalDateTime doneDate; //결재자별 결재완료일
-
     private Long writer; //결재라인 작성자
 
     private Long lineId; //결재라인 아이디
 
     private String category; //결재라인 카테고리
 
-    private int status; //결재 결과 (0전, 1승인, 2반려)
+    private int status; //결재자별 결재상태 (0전, 1승인, 2반려)
+
+    private String current; //현재 결재순서(Y/N)
+
+    private String refer; //"참조" 참조자
 
     public static Map<Long, List<Approval>> groupByLineId(List<Approval> approvals) {
         return approvals.stream()

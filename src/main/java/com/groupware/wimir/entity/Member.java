@@ -1,7 +1,6 @@
 package com.groupware.wimir.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +9,8 @@ import javax.persistence.*;
 @Entity
 @ToString
 @NoArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 @Table(name = "members")
 @Component
 public class Member {
@@ -30,16 +30,11 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     private Position position; // 직급
-    //    1: 사원, 2:대리, 3:과장, 4:차장, 5:부장, 6:상무, 7:전무, 8:부사장, 9:사장
 
     @Enumerated(EnumType.STRING)
     private Authority authority; //직원 권한
 
     private String img; //직원사진
-
-//    @ManyToOne
-//    @JoinColumn(name = "approval_id")
-//    private Approval approval; // 승인 대상 문서
 
     public void setPassword(String password) {
         this.password = password;
@@ -54,7 +49,7 @@ public class Member {
         this.position = position;
         this.authority = authority;
         this.team = team;
-        this.img= img;
+        this.img = img;
     }
 
 }
