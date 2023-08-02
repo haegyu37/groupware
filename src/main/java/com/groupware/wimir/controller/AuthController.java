@@ -112,27 +112,15 @@ public class AuthController {
         return ResponseEntity.ok(memberResponseDTO);
     }
 
-    @PostMapping(value="/admin/members/{memberId}/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping("/admin/members/{memberId}/edit")
     public ResponseEntity<MemberResponseDTO> changeUserDetails(
             @PathVariable Long memberId,
             @RequestPart(name = "image", required = false) MultipartFile image,
-            @RequestPart(name = "resetPasswordDTO", required = false) ResetPasswordDTO resetPasswordDTO,
-            @RequestPart(name = "positionChangeDTO", required = false) PositionChangeDTO positionChangeDTO,
-            @RequestPart(name = "teamChangeDTO", required = false) TeamChangeDTO teamChangeDTO
-
-
+            @RequestPart(name = "changeRequest", required = false) ChangeUserDTO changeRequest
     ) {
         try {
-            // 비밀번호 변경
-            if (resetPasswordDTO != null && resetPasswordDTO.getNewPassword() != null) {
-                String updatedPassword = resetPasswordDTO.getNewPassword();
-                MemberResponseDTO updatedUser = memberService.changeUserPasswordByAdmin(memberId, updatedPassword);
-                log.info("비밀번호 변경이 완료되었습니다. 사용자 ID: {}", memberId);
-                return ResponseEntity.ok(updatedUser);
-
-            }
-
             // 사진 등록
+            boolean imageUploaded = false;
             if (image != null) {
                 String uploadDir = "src/main/resources/static/images";
                 String fileName = "profile_" + memberId + "." + FilenameUtils.getExtension(image.getOriginalFilename());
@@ -145,30 +133,61 @@ public class AuthController {
                 memberRepository.save(member);
 
                 log.info("사진 등록이 완료되었습니다. 사용자 ID: {}", memberId);
+                imageUploaded = true;
+            }
+
+            // 비밀번호 변경
+            boolean passwordChanged = false;
+            if (changeRequest != null && changeRequest.getNewPassword() != null) {
+                String updatedPassword = changeRequest.getNewPassword();
+                MemberResponseDTO updatedUser = memberService.changeUserPasswordByAdmin(memberId, updatedPassword);
+                log.info("비밀번호 변경이 완료되었습니다. 사용자 ID: {}", memberId);
+                passwordChanged = true;
             }
 
             // 직급명 변경
-            if (positionChangeDTO != null) {
-                Position newPosition = positionChangeDTO.getPosition();
+            boolean positionChanged = false;
+            if (changeRequest != null && changeRequest.getPosition() != null) {
+                Position newPosition = changeRequest.getPosition();
                 MemberResponseDTO updatedUser = memberService.changeUserPositionByAdmin(memberId, newPosition);
                 log.info("직급명 변경이 완료되었습니다. 사용자 ID: {}", memberId);
-                return ResponseEntity.ok(updatedUser);
+                positionChanged = true;
             }
 
             // 팀명 변경
-            if (teamChangeDTO != null) {
-                Team newTeam = teamChangeDTO.getTeam();
+            boolean teamChanged = false;
+            if (changeRequest != null && changeRequest.getTeam() != null) {
+                Team newTeam = changeRequest.getTeam();
                 MemberResponseDTO updatedUser = memberService.changeUserTeamByAdmin(memberId, newTeam);
                 log.info("팀명 변경이 완료되었습니다. 사용자 ID: {}", memberId);
-                return ResponseEntity.ok(updatedUser);
+                teamChanged = true;
             }
 
-            // 사진 등록과 비밀번호 변경이 모두 없는 경우
-            return ResponseEntity.ok().build();
+            // 변경된 사용자 정보 조회
+            Member updatedMember = memberRepository.findById(memberId)
+                    .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+            MemberResponseDTO responseDTO = MemberResponseDTO.builder()
+                    .id(updatedMember.getId())
+                    .no(updatedMember.getNo())
+                    .name(updatedMember.getName())
+                    .position(updatedMember.getPosition())
+                    .team(updatedMember.getTeam())
+                    .authority(updatedMember.getAuthority())
+                    .img(updatedMember.getImg())
+                    .build();
+
+            return ResponseEntity.ok(responseDTO);
+
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+
     }
+
+
+
 
     // 사용자의 권한을 ROLE_BLOCK으로 업데이트
     @PostMapping("/admin/members/{memberId}/block")
