@@ -46,4 +46,8 @@ public class LineService {
         return memberIds;
     }
 
+    public void deleteDocumentByLineId(Long id) {
+        approvalRepository.deleteByLineId(id);
+    }
+
 }
