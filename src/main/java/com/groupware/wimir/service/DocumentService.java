@@ -31,6 +31,8 @@ public interface DocumentService {
 
     List<Document> getApprovedDocuments();
 
+    Page<Document> findDocumentListByWriterAndStatusAndResult(Long id, int status, String result, Pageable pageable);
+
 
 //    List<Document> getDocumentsByCategory(String category);
 //

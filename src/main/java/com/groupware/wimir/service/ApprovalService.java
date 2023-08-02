@@ -34,7 +34,7 @@ public class ApprovalService {
     public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {
         Approval savedApproval = null;
 
-        Long maxDocId = documentRepository.findMaxDocId(); // DB에서 문서아이디의 최대값을 가져옴
+        Long maxDocId = documentRepository.findMaxDocId(); // DB에서 문서아이디의 최대값을 가져옴 -> 중간에 문서가 삭제될 시, 잘못 번호가 매겨짐
         if (maxDocId == null) {
             maxDocId = 1L;
         } else {
@@ -58,6 +58,7 @@ public class ApprovalService {
                 approval.setName(names.get(i));
                 approval.setRefer(refers.get(i));
                 approval.setDocument(maxDocId);
+//                document++;
 
                 if (i == 0) {
                     approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정

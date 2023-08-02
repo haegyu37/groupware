@@ -47,5 +47,6 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     @Query("SELECT COUNT(d) FROM Document d WHERE d.status = 1 AND d.template = :template AND d.id >= :id")
     Long countByTempNo(@Param("template") Template template, @Param("id") Long id);
 
+    Page<Document> findByWriterIdAndStatusAndResult(Long id, int status, String result, Pageable pageable);
 }
 

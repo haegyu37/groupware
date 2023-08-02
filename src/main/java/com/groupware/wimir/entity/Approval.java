@@ -22,6 +22,7 @@ public class Approval {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     private Long document; //문서 아이디
 
     private String reason; //반려사유
@@ -49,5 +50,12 @@ public class Approval {
                 .filter(approval -> approval.getLineId() != null) // lineId가 null이 아닌 경우만 필터링
                 .collect(Collectors.groupingBy(Approval::getLineId));
     }
+
+    public static Map<Long, List<Approval>> groupByLineName(List<Approval> approvals) {
+        return approvals.stream()
+                .filter(approval -> approval.getName() != null) // lineId가 null이 아닌 경우만 필터링
+                .collect(Collectors.groupingBy(Approval::getLineId));
+    }
+
 
 }

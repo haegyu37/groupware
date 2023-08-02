@@ -2,9 +2,11 @@ package com.groupware.wimir.controller;
 
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.DocumentDTO;
+import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Template;
 import com.groupware.wimir.exception.ResourceNotFoundException;
+import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.TemplateRepository;
@@ -32,6 +34,7 @@ public class DocumentController {
     private final MemberService memberService;
     private final ApprovalService approvalService;
     private final TemplateRepository templateRepository;
+    private final ApprovalRepository approvalRepository;
 
     // 문서 목록(정상 저장 전체 다 보도록)
     @GetMapping(value = "/list")
@@ -47,27 +50,48 @@ public class DocumentController {
         return documentService.findDocumentListByWriterAndStatus(currentMemberId, 0, pageable);
     }
 
-    //내가 작성한 저장 리스트
+    //내가 작성한 저장 리스트 all
     @GetMapping(value = "/mylist")
-    public Page<Document> getMyList(@PageableDefault Pageable pageable) {
+    public Page<Document> getMyListAll(@PageableDefault Pageable pageable) {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         return documentService.findDocumentListByWriterAndStatus(currentMemberId, 1, pageable);
     }
 
-
-    // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
-    @GetMapping(value ="/categorylist/{id}")
-    public Page<Document> getDocumentsByTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
-        return documentService.findDocumentListByTemplateIdAndStatus(id, 1, pageable);
-    }
-
-    // 카테고리별 자신이 작성한 문서 리스트(fun8번 결재 상태 추가되어야 함)
-    @GetMapping(value = "/categorymylist/{id}")
-    public Page<Document> getDocumentsByMyTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
+    //내가 작성한 저장 리스트 ing
+    @GetMapping(value = "/mylist/ing")
+    public Page<Document> getMyListIng(@PageableDefault Pageable pageable) {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        return documentService.findDocumentListByWriterAndTemplateIdAndStatus(currentMemberId, id, 1, pageable);
+        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "진행중", pageable);
     }
 
+    //내가 작성한 저장 리스트 승인
+    @GetMapping(value = "/mylist/approved")
+    public Page<Document> getMyListApproved(@PageableDefault Pageable pageable) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "승인", pageable);
+    }
+
+    //내가 작성한 저장 리스트 반려
+    @GetMapping(value = "/mylist/rejected")
+    public Page<Document> getMyListRejected(@PageableDefault Pageable pageable) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "반려", pageable);
+    }
+
+
+//    // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
+//    @GetMapping(value ="/categorylist/{id}")
+//    public Page<Document> getDocumentsByTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
+//        return documentService.findDocumentListByTemplateIdAndStatus(id, 1, pageable);
+//    }
+//
+//    // 카테고리별 자신이 작성한 문서 리스트(fun8번 결재 상태 추가되어야 함)
+//    @GetMapping(value = "/categorymylist/{id}")
+//    public Page<Document> getDocumentsByMyTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
+//        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+//        return documentService.findDocumentListByWriterAndTemplateIdAndStatus(currentMemberId, id, 1, pageable);
+//    }
+//
     // 문서 작성
     @PostMapping(value = "/create")
     public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO) {
@@ -166,6 +190,15 @@ public class DocumentController {
     // 문서 삭제
     @DeleteMapping(value = "/delete/{id}")
     public void deleteDocument(@PathVariable("id") Long id) {
+        // 해당 문서번호를 가진 Approval을 모두 조회
+        List<Approval> approvals = approvalRepository.findByDocument(id);
+
+        // 각 Approval을 삭제
+        for (Approval approval : approvals) {
+            approvalRepository.delete(approval);
+        }
+
+        // 문서 삭제
         documentService.deleteDocument(id);
     }
 
