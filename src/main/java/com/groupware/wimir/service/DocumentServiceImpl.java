@@ -1,7 +1,6 @@
 package com.groupware.wimir.service;
 
 import com.groupware.wimir.Config.SecurityUtil;
-import com.groupware.wimir.DTO.DocumentDTO;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Template;
@@ -9,36 +8,29 @@ import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.TemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @Transactional
 public class DocumentServiceImpl implements DocumentService {
+
     @Autowired
     private DocumentRepository documentRepository;
 
     @Autowired
     private MemberRepository memberRepository;
+
     @Autowired
     private AttachmentService attachmentService;
 
     @Autowired
     private TemplateRepository templateRepository;
-    private DocumentDTO documentDTO;
 
     @Override
     public Document findDocumentById(Long id) {
@@ -76,22 +68,17 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document saveDocument(Document document) {
-        document.setCreateDate(LocalDateTime.now());
-
         if (document.getStatus() == 1) {
             Template template = document.getTemplate();
             if (template != null) {
-                Long id = document.getId();
-                Long tempNo = documentRepository.countByTempNo(template, id);
-                document.setTempNo(tempNo + 1L);
+                Long maxTempNo = documentRepository.findMaxTempNoByTemplate(template);
+                document.setTempNo(maxTempNo + 1L);
             }
         } else if (document.getStatus() == 0) {
             document.setDno(null);
         }
         return documentRepository.save(document);
     }
-
-
 
     @Override
     public void deleteDocument(Long id) {
@@ -170,6 +157,11 @@ public class DocumentServiceImpl implements DocumentService {
 ////        // 여기에서는 orElseThrow를 사용하여 문서를 찾지 못한 경우 예외를 던집니다.
 ////        return optionalDocument.orElseThrow(() -> new RuntimeException("ID " + documentId + "에 해당하는 문서를 찾을 수 없습니다."));
 //    }
+
+    public Document getDocumentById(Long documentId) {
+        return documentRepository.findDocumentWithTemplateById(documentId);
+    }
+
 
 
 }
