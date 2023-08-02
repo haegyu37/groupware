@@ -108,8 +108,8 @@ public class DocumentController {
         document.setStatus(documentDTO.getStatus());
         document.setTemplate(documentDTO.getTemplate());    // 양식명
         System.out.println(documentDTO.getTemplate());
-        document.setResult("진행중");
-        approvalService.setApproval(documentDTO);
+//        document.setResult("진행중");
+//        approvalService.setApproval(documentDTO);
 
 //        int result = approvalService.submitApproval(documentDTO);
 
@@ -128,6 +128,10 @@ public class DocumentController {
                 maxDno = 0L;
             }
             document.setDno(maxDno + 1); // 작성 번호 생성
+            approvalService.setApproval(documentDTO);
+            document.setResult("진행중");
+
+
         }
 
         // 문서를 저장하고 저장된 문서를 반환
@@ -136,7 +140,7 @@ public class DocumentController {
         return ResponseEntity.ok(document);
     }
 
-
+//문서 조회
     @GetMapping(value = "/read/{id}")
     public DocumentResponseDTO readDocument(@PathVariable("id") Long id) {
         Document document = documentService.findDocumentById(id);
@@ -184,6 +188,8 @@ public class DocumentController {
                 }
                 updateDocument.setSno(null);
                 updateDocument.setStatus(1);
+                approvalService.setApproval(documentDTO);
+
             }
 
             return documentRepository.save(updateDocument);

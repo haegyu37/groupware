@@ -34,7 +34,7 @@ public class ApprovalService {
     public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {
         Approval savedApproval = null;
 
-        Long maxDocId = documentRepository.findMaxDocId(); // DB에서 문서아이디의 최대값을 가져옴 -> 중간에 문서가 삭제될 시, 잘못 번호가 매겨짐
+        Long maxDocId = documentRepository.findMaxDno(); // DB에서 문서아이디의 최대값을 가져옴 -> 중간에 문서가 삭제될 시, 잘못 번호가 매겨짐
         if (maxDocId == null) {
             maxDocId = 1L;
         } else {
@@ -72,7 +72,12 @@ public class ApprovalService {
         } else { //결재자 각각 지정해서 삽입
 
             List<Long> approvers = documentDTO.getApprovers();
-            approvers.add(0, SecurityUtil.getCurrentMemberId());
+            Long currentMemberId = SecurityUtil.getCurrentMemberId();
+            if (currentMemberId != null) {
+                approvers.add(0, currentMemberId);
+            } else {
+                System.out.println("로그인 아이디가  null : " + currentMemberId);
+            }
 
             int lastIndex = documentDTO.getApprovers().size() - 1; // 배열의 맨 마지막 인덱스
 
