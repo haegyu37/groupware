@@ -48,12 +48,8 @@ public class MemberController {
             // 현재 로그인한 사용자의 ID 가져오기
             Long currentMemberId = SecurityUtil.getCurrentMemberId();
 
-            // 비밀번호 변경 요청인지 확인
-            if (passwordRequest != null && passwordRequest.getNewPassword() != null) {
-                MemberResponseDTO updatedUser = memberService.changeMemberPassword(passwordRequest.getNewPassword());
-                log.info("비밀번호 변경이 완료되었습니다. 사용자 ID: {}", currentMemberId);
-                return ResponseEntity.ok("비밀번호 변경이 완료되었습니다.");
-            }
+            boolean imageUploaded = false;
+            boolean passwordChanged = false;
 
             // 프로필 이미지 업로드 요청인지 확인
             if (image != null) {
@@ -68,11 +64,28 @@ public class MemberController {
                 memberRepository.save(member);
 
                 log.info("프로필 이미지가 성공적으로 등록되었습니다. 사용자 ID: {}", currentMemberId);
-                return ResponseEntity.ok("프로필 이미지가 성공적으로 등록되었습니다.");
+                imageUploaded = true;
+            }
+
+            // 비밀번호 변경 요청인지 확인
+            if (passwordRequest != null && passwordRequest.getNewPassword() != null) {
+                MemberResponseDTO updatedUser = memberService.changeMemberPassword(passwordRequest.getNewPassword());
+                log.info("비밀번호 변경이 완료되었습니다. 사용자 ID: {}", currentMemberId);
+                passwordChanged = true;
             }
 
             // 요청에 변경 사항이 없는 경우
-            return ResponseEntity.ok("요청에 변경 사항이 없습니다.");
+            if (!imageUploaded && !passwordChanged) {
+                return ResponseEntity.ok("요청에 변경 사항이 없습니다.");
+            }
+
+            if (imageUploaded && passwordChanged) {
+                return ResponseEntity.ok("프로필 이미지와 비밀번호 변경이 모두 성공적으로 처리되었습니다.");
+            } else if (imageUploaded) {
+                return ResponseEntity.ok("프로필 이미지가 성공적으로 등록되었습니다.");
+            } else {
+                return ResponseEntity.ok("비밀번호 변경이 완료되었습니다.");
+            }
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

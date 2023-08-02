@@ -5,6 +5,7 @@ import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Position;
+import com.groupware.wimir.entity.Team;
 import com.groupware.wimir.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
