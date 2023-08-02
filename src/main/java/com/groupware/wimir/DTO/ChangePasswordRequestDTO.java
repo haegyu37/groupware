@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChangePasswordRequestDTO {
-    //    private String no;
-//    private String exPassword;
+
     private String newPassword;
 }
