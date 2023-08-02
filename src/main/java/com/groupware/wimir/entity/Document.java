@@ -30,7 +30,7 @@ public class Document {
     @JoinColumn(name = "member_id")
     private Member writer; // 작성자 (Member와 연관관계)
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tem_id")
     private Template template; // 양식명
 

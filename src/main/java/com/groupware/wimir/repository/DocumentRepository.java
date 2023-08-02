@@ -39,8 +39,6 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     @Query("SELECT d FROM Document d JOIN FETCH d.template WHERE d.id = :documentId")
     Document findDocumentWithTemplateById(@Param("documentId") Long documentId);
 
-
-
     @Query("SELECT COALESCE(MAX(d.tempNo), 0) FROM Document d WHERE d.template = :template")
     Long findMaxTempNoByTemplate(@Param("template") Template template);
 

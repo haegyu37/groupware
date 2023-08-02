@@ -37,8 +37,8 @@ public class TemplateService {
                 .orElseThrow(() -> new RuntimeException("양식을 찾을 수 없습니다 : " + id));
 
         // title과 content 업데이트
-        if (templateDTO.getTitle() != null) {
-            template.setTitle(templateDTO.getTitle());
+        if (templateDTO.getCategory() != null) {
+            template.setCategory(templateDTO.getCategory());
         }
         if (templateDTO.getContent() != null) {
             template.setContent(templateDTO.getContent());

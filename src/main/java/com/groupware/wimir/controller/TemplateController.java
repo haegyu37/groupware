@@ -28,22 +28,22 @@ public class TemplateController {
     public ResponseEntity<String> createTemplate(@RequestBody TemplateDTO templateDTO) {
         try {
             // 필수 필드인지 확인하고 유효성 검사
-            String title = templateDTO.getTitle();
+            String category = templateDTO.getCategory();
             String content = templateDTO.getContent();
 
-            if (title == null || content == null) {
+            if (category == null || content == null) {
                 return ResponseEntity.badRequest().body("제목, 내용, 카테고리는 필수 필드입니다.");
             }
 
             // db에 양식 데이터에 저장
             Template template = Template.builder()
-                    .title(title)
+                    .category(category)
                     .content(content)
                     .build();
             templateService.createTemplate(template);
 
             // html 파일로 저장
-            File file = new File("c://templates/" + title + ".html");
+            File file = new File("c://templates/" + category + ".html");
             try (FileWriter writer = new FileWriter(file)) {
                 writer.write(content);
             }
@@ -63,7 +63,7 @@ public class TemplateController {
 
         // 수정된 파일을 기존 파일에 덮어쓰기 해서 저장(오류있음. 덮어쓰기가 아니라 새 파일 생성)
         Template template = templateService.getTemplateById(id);
-        String fileName = template.getTitle() + ".html";
+        String fileName = template.getCategory() + ".html";
         File file = new File("c://templates/" + fileName);
         try (OutputStream outputStream = new FileOutputStream(file);
              OutputStreamWriter writer = new OutputStreamWriter(outputStream)) {
@@ -84,7 +84,7 @@ public class TemplateController {
         templateService.deleteTemplate(id);
 
         // 저장된 양식 html 파일은 삭제되지 않고 아카이브 폴더로 이동(현재 폴더로 이동되지 않음)
-        File file = new File(template.getTitle() + ".html");
+        File file = new File(template.getCategory() + ".html");
         File archiveDir = new File("c://templates/archive/");
         if (!archiveDir.exists()) {
             archiveDir.mkdirs();
@@ -101,7 +101,7 @@ public class TemplateController {
 
         TemplateDTO templateDTO = new TemplateDTO(
                 template.getId(),
-                template.getTitle(),
+                template.getCategory(),
                 template.getContent()
         );
         return templateDTO;
