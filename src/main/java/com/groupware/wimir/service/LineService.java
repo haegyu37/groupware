@@ -49,11 +49,6 @@ public class LineService {
         return memberIds;
     }
 
-//    //    line의 memberId로 직원 정보도 함께 불러오기
-//    public List<Approval> getMemberInfoByline(Long id) {
-//
-//    }
-
     public void deleteDocumentByLineId(Long id) {
         approvalRepository.deleteByLineId(id);
     }

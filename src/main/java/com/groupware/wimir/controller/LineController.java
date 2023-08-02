@@ -82,21 +82,23 @@ public class LineController {
 //        return Approval.groupByLineId(allApprovals);
 //    }
 
-    //내 결재라인 -> 토큰값 기준
-    @GetMapping("/mylist")
-    public Map<Long, List<Approval>> getMyLines() {
-        Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        //id를 기준으로 Approval을 찾는 메소드
-        List<Approval> myApproval = approvalRepository.findByWriter(currentMemberId);
-        return Approval.groupByLineId(myApproval);
+//    //내 결재라인 -> 토큰값 기준
+//    @GetMapping("/mylist")
+//    public Map<Long, List<Approval>> getMyLines() {
+//        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+//        //id를 기준으로 Approval을 찾는 메소드
+//        List<Approval> myApproval = approvalRepository.findByWriter(currentMemberId);
+//        return Approval.groupByLineId(myApproval);
+//
+//    }
 
-    }
-
-    //먼가 정리된 all 리스트 (멤버 정보 뜸)
+    //먼가 정리된 내 결재라인 목록 (멤버 정보 뜸)
     @GetMapping("/list")
     public Map<Long, List<Map<String, Object>>> getMemberLineById() {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+
         // 모든 결재 정보를 데이터베이스에서 조회 All 전부 다
-        List<Approval> allApprovals = approvalRepository.findAll();
+        List<Approval> allApprovals = approvalRepository.findByWriter(currentMemberId);
         // 그룹화된 결재 정보를 담을 Map 생성
         Map<Long, List<Map<String, Object>>> groupedApprovals = new HashMap<>();
 
