@@ -66,14 +66,14 @@ public class LineController {
         return ResponseEntity.ok("결재라인을 저장했습니다. ");
     }
 
-    //모든 결재라인
+    //모든 결재라인 -> 저장한거 다 뜨게
     @GetMapping("/list")
     public Map<Long, List<Approval>> groupApprovalsByLineId() {
         List<Approval> allApprovals = approvalRepository.findAll();
         return Approval.groupByLineId(allApprovals);
     }
 
-    //내 결재라인
+    //내 결재라인 -> 토큰값 기준
     @GetMapping("/mylist")
     public Map<Long, List<Approval>> getMyLines() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
@@ -89,6 +89,13 @@ public class LineController {
         return Approval.groupByLineId(lineService.getLineByLineId(id));
 
     }
+
+   //결재라인 삭제
+    @DeleteMapping("/delete/{id}")
+    public void deleteDocument(@PathVariable("id") Long id) {
+        lineService.deleteDocumentByLineId(id);
+    }
+
 
 
 
