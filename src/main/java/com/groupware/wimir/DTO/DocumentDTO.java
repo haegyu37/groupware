@@ -2,7 +2,12 @@ package com.groupware.wimir.DTO;
 
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Template;
+import com.groupware.wimir.repository.DocumentRepository;
+import com.groupware.wimir.repository.TemplateRepository;
+import com.groupware.wimir.service.TemplateService;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +33,7 @@ public class DocumentDTO {
         return template;
     }
 
-    public void setTemplate(Long templateId) {
+    public void setTemplate(Template template) {
         this.template = template;
     }
 }

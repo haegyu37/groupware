@@ -78,9 +78,9 @@ public class DocumentController {
         document.setCreateDate(LocalDateTime.now());
         document.setStatus(documentDTO.getStatus());
         document.setTemplate(documentDTO.getTemplate());    // 양식명
-//        System.out.println(documentDTO.getTemplate());
-        document.setResult("진행중");
-        approvalService.setApproval(documentDTO);
+        System.out.println(documentDTO.getTemplate());
+        document.setResult(0);
+//        approvalService.setApproval(documentDTO);
 
 //        int result = approvalService.submitApproval(documentDTO);
 
@@ -136,15 +136,20 @@ public class DocumentController {
 
 
             if (documentDTO.getStatus() == 0) {
-                // 임시저장인 경우 그냥 저장
+                // status가 0인 경우 임시저장이므로 그냥 저장
             } else {
-                // 작성인 경우
+                // status가 1인 경우 작성인 경우
                 Long maxDno = documentRepository.findMaxDno();
                 if (maxDno == null) {
                     maxDno = 0L;
                 }
                 if (updateDocument.getDno() == null || updateDocument.getDno() == 0) {
                     updateDocument.setDno(maxDno + 1);
+                }
+                Template template = updateDocument.getTemplate();
+                if (template != null) {
+                    Long maxTempNo = documentRepository.findMaxTempNoByTemplate(template);
+                    updateDocument.setTempNo(maxTempNo + 1);
                 }
                 updateDocument.setSno(null);
                 updateDocument.setStatus(1);
@@ -155,6 +160,7 @@ public class DocumentController {
 
         throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
     }
+
 
     // 문서 삭제
     @DeleteMapping(value = "/delete/{id}")

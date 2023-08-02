@@ -3,6 +3,7 @@ package com.groupware.wimir.service;
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
+import com.groupware.wimir.entity.Template;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.TemplateRepository;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,10 +20,13 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class DocumentServiceImpl implements DocumentService {
+
     @Autowired
     private DocumentRepository documentRepository;
+
     @Autowired
     private MemberRepository memberRepository;
+
     @Autowired
     private AttachmentService attachmentService;
 
@@ -64,8 +69,13 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document saveDocument(Document document) {
-        if (document.getStatus() == 0) {
-            // 임시저장 상태인 경우 id는 null
+        if (document.getStatus() == 1) {
+            Template template = document.getTemplate();
+            if (template != null) {
+                Long maxTempNo = documentRepository.findMaxTempNoByTemplate(template);
+                document.setTempNo(maxTempNo + 1L);
+            }
+        } else if (document.getStatus() == 0) {
             document.setDno(null);
         }
         return documentRepository.save(document);
@@ -158,6 +168,11 @@ public class DocumentServiceImpl implements DocumentService {
 ////        // 여기에서는 orElseThrow를 사용하여 문서를 찾지 못한 경우 예외를 던집니다.
 ////        return optionalDocument.orElseThrow(() -> new RuntimeException("ID " + documentId + "에 해당하는 문서를 찾을 수 없습니다."));
 //    }
+
+    public Document getDocumentById(Long documentId) {
+        return documentRepository.findDocumentWithTemplateById(documentId);
+    }
+
 
 
 }
