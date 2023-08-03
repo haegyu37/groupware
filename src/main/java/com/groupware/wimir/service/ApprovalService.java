@@ -73,15 +73,9 @@ public class ApprovalService {
             return ResponseEntity.ok(savedApproval);
         } else { //결재자 각각 지정해서 삽입
 
-//            List<Long> approvers = documentDTO.getApprovers();
-//            Long currentMemberId = SecurityUtil.getCurrentMemberId();
-//            approvers.add(0, currentMemberId);
-
             int lastIndex = documentDTO.getApprovers().size();
             List<Long> approvers = documentDTO.getApprovers();
             approvers.add(0, SecurityUtil.getCurrentMemberId());
-//
-//            int lastIndex = approvers.size(); // 배열의 맨 마지막 인덱스
 
             for (int i = 0; i < approvers.size(); i++) {
                 Long approverId = approvers.get(i);
