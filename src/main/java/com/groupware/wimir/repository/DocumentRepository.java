@@ -31,8 +31,8 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
     Page<Document> findByWriterAndTemplateIdAndStatus(Long memberId, Long id, int status, Pageable pageable);
 
-    @Query("SELECT MAX(id) FROM Document")
-    Long findMaxDocId();
+//    @Query("SELECT MAX(id) FROM Document")
+//    Long findMaxDocId();
 
     Optional<Document> findById(Long id);
 
