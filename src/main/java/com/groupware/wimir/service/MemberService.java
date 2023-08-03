@@ -2,8 +2,10 @@ package com.groupware.wimir.service;
 
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.MemberResponseDTO;
+import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Position;
+import com.groupware.wimir.entity.Team;
 import com.groupware.wimir.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -73,6 +75,50 @@ public class MemberService {
         return MemberResponseDTO.of(updatedMember);
     }
 
+    // 직급 변경
+    @Transactional
+    public MemberResponseDTO changeUserPositionByAdmin(Long memberId, Position newPosition) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+
+        member.setPosition(newPosition);
+        Member updatedMember = memberRepository.save(member);
+
+        // 변경된 사용자 정보로 MemberResponseDTO 생성
+        return MemberResponseDTO.of(updatedMember);
+    }
+
+    // 팀명 변경
+    @Transactional
+    public MemberResponseDTO changeUserTeamByAdmin(Long memberId, Team newTeam) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+
+        member.setTeam(newTeam);
+        Member updatedMember = memberRepository.save(member);
+
+        // 변경된 사용자 정보로 MemberResponseDTO 생성
+        return MemberResponseDTO.of(updatedMember);
+    }
+
+
+    // 사용자의 권한을 ROLE_BLOCK으로 업데이트하는 메서드 추가
+    public void updateUserAuthorityToBlock(Long userId) {
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        member.setAuthority(Authority.ROLE_BLOCK);
+        memberRepository.save(member);
+    }
+
+
+
+
+
+
+
+
+
     // ID로 회원 조회
     public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
@@ -91,6 +137,13 @@ public class MemberService {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException("Member not found with ID: " + memberId));
     }
+
+
+
+
+
+
+
 
 
 }

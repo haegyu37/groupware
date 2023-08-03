@@ -3,7 +3,9 @@ package com.groupware.wimir.controller;
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.LineDTO;
 import com.groupware.wimir.entity.Approval;
+import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.repository.ApprovalRepository;
+import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.LineService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -24,6 +25,8 @@ public class LineController {
     private LineService lineService;
     @Autowired
     private ApprovalRepository approvalRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     //마이페이지에서 결재라인 저장하기
     @PostMapping("/create")
@@ -36,12 +39,20 @@ public class LineController {
             maxLineId = maxLineId + 1;
         }
 
-        int lastIndex = lineDTO.getApprovers().size() - 1; // 배열의 맨 마지막 인덱스
+        int lastIndex = lineDTO.getApprovers().size(); // 배열의 맨 마지막 인덱스
+        List<Long> curAppList = lineDTO.getApprovers();
+        curAppList.add(0, SecurityUtil.getCurrentMemberId());
 
-        for (int i = 0; i < lineDTO.getApprovers().size(); i++) {
-            Long approverId = lineDTO.getApprovers().get(i);
+        for (int i = 0; i < curAppList.size(); i++) {
+            Long approverId = curAppList.get(i);
             if (approverId != null) {
                 Approval approval = new Approval();
+
+                //첫번째 결재자는 기안자
+                if (i == 0) {
+                    approval.setMemberId(SecurityUtil.getCurrentMemberId());
+                }
+
                 approval.setMemberId(approverId);
                 approval.setName(lineDTO.getName());
                 approval.setWriter(SecurityUtil.getCurrentMemberId());
@@ -63,34 +74,24 @@ public class LineController {
         return ResponseEntity.ok("결재라인을 저장했습니다.");
     }
 
-
-    //모든 결재라인 -> 저장한거 다 뜨게
+    //결재라인 목록
     @GetMapping("/list")
-    public Map<Long, List<Approval>> groupApprovalsByLineId() {
-        List<Approval> allApprovals = approvalRepository.findAll();
-        return Approval.groupByLineId(allApprovals);
-    }
-
-    //내 결재라인 -> 토큰값 기준
-    @GetMapping("/mylist")
-    public Map<Long, List<Approval>> getMyLines() {
+    public Map<Long, List<Map<String, Object>>> getMemberLineById() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        //id를 기준으로 Approval을 찾는 메소드
-        List<Approval> myApproval = approvalRepository.findByWriter(currentMemberId);
-        return Approval.groupByLineId(myApproval);
-
+        List<Approval> allApprovals = approvalRepository.findByWriter(currentMemberId);
+        return lineService.getGroupedApprovals(allApprovals);
     }
 
     //결재라인 조회
     @GetMapping("/{id}")
-    public Map<Long, List<Approval>> getApprovalLineById(@PathVariable Long id) {
-        return Approval.groupByLineId(lineService.getLineByLineId(id));
-
+    public Map<String, List<Map<String, Object>>> getMemberInfoLineById(@PathVariable Long id) {
+        List<Approval> approvals = lineService.getByLineId(id);
+        return lineService.getGroupedApprovalsName(approvals);
     }
 
     //결재라인 삭제
     @DeleteMapping("/delete/{id}")
-    public void deleteDocument(@PathVariable("id") Long id) {
+    public void deleteDocument(@PathVariable Long id) {
         lineService.deleteDocumentByLineId(id);
     }
 

@@ -93,14 +93,6 @@ public class AuthService {
         return tokenDTO;
     }
 
-    // 사용자의 권한을 ROLE_BLOCK으로 업데이트하는 메서드 추가
-    public void updateUserAuthorityToBlock(Long userId) {
-        Member member = memberRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-
-        member.setAuthority(Authority.ROLE_BLOCK);
-        memberRepository.save(member);
-    }
 
 
 }

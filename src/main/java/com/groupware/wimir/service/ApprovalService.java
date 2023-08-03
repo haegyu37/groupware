@@ -1,9 +1,11 @@
 package com.groupware.wimir.service;
 
+import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.DTO.DocumentDTO;
 import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
+import com.groupware.wimir.exception.ResourceNotFoundException;
 import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.DocumentRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,11 +36,11 @@ public class ApprovalService {
     public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {
         Approval savedApproval = null;
 
-        Long maxDocId = documentRepository.findMaxDocId(); // DB에서 문서아이디의 최대값을 가져옴
-        if (maxDocId == null) {
-            maxDocId = 1L;
+        Long maxDno = documentRepository.findMaxDno(); // DB에서 문서아이디의 최대값을 가져옴
+        if (maxDno == null) {
+            maxDno = 1L;
         } else {
-            maxDocId = maxDocId + 1;
+            maxDno = maxDno + 1;
         }
 
         if (documentDTO.getLineId() != null) {
@@ -56,7 +59,7 @@ public class ApprovalService {
                 approval.setWriter(writers.get(i));
                 approval.setName(names.get(i));
                 approval.setRefer(refers.get(i));
-                approval.setDocument(maxDocId);
+                approval.setDocument(maxDno);
 
                 if (i == 0) {
                     approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
@@ -70,12 +73,15 @@ public class ApprovalService {
         } else { //결재자 각각 지정해서 삽입
 
             List<Long> approvers = documentDTO.getApprovers();
-            int lastIndex = documentDTO.getApprovers().size() - 1; // 배열의 맨 마지막 인덱스
+            Long currentMemberId = SecurityUtil.getCurrentMemberId();
+            approvers.add(0, currentMemberId);
+
+            int lastIndex = documentDTO.getApprovers().size(); // 배열의 맨 마지막 인덱스
 
             for (int i = 0; i < approvers.size(); i++) {
                 Long approverId = approvers.get(i);
                 Approval approval = new Approval();
-                approval.setDocument(maxDocId);
+                approval.setDocument(maxDno);
                 approval.setMemberId(approverId);
                 approval.setRefer("결재");
 
@@ -96,61 +102,6 @@ public class ApprovalService {
         }
         return ResponseEntity.ok(savedApproval);
     }
-
-//    // 결재 수정 -> 회피중 ...
-//    public ResponseEntity<Approval> updateApproval(DocumentDTO documentDTO, Long id) {
-//        Approval savedApproval = null;
-//
-//        // id에 해당하는 approval을 찾음
-//        Optional<Approval> approvalOptional = approvalRepository.findById(id);
-////        Approval approval = approvalOptional.orElseThrow(() -> new ResourceNotFoundException("Approval을 찾을 수 없습니다. : " + id));
-//
-//        if (documentDTO.getLineId() != null) {
-//            List<Approval> approvals = approvalRepository.findByLineId(documentDTO.getLineId());
-//
-//            List<Long> memberIds = approvals.stream().map(Approval::getMemberId).collect(Collectors.toList());
-//            List<Long> writers = approvals.stream().map(Approval::getWriter).collect(Collectors.toList());
-//            List<String> names = approvals.stream().map(Approval::getName).collect(Collectors.toList());
-//            // 다른 필드들에 대해서도 필요한 경우에 리스트로 추출
-//
-//            // 리스트로 만들어진 각 칼럼들의 값들을 approval 엔티티에 삽입
-//            for (int i = 0; i < approvals.size(); i++) {
-//                Approval approval = approvalOptional.orElseThrow(() -> new ResourceNotFoundException("Approval을 찾을 수 없습니다. : " + id));
-//                approval.setMemberId(memberIds.get(i));
-//                approval.setWriter(writers.get(i));
-//                approval.setName(names.get(i));
-//                approval.setDocument(id);
-//
-//                if (i == 0) {
-//                    approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
-//                } else {
-//                    approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
-//                }
-//
-//                savedApproval = approvalRepository.save(approval);
-//            }
-//            return ResponseEntity.ok(approvalRepository.save(savedApproval));
-//        } else { //결재자 각각 지정해서 삽입
-//            List<Long> approvers = documentDTO.getApprovers();
-//            for (int i = 0; i < approvers.size(); i++) {
-//                Long approverId = approvers.get(i);
-//                Approval approval = approvalOptional.orElseThrow(() -> new ResourceNotFoundException("Approval을 찾을 수 없습니다. : " + id));
-////                Approval approval = new Approval();
-//                approval.setDocument(id);
-//                approval.setMemberId(approverId);
-//
-//                if (i == 0) {
-//                    approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
-//                } else {
-//                    approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
-//                }
-//
-//                savedApproval = approvalRepository.save(approval);
-//            }
-//
-//        }
-//        return ResponseEntity.ok(approvalRepository.save(savedApproval));
-//    }
 
 
     //내 결재 리스트 all
@@ -311,6 +262,41 @@ public class ApprovalService {
             }
         }
     }
+
+//    @Transactional
+//    public void cancelApproval(Long document) {
+//        // 해당 결재 정보 조회
+//        List<Approval> approval = approvalRepository.findByDocument(document);
+////                .orElseThrow(() -> new ResourceNotFoundException("결재 정보를 찾을 수 없습니다. : " + approvalId));
+//
+////        // 이미 결재가 완료된 경우 취소할 수 없음
+////        if (approval.getAppDate() != null) {
+////            throw new UnsupportedOperationException("이미 완료된 결재는 취소할 수 없습니다.");
+////        }
+//
+//        // 현재 결재 정보를 취소 상태로 변경
+//        approval.setAppDate(null);
+//        approval.setStatus(0);
+//        approvalRepository.save(approval);
+//
+//        // 다음 결재자 정보를 조회하여 current를 'N'으로 변경
+//        Long lineId = approval.getLineId();
+//        int approvalOrder = approval.getApprovalOrder();
+//        Line line = lineRepository.findById(lineId)
+//                .orElseThrow(() -> new ResourceNotFoundException("결재 라인을 찾을 수 없습니다. : " + lineId));
+//        List<Approval> approvals = approvalRepository.findByLineAndApprovalOrderGreaterThan(line, approvalOrder);
+//        for (Approval nextApproval : approvals) {
+//            nextApproval.setCurrent("N");
+//            approvalRepository.save(nextApproval);
+//        }
+//
+//        // 이전 결재자 정보를 조회하여 current를 'Y'으로 변경
+//        List<Approval> previousApprovals = approvalRepository.findByLineAndApprovalOrderLessThan(line, approvalOrder);
+//        for (Approval previousApproval : previousApprovals) {
+//            previousApproval.setCurrent("Y");
+//            approvalRepository.save(previousApproval);
+//        }
+//    }
 
 
 }

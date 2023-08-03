@@ -4,6 +4,8 @@ import com.groupware.wimir.DTO.*;
 import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
+import com.groupware.wimir.entity.Position;
+import com.groupware.wimir.entity.Team;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.AuthService;
 import com.groupware.wimir.service.DocumentService;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -109,41 +112,82 @@ public class AuthController {
         return ResponseEntity.ok(memberResponseDTO);
     }
 
-    //해당 사원 비밀번호변경
-    @PostMapping("/admin/members/{id}/password")
-    public ResponseEntity<MemberResponseDTO> changeUserPasswordByAdmin(@PathVariable Long id, @RequestBody ResetPasswordDTO newPasswordDto) {
-        MemberResponseDTO updatedUser = memberService.changeUserPasswordByAdmin(id, newPasswordDto.getNewPassword());
-        return ResponseEntity.ok(updatedUser);
-    }
-
-    //해당 사원 사진등록
-    @PostMapping("/admin/members/{memberId}/profile-image")
-    public ResponseEntity<String> uploadProfileImageForMember(
+    @PostMapping("/admin/members/{memberId}/edit")
+    public ResponseEntity<MemberResponseDTO> changeUserDetails(
             @PathVariable Long memberId,
-            @RequestParam("image") MultipartFile image
+            @RequestPart(name = "image", required = false) MultipartFile image,
+            @RequestPart(name = "changeRequest", required = false) ChangeUserDTO changeRequest
     ) {
         try {
-            // 이미지를 저장할 디렉토리 경로 지정
-            String uploadDir = "src/main/resources/static/images"; //
+            // 사진 등록
+            boolean imageUploaded = false;
+            if (image != null) {
+                String uploadDir = "src/main/resources/static/images";
+                String fileName = "profile_" + memberId + "." + FilenameUtils.getExtension(image.getOriginalFilename());
+                File file = new File(uploadDir + "/" + fileName);
+                FileUtils.writeByteArrayToFile(file, image.getBytes());
 
-            // 이미지 파일 이름 생성 (예시: "profile_12345.jpg")
-            String fileName = "profile_" + memberId + "." + FilenameUtils.getExtension(image.getOriginalFilename());
+                Member member = memberRepository.findById(memberId)
+                        .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                member.setImg("/images/" + fileName);
+                memberRepository.save(member);
 
-            // 이미지를 지정된 경로에 저장
-            File file = new File(uploadDir + "/" + fileName);
-            FileUtils.writeByteArrayToFile(file, image.getBytes());
+                log.info("사진 등록이 완료되었습니다. 사용자 ID: {}", memberId);
+                imageUploaded = true;
+            }
 
-            // Member 엔티티의 img 필드에 이미지 경로 저장
-            Member member = memberRepository.findById(memberId)
+            // 비밀번호 변경
+            boolean passwordChanged = false;
+            if (changeRequest != null && changeRequest.getNewPassword() != null) {
+                String updatedPassword = changeRequest.getNewPassword();
+                MemberResponseDTO updatedUser = memberService.changeUserPasswordByAdmin(memberId, updatedPassword);
+                log.info("비밀번호 변경이 완료되었습니다. 사용자 ID: {}", memberId);
+                passwordChanged = true;
+            }
+
+            // 직급명 변경
+            boolean positionChanged = false;
+            if (changeRequest != null && changeRequest.getPosition() != null) {
+                Position newPosition = changeRequest.getPosition();
+                MemberResponseDTO updatedUser = memberService.changeUserPositionByAdmin(memberId, newPosition);
+                log.info("직급명 변경이 완료되었습니다. 사용자 ID: {}", memberId);
+                positionChanged = true;
+            }
+
+            // 팀명 변경
+            boolean teamChanged = false;
+            if (changeRequest != null && changeRequest.getTeam() != null) {
+                Team newTeam = changeRequest.getTeam();
+                MemberResponseDTO updatedUser = memberService.changeUserTeamByAdmin(memberId, newTeam);
+                log.info("팀명 변경이 완료되었습니다. 사용자 ID: {}", memberId);
+                teamChanged = true;
+            }
+
+            // 변경된 사용자 정보 조회
+            Member updatedMember = memberRepository.findById(memberId)
                     .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-            member.setImg("/images/" + fileName); // "/images/profile_12345.jpg"
-            memberRepository.save(member);
 
-            return ResponseEntity.ok("프로필 이미지가 성공적으로 등록되었습니다.");
+            MemberResponseDTO responseDTO = MemberResponseDTO.builder()
+                    .id(updatedMember.getId())
+                    .no(updatedMember.getNo())
+                    .name(updatedMember.getName())
+                    .position(updatedMember.getPosition())
+                    .team(updatedMember.getTeam())
+                    .authority(updatedMember.getAuthority())
+                    .img(updatedMember.getImg())
+                    .build();
+
+            return ResponseEntity.ok(responseDTO);
+
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+
     }
+
+
+
 
     // 사용자의 권한을 ROLE_BLOCK으로 업데이트
     @PostMapping("/admin/members/{memberId}/block")
@@ -151,7 +195,7 @@ public class AuthController {
         try {
             Optional<Member> memberOptional = memberRepository.findById(memberId);
             if (memberOptional.isPresent()) {
-                authService.updateUserAuthorityToBlock(memberId);
+                memberService.updateUserAuthorityToBlock(memberId);
                 return ResponseEntity.ok("사용자의 권한이 ROLE_BLOCK으로 업데이트되었습니다.");
             } else {
                 return ResponseEntity.notFound().build();

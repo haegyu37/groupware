@@ -159,6 +159,11 @@ public class DocumentServiceImpl implements DocumentService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Page<Document> findDocumentListByWriterAndStatusAndResult(Long id, int status, String result, Pageable pageable) {
+        return documentRepository.findByWriterIdAndStatusAndResult (id, status, result, pageable);
+    }
+
 //    public Document getDocumentById(Long documentId) {
 //        // findById 메서드는 Optional<Document>를 반환한다고 가정합니다.
 //        Document document = documentRepository.findById(documentId);
