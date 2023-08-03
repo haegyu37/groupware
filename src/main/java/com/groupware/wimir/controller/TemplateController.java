@@ -121,21 +121,23 @@ public class TemplateController {
 
     // 템플릿 삭제
     @DeleteMapping(value = "/delete/{id}")
-    public String deleteTemplate(@PathVariable Long id) {
-        // db에 양식 데이터 삭제
-        Template template = templateService.getTemplateById(id);
+    public void deleteTemplate(@PathVariable Long id) {
+//        // db에 양식 데이터 삭제
+//        Template template = templateService.getTemplateById(id);
+//
+//        templateService.deleteTemplate(id);
 
-        templateService.deleteTemplate(id);
+        templateRepository.deleteById(id);
 
-        // 저장된 양식 html 파일은 삭제되지 않고 아카이브 폴더로 이동(현재 폴더로 이동되지 않음)
-        File file = new File(template.getCategory() + ".html");
-        File archiveDir = new File("c://templates/archive/");
-        if (!archiveDir.exists()) {
-            archiveDir.mkdirs();
-        }
-        file.renameTo(new File(archiveDir, file.getName()));
+//        // 저장된 양식 html 파일은 삭제되지 않고 아카이브 폴더로 이동(현재 폴더로 이동되지 않음)
+//        File file = new File(template.getCategory() + ".html");
+//        File archiveDir = new File("c://templates/archive/");
+//        if (!archiveDir.exists()) {
+//            archiveDir.mkdirs();
+//        }
+//        file.renameTo(new File(archiveDir, file.getName()));
 
-        return "redirect:/list";
+//        return "redirect:/list";
     }
 
 //    @DeleteMapping(value = "/delete/{id}")
@@ -147,28 +149,29 @@ public class TemplateController {
 //    }
 
     // 템플릿 조회
-    @GetMapping(value = "/read/{id}")
-    public TemplateDTO readTemplate(@PathVariable Long id) {
+    @GetMapping(value = "/{id}")
+    public Template readTemplate(@PathVariable Long id) {
         Template template = templateService.getTemplateById(id);
 
-        TemplateDTO templateDTO = new TemplateDTO(
-//                template.getId(),
-                template.getCategory(),
-                template.getContent()
-        );
-        return templateDTO;
+//        TemplateDTO templateDTO = new TemplateDTO(
+////                template.getId(),
+//                template.getCategory(),
+//                template.getContent()
+//        );
+        return template;
     }
 
     // 템플릿 목록
     @GetMapping(value = "/list")
-    public ResponseEntity<List<Template>> getTemplatesList() {
-        try {
-            List<Template> templates = templateService.getAllTemplates();
-            return ResponseEntity.ok(templates);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    public List<Template> getTemplatesList() {
+//        try {
+             List<Template> templates = templateRepository.findAll();
+             return templates;
+//            return ResponseEntity.ok(templates);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
     }
 
 }

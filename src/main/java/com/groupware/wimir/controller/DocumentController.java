@@ -147,7 +147,7 @@ public class DocumentController {
     }
 
     //문서 조회
-    @GetMapping(value = "/read/{id}")
+    @GetMapping(value = "/{id}")
     public DocumentResponseDTO readDocument(@PathVariable("id") Long id) {
         Document document = documentService.findDocumentById(id);
         Long dno = document.getDno();
