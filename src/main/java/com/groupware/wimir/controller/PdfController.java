@@ -7,7 +7,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.File;
 
 @RestController
-@RequestMapping(value = "/convert")
+@RequestMapping
 public class PdfController {
 
     private final HtmlToPdf htmlToPdf;
@@ -16,7 +16,7 @@ public class PdfController {
         this.htmlToPdf = htmlToPdf;
     }
 
-    @PostMapping("/pdf")
+    @PostMapping(value = "/pdf")
     public ModelAndView convertToPdf(@RequestParam("htmlContent") String htmlContent,
                                      @RequestParam("outputFileName") String outputFileName) {
         try {
