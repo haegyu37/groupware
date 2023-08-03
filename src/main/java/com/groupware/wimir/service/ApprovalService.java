@@ -77,7 +77,7 @@ public class ApprovalService {
             Long currentMemberId = SecurityUtil.getCurrentMemberId();
             approvers.add(0, currentMemberId);
 
-            int lastIndex = documentDTO.getApprovers().size(); // 배열의 맨 마지막 인덱스
+            int lastIndex = approvers.size() - 1; // 배열의 맨 마지막 인덱스
 
             for (int i = 0; i < approvers.size(); i++) {
                 Long approverId = approvers.get(i);
