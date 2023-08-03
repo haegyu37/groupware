@@ -34,11 +34,11 @@ public class ApprovalService {
     public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {
         Approval savedApproval = null;
 
-        Long maxDocId = documentRepository.findMaxDno(); // DB에서 문서아이디의 최대값을 가져옴 -> 중간에 문서가 삭제될 시, 잘못 번호가 매겨짐
-        if (maxDocId == null) {
-            maxDocId = 1L;
+        Long maxDno = documentRepository.findMaxDno(); // DB에서 문서아이디의 최대값을 가져옴
+        if (maxDno == null) {
+            maxDno = 1L;
         } else {
-            maxDocId = maxDocId + 1;
+            maxDno = maxDno + 1;
         }
 
         if (documentDTO.getLineId() != null) {
@@ -57,7 +57,7 @@ public class ApprovalService {
                 approval.setWriter(writers.get(i));
                 approval.setName(names.get(i));
                 approval.setRefer(refers.get(i));
-                approval.setDocument(maxDocId);
+                approval.setDocument(maxDno);
 //                document++;
 
                 if (i == 0) {
@@ -80,7 +80,7 @@ public class ApprovalService {
             for (int i = 0; i < approvers.size(); i++) {
                 Long approverId = approvers.get(i);
                 Approval approval = new Approval();
-                approval.setDocument(maxDocId);
+                approval.setDocument(maxDno);
                 approval.setMemberId(approverId);
                 approval.setRefer("결재");
 
@@ -101,61 +101,6 @@ public class ApprovalService {
         }
         return ResponseEntity.ok(savedApproval);
     }
-
-//    // 결재 수정 -> 회피중 ...
-//    public ResponseEntity<Approval> updateApproval(DocumentDTO documentDTO, Long id) {
-//        Approval savedApproval = null;
-//
-//        // id에 해당하는 approval을 찾음
-//        Optional<Approval> approvalOptional = approvalRepository.findById(id);
-////        Approval approval = approvalOptional.orElseThrow(() -> new ResourceNotFoundException("Approval을 찾을 수 없습니다. : " + id));
-//
-//        if (documentDTO.getLineId() != null) {
-//            List<Approval> approvals = approvalRepository.findByLineId(documentDTO.getLineId());
-//
-//            List<Long> memberIds = approvals.stream().map(Approval::getMemberId).collect(Collectors.toList());
-//            List<Long> writers = approvals.stream().map(Approval::getWriter).collect(Collectors.toList());
-//            List<String> names = approvals.stream().map(Approval::getName).collect(Collectors.toList());
-//            // 다른 필드들에 대해서도 필요한 경우에 리스트로 추출
-//
-//            // 리스트로 만들어진 각 칼럼들의 값들을 approval 엔티티에 삽입
-//            for (int i = 0; i < approvals.size(); i++) {
-//                Approval approval = approvalOptional.orElseThrow(() -> new ResourceNotFoundException("Approval을 찾을 수 없습니다. : " + id));
-//                approval.setMemberId(memberIds.get(i));
-//                approval.setWriter(writers.get(i));
-//                approval.setName(names.get(i));
-//                approval.setDocument(id);
-//
-//                if (i == 0) {
-//                    approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
-//                } else {
-//                    approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
-//                }
-//
-//                savedApproval = approvalRepository.save(approval);
-//            }
-//            return ResponseEntity.ok(approvalRepository.save(savedApproval));
-//        } else { //결재자 각각 지정해서 삽입
-//            List<Long> approvers = documentDTO.getApprovers();
-//            for (int i = 0; i < approvers.size(); i++) {
-//                Long approverId = approvers.get(i);
-//                Approval approval = approvalOptional.orElseThrow(() -> new ResourceNotFoundException("Approval을 찾을 수 없습니다. : " + id));
-////                Approval approval = new Approval();
-//                approval.setDocument(id);
-//                approval.setMemberId(approverId);
-//
-//                if (i == 0) {
-//                    approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
-//                } else {
-//                    approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
-//                }
-//
-//                savedApproval = approvalRepository.save(approval);
-//            }
-//
-//        }
-//        return ResponseEntity.ok(approvalRepository.save(savedApproval));
-//    }
 
 
     //내 결재 리스트 all

@@ -173,6 +173,8 @@ public class DocumentController {
             if (documentDTO.getStatus() == 0) {
                 // status가 0인 경우 임시저장이므로 그냥 저장
             } else {
+                approvalService.setApproval(documentDTO);
+
                 // status가 1인 경우 작성인 경우
                 Long maxDno = documentRepository.findMaxDno();
                 if (maxDno == null) {
@@ -180,6 +182,7 @@ public class DocumentController {
                 }
                 if (updateDocument.getDno() == null || updateDocument.getDno() == 0) {
                     updateDocument.setDno(maxDno + 1);
+
                 }
                 Template template = updateDocument.getTemplate();
                 if (template != null) {
@@ -188,7 +191,6 @@ public class DocumentController {
                 }
                 updateDocument.setSno(null);
                 updateDocument.setStatus(1);
-                approvalService.setApproval(documentDTO);
 
             }
 
