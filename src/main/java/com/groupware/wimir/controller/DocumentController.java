@@ -179,12 +179,13 @@ public class DocumentController {
                 updateDocument.setUpdateDate(LocalDateTime.now());
                 documentService.setWriterByToken(updateDocument);
                 updateDocument.setStatus(documentDTO.getStatus());
-                updateDocument.setResult("진행중");
+//                updateDocument.setResult("진행중");
 
                 if (documentDTO.getStatus() == 0) {
                     // status가 0인 경우 임시저장이므로 그냥 저장
                 } else {
                     approvalService.setApproval(documentDTO);
+                    updateDocument.setResult("진행중");
 
                     // status가 1인 경우 작성인 경우
                     Long maxDno = documentRepository.findMaxDno();
