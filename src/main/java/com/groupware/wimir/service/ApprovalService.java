@@ -105,7 +105,7 @@ public class ApprovalService {
     }
 
 
-    //내 결재 리스트 all
+    //내가 결재라인인 문서 리스트 all
     public List<Document> getApprovals(Long id) {
         List<Approval> approvals = approvalRepository.findByMemberId(id); //memberId를 기준으로 Approval 리스트 찾음
         List<Long> docIds = new ArrayList<>();
@@ -122,7 +122,7 @@ public class ApprovalService {
         List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
 
         for (Long docId : docIds) {
-            Document document = documentRepository.findById(docId)
+            Document document = documentRepository.findByDno(docId)
                     .orElse(null); //id로 Document 찾음
             if (document != null) {
                 myAppDocs.add(document); //Document 리스트에 추가
@@ -152,7 +152,7 @@ public class ApprovalService {
         List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
 
         for (Long docId : docIds) {
-            Document document = documentRepository.findById(docId)
+            Document document = documentRepository.findByDno(docId)
                     .orElse(null); //id로 Document 찾음
             if (document != null) {
                 myAppDocs.add(document); //Document 리스트에 추가
@@ -182,7 +182,7 @@ public class ApprovalService {
         List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
 
         for (Long docId : docIds) {
-            Document document = documentRepository.findById(docId)
+            Document document = documentRepository.findByDno(docId)
                     .orElse(null); //id로 Document 찾음
             if (document != null) {
                 myAppDocs.add(document); //Document 리스트에 추가
@@ -216,7 +216,7 @@ public class ApprovalService {
                 } else {
                     // 다음 결재자가 없는 경우, 즉 리스트의 마지막 결재자인 경우
                     // document의 result=승인
-                    Optional<Document> documentOptional = documentRepository.findById(documentId);
+                    Optional<Document> documentOptional = documentRepository.findByDno(documentId);
                     Document document = documentOptional.orElse(null);
 
                     if (document != null) {
@@ -250,7 +250,7 @@ public class ApprovalService {
                     approval.setCurrent("N");
                     approval.setReason(approvalDTO.getReason());
 
-                    Optional<Document> documentOptional = documentRepository.findById(documentId);
+                    Optional<Document> documentOptional = documentRepository.findByDno(documentId);
                     Document document = documentOptional.orElse(null);
 
                     if (document != null) {
@@ -295,7 +295,7 @@ public class ApprovalService {
         }
     }
 
-    // 결재회수
+    // 결재 회수
     public void backApproval(Long id) {
         Document document = documentService.findDocumentById(id);
         if (document != null) {
