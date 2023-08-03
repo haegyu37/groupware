@@ -25,52 +25,11 @@ public class LineController {
     private LineService lineService;
     @Autowired
     private ApprovalRepository approvalRepository;
-    @Autowired
-    private MemberRepository memberRepository;
 
     //마이페이지에서 결재라인 저장하기
     @PostMapping("/create")
     public ResponseEntity<String> saveApprovalLine(@RequestBody LineDTO lineDTO) {
-
-        Long maxLineId = approvalRepository.findMaxLineId();
-        if (maxLineId == null) {
-            maxLineId = 1L;
-        } else {
-            maxLineId = maxLineId + 1;
-        }
-
-        int lastIndex = lineDTO.getApprovers().size(); // 배열의 맨 마지막 인덱스
-        List<Long> curAppList = lineDTO.getApprovers();
-        curAppList.add(0, SecurityUtil.getCurrentMemberId());
-
-        for (int i = 0; i < curAppList.size(); i++) {
-            Long approverId = curAppList.get(i);
-            if (approverId != null) {
-                Approval approval = new Approval();
-
-                //첫번째 결재자는 기안자
-                if (i == 0) {
-                    approval.setMemberId(SecurityUtil.getCurrentMemberId());
-                }
-
-                approval.setMemberId(approverId);
-                approval.setName(lineDTO.getName());
-                approval.setWriter(SecurityUtil.getCurrentMemberId());
-                approval.setCategory(lineDTO.getCategory());
-                approval.setLineId(maxLineId);
-                approval.setRefer("결재");
-
-                // 맨 마지막 인덱스인 경우 refer를 "참조"로 설정
-                if (i == lastIndex) {
-                    approval.setRefer("참조");
-                }
-
-                approvalRepository.save(approval);
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("직원을 찾을 수 없습니다. " + approverId);
-            }
-        }
-
+        lineService.saveApprovalLine(lineDTO);
         return ResponseEntity.ok("결재라인을 저장했습니다.");
     }
 

@@ -124,12 +124,6 @@ public class MemberService {
         return members;
     }
 
-    public Member findMemberById(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new EntityNotFoundException("Member not found with ID: " + memberId));
-    }
-
-
 }
 
 

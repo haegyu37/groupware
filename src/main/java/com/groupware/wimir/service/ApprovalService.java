@@ -320,5 +320,35 @@ public class ApprovalService {
         }
     }
 
+    //내가 참조인 문서 리스트
+    public List<Document> getReferencedDocuments(Long memberId) {
+
+        List<Approval> myApps = approvalRepository.findByMemberId(memberId);
+        List<Approval> myAppsRefer = myApps.stream()
+                .filter(approval -> "참조".equals(approval.getRefer()))
+                .collect(Collectors.toList());
+        List<Long> docIds = new ArrayList<>();
+
+        for (Approval approval : myAppsRefer) {
+            Long docId = approval.getDocument(); //Approval에서 document만 찾음
+            if (docId != null) {
+                docIds.add(docId); //docIds 리스트에 추가
+            } else {
+                continue; //null이면 건너뜀
+            }
+        }
+
+        List<Document> myAppDocsRefer = new ArrayList<>(); // myAppDocs 리스트를 초기화
+
+        for (Long docId : docIds) {
+            Document document = documentRepository.findByDno(docId)
+                    .orElse(null); //id로 Document 찾음
+            if (document != null) {
+                myAppDocsRefer.add(document); //Document 리스트에 추가
+            }
+        }
+        return myAppDocsRefer; // 리스트 반환
+    }
+
 
 }
