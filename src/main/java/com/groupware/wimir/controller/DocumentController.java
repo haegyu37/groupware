@@ -22,6 +22,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +111,7 @@ public class DocumentController {
         document.setTitle(documentDTO.getTitle());
         document.setContent(documentDTO.getContent());
         documentService.setWriterByToken(document);
-        document.setCreateDate(LocalDateTime.now());
+        document.setCreateDate(LocalDate.now());
         document.setStatus(documentDTO.getStatus());
         document.setTemplate(documentDTO.getTemplate());    // 양식명
         document.setResult("진행중");
@@ -175,7 +176,7 @@ public class DocumentController {
             if (updateDocument != null) {
                 updateDocument.setTitle(documentDTO.getTitle());
                 updateDocument.setContent(documentDTO.getContent());
-                updateDocument.setUpdateDate(LocalDateTime.now());
+                updateDocument.setUpdateDate(LocalDate.now());
                 documentService.setWriterByToken(updateDocument);
                 updateDocument.setStatus(documentDTO.getStatus());
 //                updateDocument.setResult("진행중");

@@ -15,9 +15,9 @@ public class TemplateService {
         this.templateRepository = templateRepository;
     }
 
-    public Template createTemplate(Template template) {
-        return templateRepository.save(template);
-    }
+//    public Template createTemplate(Template template) {
+//        return templateRepository.save(template);
+//    }
 
     public List<Template> getAllTemplates() {
         return templateRepository.findAll();

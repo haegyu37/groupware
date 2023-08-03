@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+//import java.time.LocalDate;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -203,7 +205,7 @@ public class ApprovalService {
 
             if (approval.getCurrent().equals("Y")) {
                 // 현재 결재자를 찾았을 경우
-                approval.setAppDate(now());
+                approval.setAppDate(LocalDate.now());
                 approval.setStatus(1);
                 approval.setCurrent("N");
 
@@ -243,7 +245,7 @@ public class ApprovalService {
             if (approval.getCurrent().equals("Y")) {
                 // 현재 결재자를 찾았을 경우
                 if (!"참조".equals(approval.getRefer())) {
-                    approval.setAppDate(now());
+                    approval.setAppDate(LocalDate.now());
                     approval.setStatus(2);
                     approval.setCurrent("N");
                     approval.setReason(approvalDTO.getReason());

@@ -2,7 +2,9 @@ package com.groupware.wimir.controller;
 
 import ch.qos.logback.classic.Logger;
 import com.groupware.wimir.DTO.TemplateDTO;
+import com.groupware.wimir.repository.TemplateRepository;
 import com.groupware.wimir.service.TemplateService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +16,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/templates")
+@RequiredArgsConstructor
+
 public class TemplateController {
 
     private final TemplateService templateService;
-
-    @Autowired
-    public TemplateController(TemplateService templateService) {
-        this.templateService = templateService;
-    }
+    private final TemplateRepository templateRepository;
+//    @Autowired
+//    public TemplateController(TemplateService templateService, TemplateRepository templateRepository) {
+//        this.templateService = templateService;
+//        this.templateRepository =
+//    }
 
     // 템플릿 생성
     @PostMapping(value = "/create")
@@ -30,26 +35,33 @@ public class TemplateController {
             String category = templateDTO.getCategory();
             String content = templateDTO.getContent();
 
+            //제목 또는 내용이 null값이면 알림
             if (category == null || content == null) {
-                return ResponseEntity.badRequest().body("제목, 내용, 카테고리는 필수입니다.");
+                return ResponseEntity.badRequest().body("제목, 내용은 필수입니다.");
             }
 
-            // db에 양식 데이터에 저장
-            Template template = Template.builder()
-                    .category(category)
-                    .content(content)
-                    .build();
-            templateService.createTemplate(template);
+//            // db에 양식 데이터에 저장
+//            Template template = Template.builder()
+//                    .category(category)
+//                    .content(content)
+//                    .build();
+            Template template = new Template();
+            template.setCategory(category);
+            template.setContent(content);
 
-            // html 파일로 저장
-            File file = new File("c://templates/" + category + ".html");
-            try (FileWriter writer = new FileWriter(file)) {
-                writer.write(content);
-            }
+            templateRepository.save(template);
+//            templateService.createTemplate(template);
+
+//            // html 파일로 저장
+//            File file = new File("c://templates/" + category + ".html"); //그냥 c 드라이브에 저장하면 안되묘??
+//            try (FileWriter writer = new FileWriter(file)) {
+//                writer.write(content);
+//            }
 
             return ResponseEntity.ok("양식 등록을 완료했습니다.");
         } catch (Exception e) {
-            e.printStackTrace(); // 오류가 발생하면 메시지를 출력
+            //에러 메세지
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("양식 등록을 실패했습니다.");
         }
     }
@@ -140,7 +152,7 @@ public class TemplateController {
         Template template = templateService.getTemplateById(id);
 
         TemplateDTO templateDTO = new TemplateDTO(
-                template.getId(),
+//                template.getId(),
                 template.getCategory(),
                 template.getContent()
         );
