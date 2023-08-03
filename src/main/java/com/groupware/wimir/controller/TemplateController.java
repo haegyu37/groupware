@@ -92,22 +92,22 @@ public class TemplateController {
 
     // 템플릿 수정
     @PutMapping(value = "/update/{id}")
-    public String updateTemplate(@PathVariable Long id, @RequestBody TemplateDTO templateDTO) {
+    public Template updateTemplate(@PathVariable Long id, @RequestBody TemplateDTO templateDTO) {
         // db에 양식 데이터 수정
-        templateService.updateTemplate(id, templateDTO);
+//        templateService.updateTemplate(id, templateDTO);
 
         // 수정된 파일을 새로 저장
-        Template template = templateService.getTemplateById(id);
-        String fileName = template.getCategory() + ".html";
-        File file = new File("c://templates/" + fileName);
-        try (OutputStream outputStream = new FileOutputStream(file);
-             OutputStreamWriter writer = new OutputStreamWriter(outputStream)) {
-            writer.write(template.getContent());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        Template template = templateService.getTemplateById(id);
+//        String fileName = template.getCategory() + ".html";
+//        File file = new File("c://templates/" + fileName);
+//        try (OutputStream outputStream = new FileOutputStream(file);
+//             OutputStreamWriter writer = new OutputStreamWriter(outputStream)) {
+//            writer.write(template.getContent());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         // 수정된 글의 상세 조회 페이지로 리다이렉트
-        return "redirect:/read/" + id;
+        return templateService.updateTemplate(id, templateDTO);
     }
 
 //    @PutMapping(value = "/update/{id}")

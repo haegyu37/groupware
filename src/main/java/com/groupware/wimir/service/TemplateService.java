@@ -32,7 +32,7 @@ public class TemplateService {
         templateRepository.save(template);
     }
 
-    public void updateTemplate(Long id, TemplateDTO templateDTO) {
+    public Template updateTemplate(Long id, TemplateDTO templateDTO) {
         Template template = templateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("양식을 찾을 수 없습니다 : " + id));
 
@@ -44,7 +44,7 @@ public class TemplateService {
             template.setContent(templateDTO.getContent());
         }
 
-        templateRepository.save(template);
+        return templateRepository.save(template);
     }
 
     public void deleteTemplate(Long id) {
