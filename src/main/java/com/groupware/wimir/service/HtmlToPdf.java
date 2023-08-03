@@ -19,7 +19,6 @@ public class HtmlToPdf {
 
             // 폰트 설정(한글 깨질시)
 //            renderer.getFontResolver().addFont("path/to/font.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-
             renderer.setDocumentFromString(htmlContent);
 
             // A4 용지 크기 설정
