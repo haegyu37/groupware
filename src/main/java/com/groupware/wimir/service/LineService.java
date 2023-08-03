@@ -75,7 +75,7 @@ public class LineService {
                 // Retrieve member information
                 Member memberInfo = memberRepository.findById(approval.getMemberId()).orElse(null);
                 if (memberInfo != null) {
-                    approvalInfo.put("line name", approval.getName());
+                    approvalInfo.put("lineName", approval.getName());
                     approvalInfo.put("no", memberInfo.getNo());
                     approvalInfo.put("name", memberInfo.getName());
                     approvalInfo.put("team", memberInfo.getTeam());
@@ -107,7 +107,7 @@ public class LineService {
                 // Retrieve member information
                 Member memberInfo = memberRepository.findById(approval.getMemberId()).orElse(null);
                 if (memberInfo != null) {
-                    approvalInfo.put("line id", approval.getLineId());
+                    approvalInfo.put("lineId", approval.getLineId());
                     approvalInfo.put("no", memberInfo.getNo());
                     approvalInfo.put("name", memberInfo.getName());
                     approvalInfo.put("team", memberInfo.getTeam());
@@ -139,8 +139,8 @@ public class LineService {
                 // Retrieve member information
                 Member memberInfo = memberRepository.findById(approval.getMemberId()).orElse(null);
                 if (memberInfo != null) {
-                    approvalInfo.put("line id", approval.getLineId());
-                    approvalInfo.put("line name", approval.getName());
+                    approvalInfo.put("lineId", approval.getLineId());
+                    approvalInfo.put("lineName", approval.getName());
                     approvalInfo.put("no", memberInfo.getNo());
                     approvalInfo.put("name", memberInfo.getName());
                     approvalInfo.put("team", memberInfo.getTeam());
