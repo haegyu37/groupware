@@ -3,6 +3,7 @@ package com.groupware.wimir.controller;
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.entity.*;
+import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.MemberService;
@@ -26,6 +27,8 @@ public class ApprovalController {
     private MemberService memberService;
     @Autowired
     ApprovalService approvalService;
+    @Autowired
+    ApprovalRepository approvalRepository;
 
     //팀 모두 출력
     @GetMapping("/team")
@@ -112,7 +115,7 @@ public class ApprovalController {
         return myAppDocs;
     }
 
-    //    결재 승인 앤나 반려
+    //결재 승인 앤나 반려
     @PostMapping("/approve")
     public ResponseEntity<String> approveDocument(@RequestBody ApprovalDTO approvalDTO) {
         if (approvalDTO.getStatus() == 1) {
@@ -126,7 +129,26 @@ public class ApprovalController {
         }
     }
 
+    //결재 취소
+    @PostMapping("/cancel")
+    public void cancleApproval(@RequestBody ApprovalDTO approvalDTO) {
+        approvalService.cancelApproval(approvalDTO.getDocument());
+    }
 
+    //결재 회수
+    @PostMapping("/back")
+    public ResponseEntity<String> backApproval(@RequestBody ApprovalDTO approvalDTO) {
+        List<Approval> approvals = approvalRepository.findByDocument(approvalDTO.getDocument());
+        Approval secondApprover = approvals.get(1);
+
+        //두번째 결재자가 이미 결재 했으면 결제 취소 먼저 요청해야됨
+        if (secondApprover.getStatus() != 0 && secondApprover.getAppDate() != null) {
+            return ResponseEntity.ok("이미 결재가 진행된 건을 회수할 수 없습니다.");
+        }
+        approvalService.backApproval(approvalDTO.getDocument());
+        return ResponseEntity.ok("결재가 회수되었습니다.");
+
+    }
 }
 
 

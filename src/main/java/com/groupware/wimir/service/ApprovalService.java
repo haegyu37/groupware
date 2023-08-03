@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,6 +30,8 @@ public class ApprovalService {
     private ApprovalRepository approvalRepository;
     @Autowired
     private DocumentRepository documentRepository;
+    @Autowired
+    DocumentService documentService;
 
     //결재 요청
     public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {
@@ -263,40 +264,63 @@ public class ApprovalService {
         }
     }
 
-//    @Transactional
-//    public void cancelApproval(Long document) {
-//        // 해당 결재 정보 조회
-//        List<Approval> approval = approvalRepository.findByDocument(document);
-////                .orElseThrow(() -> new ResourceNotFoundException("결재 정보를 찾을 수 없습니다. : " + approvalId));
-//
-////        // 이미 결재가 완료된 경우 취소할 수 없음
-////        if (approval.getAppDate() != null) {
-////            throw new UnsupportedOperationException("이미 완료된 결재는 취소할 수 없습니다.");
-////        }
-//
-//        // 현재 결재 정보를 취소 상태로 변경
-//        approval.setAppDate(null);
-//        approval.setStatus(0);
-//        approvalRepository.save(approval);
-//
-//        // 다음 결재자 정보를 조회하여 current를 'N'으로 변경
-//        Long lineId = approval.getLineId();
-//        int approvalOrder = approval.getApprovalOrder();
-//        Line line = lineRepository.findById(lineId)
-//                .orElseThrow(() -> new ResourceNotFoundException("결재 라인을 찾을 수 없습니다. : " + lineId));
-//        List<Approval> approvals = approvalRepository.findByLineAndApprovalOrderGreaterThan(line, approvalOrder);
-//        for (Approval nextApproval : approvals) {
-//            nextApproval.setCurrent("N");
-//            approvalRepository.save(nextApproval);
-//        }
-//
-//        // 이전 결재자 정보를 조회하여 current를 'Y'으로 변경
-//        List<Approval> previousApprovals = approvalRepository.findByLineAndApprovalOrderLessThan(line, approvalOrder);
-//        for (Approval previousApproval : previousApprovals) {
-//            previousApproval.setCurrent("Y");
-//            approvalRepository.save(previousApproval);
-//        }
-//    }
+    //결재 취소
+    public void cancelApproval(Long id) {
+        // documentId를 사용하여 해당 문서의 결재 정보를 조회합니다.
+        List<Approval> approvals = approvalRepository.findByDocument(id);
+        System.out.println("문서번호" + id);
+        System.out.println("문서목록" + approvals);
+
+//        두번째 결재자만 결재취소할 수 있음
+//        1: 자기자신, 3: 결재 완료하면 결재 끝임
+        Approval secondApprover = approvals.get(1);
+
+        if (secondApprover != null) {
+
+            //결재 취소 처리
+            secondApprover.setAppDate(null);
+            secondApprover.setStatus(0);
+            approvalRepository.save(secondApprover);
+
+            //다음 결재자 currnent N
+            Approval thirdApprover = approvals.get(2);
+            thirdApprover.setCurrent("N");
+            approvalRepository.save(thirdApprover);
+
+            //이전 결재자 current N 그리고 결재 취소 처리
+            Approval firstApprover = approvals.get(0);
+            firstApprover.setCurrent("N");
+            firstApprover.setAppDate(null);
+            secondApprover.setStatus(0);
+        }
+    }
+
+    // 결재회수
+    public void backApproval(Long id) {
+        Document document = documentService.findDocumentById(id);
+        if (document != null) {
+            document.setStatus(0); // 문서를 임시저장 상태로 ..
+
+            Long dno = document.getDno();
+
+            // 관련 결재정보 삭제
+            List<Approval> approvals = approvalRepository.findByDocument(dno);
+
+            for (Approval approval : approvals) {
+                approvalRepository.delete(approval);
+            }
+
+            // sno 부여 dno 초기화
+            Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장 번호의 최대값을 가져옴
+            if (maxSno == null) {
+                maxSno = 0L;
+            }
+            document.setSno(maxSno + 1); // 임시저장 번호 생성
+            document.setDno(null); // 저장번호 null로
+        } else {
+            throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
+        }
+    }
 
 
 }

@@ -144,7 +144,8 @@ public class DocumentController {
     @GetMapping(value = "/read/{id}")
     public DocumentResponseDTO readDocument(@PathVariable("id") Long id) {
         Document document = documentService.findDocumentById(id);
-        List<Approval> approvals = lineService.getByDocument(id);
+        Long dno = document.getDno();
+        List<Approval> approvals = lineService.getByDocument(dno);
         Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
         if (document == null) {
             throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
@@ -174,9 +175,6 @@ public class DocumentController {
                 updateDocument.setStatus(documentDTO.getStatus());
                 updateDocument.setResult("진행중");
 
-//            approvalService.updateApproval(documentDTO, id);
-
-
                 if (documentDTO.getStatus() == 0) {
                     // status가 0인 경우 임시저장이므로 그냥 저장
                 } else {
@@ -200,10 +198,8 @@ public class DocumentController {
                     updateDocument.setStatus(1);
 
                 }
-
                 return documentRepository.save(updateDocument);
             }
-
         }
         throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
     }
@@ -221,10 +217,11 @@ public class DocumentController {
         if ("승인".equals(result) || "반려".equals(result)) {
             throw new UnsupportedOperationException("이미 승인 또는 반려된 문서는 삭제할 수 없습니다.");
         }
+        Long dno = document.getDno();
 
         // 문서에 해당 결재라인 삭제
         // 해당 문서번호를 가진 Approval을 모두 조회
-        List<Approval> approvals = approvalRepository.findByDocument(id);
+        List<Approval> approvals = approvalRepository.findByDocument(dno);
 
         // 각 Approval을 삭제
         for (Approval approval : approvals) {
