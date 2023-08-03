@@ -101,7 +101,7 @@ public class ApprovalController {
         return myAppDocs;
     }
     //내가 결재라인인데 이제 참조인 문서 목록
-    @GetMapping("/listrefer")
+    @GetMapping("/list/refer")
     public List<Document> referDocs(){
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         List<Approval> myApps = approvalRepository.findByMemberId(currentMemberId);
