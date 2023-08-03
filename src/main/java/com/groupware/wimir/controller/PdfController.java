@@ -4,6 +4,8 @@ import com.groupware.wimir.service.HtmlToPdf;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
+
 @RestController
 @RequestMapping(value = "/convert")
 public class PdfController {
@@ -15,9 +17,18 @@ public class PdfController {
     }
 
     @PostMapping("/pdf")
-    public ModelAndView convertToPdf(@RequestParam("htmlContent") String htmlContent) {
+    public ModelAndView convertToPdf(@RequestParam("htmlContent") String htmlContent,
+                                     @RequestParam("outputFileName") String outputFileName) {
         try {
-            htmlToPdf.convertHtmlToPdf(htmlContent, "output.pdf");
+            // 경로 생성(만약 해당 경로에 폴더가 없는 경우)
+            File directory = new File("C:\\Users\\codepc\\Downloads");
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            // pdf 저장
+            String outputPath = "C:\\Users\\codepc\\Downloads";
+            htmlToPdf.convertHtmlToPdf(htmlContent, outputPath, outputFileName);
 
             ModelAndView modelAndView = new ModelAndView("result");
             modelAndView.addObject("message", "HTML을 PDF로 변환했습니다.");
@@ -29,4 +40,5 @@ public class PdfController {
         }
     }
 }
+
 

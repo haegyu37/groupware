@@ -31,15 +31,22 @@ public class AttachmentService {
         this.attachmentRepository = attachmentRepository;
         this.documentRepository = documentRepository;
 
-       // 파일 저장 디렉토리 설정
+       // 첨부파일 업로드 경로
         String uploadPath = "C:\\uploads";
         this.attachmentStorageLocation = Paths.get(uploadPath);
 
-        // 파일 저장 디렉토리 생성
+        // 업로드 폴더 생성(폴더가 없으면 생성)
         try {
             Files.createDirectories(this.attachmentStorageLocation);
         } catch (IOException e) {
             throw new RuntimeException("파일 저장 디렉토리를 생성할 수 없습니다.", e);
+        }
+
+        // 다운로드 폴더 생성(폴더가 없으면 생성)
+        try {
+            Files.createDirectories(Paths.get(DOWNLOAD_PATH));
+        } catch (IOException e) {
+            throw new RuntimeException("다운로드 폴더를 생성할 수 없습니다.", e);
         }
     }
 

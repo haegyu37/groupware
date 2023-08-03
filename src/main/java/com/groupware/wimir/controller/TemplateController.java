@@ -27,12 +27,11 @@ public class TemplateController {
     @PostMapping(value = "/create")
     public ResponseEntity<String> createTemplate(@RequestBody TemplateDTO templateDTO) {
         try {
-            // 필수 필드인지 확인하고 유효성 검사
             String category = templateDTO.getCategory();
             String content = templateDTO.getContent();
 
             if (category == null || content == null) {
-                return ResponseEntity.badRequest().body("제목, 내용, 카테고리는 필수 필드입니다.");
+                return ResponseEntity.badRequest().body("제목, 내용, 카테고리는 필수입니다.");
             }
 
             // db에 양식 데이터에 저장
@@ -55,13 +54,37 @@ public class TemplateController {
         }
     }
 
+//    @PostMapping(value = "/create")
+//    public ResponseEntity<String> createTemplate(@RequestBody TemplateDTO templateDTO) {
+//        try {
+//            String category = templateDTO.getCategory();
+//            String content = templateDTO.getContent();
+//
+//            if (category == null || content == null) {
+//                return ResponseEntity.badRequest().body("제목, 내용, 카테고리는 필수입니다.");
+//            }
+//
+//            // db에 양식 데이터에 저장
+//            Template template = Template.builder()
+//                    .category(category)
+//                    .content(content)
+//                    .build();
+//            templateService.createTemplate(template);
+//
+//            return ResponseEntity.ok("양식 등록을 완료했습니다.");
+//        } catch (Exception e) {
+//            e.printStackTrace(); // 오류가 발생하면 메시지를 출력
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("양식 등록을 실패했습니다.");
+//        }
+//    }
+
     // 템플릿 수정
     @PutMapping(value = "/update/{id}")
     public String updateTemplate(@PathVariable Long id, @RequestBody TemplateDTO templateDTO) {
         // db에 양식 데이터 수정
         templateService.updateTemplate(id, templateDTO);
 
-        // 수정된 파일을 기존 파일에 덮어쓰기 해서 저장(오류있음. 덮어쓰기가 아니라 새 파일 생성)
+        // 수정된 파일을 새로 저장
         Template template = templateService.getTemplateById(id);
         String fileName = template.getCategory() + ".html";
         File file = new File("c://templates/" + fileName);
@@ -72,8 +95,17 @@ public class TemplateController {
             e.printStackTrace();
         }
         // 수정된 글의 상세 조회 페이지로 리다이렉트
-        return "redirect:/get/" + id;
+        return "redirect:/read/" + id;
     }
+
+//    @PutMapping(value = "/update/{id}")
+//    public String updateTemplate(@PathVariable Long id, @RequestBody TemplateDTO templateDTO) {
+//        // db에 양식 데이터 수정
+//        templateService.updateTemplate(id, templateDTO);
+//
+//        // 수정된 글의 상세 조회 페이지로 리다이렉트
+//        return "redirect:/read/" + id;
+//    }
 
     // 템플릿 삭제
     @DeleteMapping(value = "/delete/{id}")
@@ -93,6 +125,14 @@ public class TemplateController {
 
         return "redirect:/list";
     }
+
+//    @DeleteMapping(value = "/delete/{id}")
+//    public String deleteTemplate(@PathVariable Long id) {
+//        // db에 양식 데이터 삭제
+//        templateService.deleteTemplate(id);
+//
+//        return "redirect:/list";
+//    }
 
     // 템플릿 조회
     @GetMapping(value = "/read/{id}")
