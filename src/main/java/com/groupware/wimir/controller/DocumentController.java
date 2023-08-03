@@ -82,6 +82,12 @@ public class DocumentController {
         return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "반려", pageable);
     }
 
+    //결재 완료된 문서 목록 all
+    @GetMapping("/listdone")
+    public List<Document> approvedDocs() {
+        List<Document> approvedDocs = documentService.getApprovedDocuments();
+        return approvedDocs;
+    }
 
     //    // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
 //    @GetMapping(value ="/categorylist/{id}")
@@ -172,12 +178,13 @@ public class DocumentController {
                 updateDocument.setUpdateDate(LocalDateTime.now());
                 documentService.setWriterByToken(updateDocument);
                 updateDocument.setStatus(documentDTO.getStatus());
-                updateDocument.setResult("진행중");
+//                updateDocument.setResult("진행중");
 
                 if (documentDTO.getStatus() == 0) {
                     // status가 0인 경우 임시저장이므로 그냥 저장
                 } else {
                     approvalService.setApproval(documentDTO);
+                    updateDocument.setResult("진행중");
 
                     // status가 1인 경우 작성인 경우
                     Long maxDno = documentRepository.findMaxDno();

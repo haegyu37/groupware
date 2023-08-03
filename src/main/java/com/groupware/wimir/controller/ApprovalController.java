@@ -4,6 +4,7 @@ import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.entity.*;
 import com.groupware.wimir.repository.ApprovalRepository;
+import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.MemberService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -26,9 +28,11 @@ public class ApprovalController {
     @Autowired
     private MemberService memberService;
     @Autowired
-    ApprovalService approvalService;
+    private ApprovalService approvalService;
     @Autowired
-    ApprovalRepository approvalRepository;
+    private ApprovalRepository approvalRepository;
+    @Autowired
+    private DocumentRepository documentRepository;
 
     //팀 모두 출력
     @GetMapping("/team")
@@ -96,6 +100,39 @@ public class ApprovalController {
         List<Document> myAppDocs = approvalService.getApprovals(currentMemberId);
         return myAppDocs;
     }
+    //내가 결재라인인데 이제 참조인 문서 목록
+    @GetMapping("/listrefer")
+    public List<Document> referDocs(){
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        List<Approval> myApps = approvalRepository.findByMemberId(currentMemberId);
+        List<Approval> myAppsRefer = myApps.stream().filter(approval -> approval.getRefer().equals("참조")).collect(Collectors.toList());
+        List<Long> docIds = new ArrayList<>();
+
+        for (Approval approval : myAppsRefer) {
+            Long docId = approval.getDocument(); //Approval에서 document만 찾음
+            if (docId != null) {
+                docIds.add(docId); //docIds 리스트에 추가
+            } else {
+                continue; //null이면 건너뜀
+            }
+        }
+
+        List<Document> myAppDocsRefer = new ArrayList<>(); // myAppDocs 리스트를 초기화
+
+        for (Long docId : docIds) {
+            Document document = documentRepository.findByDno(docId)
+                    .orElse(null); //id로 Document 찾음
+            if (document != null) {
+                myAppDocsRefer.add(document); //Document 리스트에 추가
+            }
+        }
+
+        return myAppDocsRefer; // 리스트 반환
+
+
+
+    }
+
 
     //내가 결재라인인 문서 목록 근데 이제 내 차례인 ..
     @GetMapping("/listnow")
