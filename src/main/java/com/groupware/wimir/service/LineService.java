@@ -1,5 +1,7 @@
 package com.groupware.wimir.service;
 
+import com.groupware.wimir.Config.SecurityUtil;
+import com.groupware.wimir.DTO.LineDTO;
 import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.repository.ApprovalRepository;
@@ -25,34 +27,62 @@ public class LineService {
     @Autowired
     private MemberRepository memberRepository;
 
-    public List<Approval> getLineByLineId(Long id) {
-        return approvalRepository.findByLineId(id);
+    //결재라인 저장
+    public void saveApprovalLine(LineDTO lineDTO) {
+        Long maxLineId = approvalRepository.findMaxLineId();
+        if (maxLineId == null) {
+            maxLineId = 1L;
+        } else {
+            maxLineId = maxLineId + 1;
+        }
+
+        List<Long> curAppList = lineDTO.getApprovers();
+        curAppList.add(0, SecurityUtil.getCurrentMemberId());
+
+        int lastIndex = curAppList.size() - 1; // Last index of the array
+
+        for (int i = 0; i < curAppList.size(); i++) {
+            Long approverId = curAppList.get(i);
+            if (approverId != null) {
+                Approval approval = new Approval();
+
+                //첫번째 결재자는 기안자
+                if (i == 0) {
+                    approval.setMemberId(SecurityUtil.getCurrentMemberId());
+                }
+
+                approval.setMemberId(approverId);
+                approval.setName(lineDTO.getName());
+                approval.setWriter(SecurityUtil.getCurrentMemberId());
+                approval.setCategory(lineDTO.getCategory());
+                approval.setLineId(maxLineId);
+                approval.setRefer("결재");
+
+                // 맨 마지막 인덱스인 경우 refer를 "참조"로 설정
+                if (i == lastIndex) {
+                    approval.setRefer("참조");
+                }
+
+                approvalRepository.save(approval);
+            } else {
+                throw new IllegalArgumentException("직원을 찾을 수 없습니다. " + approverId);
+            }
+        }
     }
 
-    public List<Long> getMemberIdByLineId(Long id) {
-        Map<Long, List<Approval>> lines = Approval.groupByLineId(approvalRepository.findByLineId(id));
-        System.out.println("이름" + lines);
-
-        List<Long> memberIds = lines.values() // values()를 사용하여 List<Approval> 컬렉션을 얻음
-                .stream()
-                .flatMap(approvals -> approvals.stream().map(Approval::getMemberId))
-                .collect(Collectors.toList());
-
-        return memberIds;
-    }
-
-
-    //     Document ID에 해당하는 모든 Approval의 Member ID를 리스트로 가져오는 메서드
+    //document로 approval 찾기
     public List<Approval> getByDocument(Long id) {
         List<Approval> approvals = approvalRepository.findByDocument(id); //document로 approval 리스트 만듦
 
         return approvals;
     }
 
+    //라인아이디를 찾아서 결재라인 삭제
     public void deleteDocumentByLineId(Long id) {
         approvalRepository.deleteByLineId(id);
     }
 
+    //라인아이디로 찾기
     public List<Approval> getByLineId(Long id) {
         List<Approval> lines = approvalRepository.findByLineId(id);
         return lines;
@@ -76,7 +106,7 @@ public class LineService {
                 Member memberInfo = memberRepository.findById(approval.getMemberId()).orElse(null);
                 if (memberInfo != null) {
                     approvalInfo.put("lineName", approval.getName());
-                    approvalInfo.put("no", memberInfo.getNo());
+                    approvalInfo.put("id", memberInfo.getId());
                     approvalInfo.put("name", memberInfo.getName());
                     approvalInfo.put("team", memberInfo.getTeam());
                     approvalInfo.put("position", memberInfo.getPosition());
@@ -108,7 +138,7 @@ public class LineService {
                 Member memberInfo = memberRepository.findById(approval.getMemberId()).orElse(null);
                 if (memberInfo != null) {
                     approvalInfo.put("lineId", approval.getLineId());
-                    approvalInfo.put("no", memberInfo.getNo());
+                    approvalInfo.put("id", memberInfo.getId());
                     approvalInfo.put("name", memberInfo.getName());
                     approvalInfo.put("team", memberInfo.getTeam());
                     approvalInfo.put("position", memberInfo.getPosition());
@@ -141,7 +171,7 @@ public class LineService {
                 if (memberInfo != null) {
                     approvalInfo.put("lineId", approval.getLineId());
                     approvalInfo.put("lineName", approval.getName());
-                    approvalInfo.put("no", memberInfo.getNo());
+                    approvalInfo.put("id", memberInfo.getId());
                     approvalInfo.put("name", memberInfo.getName());
                     approvalInfo.put("team", memberInfo.getTeam());
                     approvalInfo.put("position", memberInfo.getPosition());
