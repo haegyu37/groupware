@@ -39,7 +39,7 @@ public class LineController {
             maxLineId = maxLineId + 1;
         }
 
-        int lastIndex = lineDTO.getApprovers().size() - 1; // 배열의 맨 마지막 인덱스
+        int lastIndex = lineDTO.getApprovers().size(); // 배열의 맨 마지막 인덱스
         List<Long> curAppList = lineDTO.getApprovers();
         curAppList.add(0, SecurityUtil.getCurrentMemberId());
 
