@@ -115,9 +115,6 @@ public class DocumentController {
         document.setStatus(documentDTO.getStatus());
         document.setTemplate(documentDTO.getTemplate());    // 양식명
         document.setResult("진행중");
-//        approvalService.setApproval(documentDTO);
-
-//        int result = approvalService.submitApproval(documentDTO);
 
         //임시저장 관련
         if (document.getStatus() == 0) {
@@ -136,7 +133,6 @@ public class DocumentController {
             document.setDno(maxDno + 1); // 작성 번호 생성
             approvalService.setApproval(documentDTO);
             document.setResult("진행중");
-
 
         }
 
@@ -179,7 +175,6 @@ public class DocumentController {
                 updateDocument.setUpdateDate(LocalDate.now());
                 documentService.setWriterByToken(updateDocument);
                 updateDocument.setStatus(documentDTO.getStatus());
-//                updateDocument.setResult("진행중");
 
                 if (documentDTO.getStatus() == 0) {
                     // status가 0인 경우 임시저장이므로 그냥 저장
