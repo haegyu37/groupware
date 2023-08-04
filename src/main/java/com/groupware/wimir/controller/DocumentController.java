@@ -11,10 +11,7 @@ import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.TemplateRepository;
-import com.groupware.wimir.service.ApprovalService;
-import com.groupware.wimir.service.DocumentService;
-import com.groupware.wimir.service.LineService;
-import com.groupware.wimir.service.MemberService;
+import com.groupware.wimir.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +37,7 @@ public class DocumentController {
     private final TemplateRepository templateRepository;
     private final ApprovalRepository approvalRepository;
     private final LineService lineService;
+    private final AttachmentService attachmentService;
 
     // 문서 목록(정상 저장 전체 다 보도록)
     @GetMapping(value = "/list")
@@ -90,8 +88,8 @@ public class DocumentController {
         return approvedDocs;
     }
 
-        // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
-    @GetMapping(value ="/categorylist/{id}")
+    // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
+    @GetMapping(value = "/categorylist/{id}")
     public Page<Document> getDocumentsByTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
         return documentService.findDocumentListByTemplateIdAndStatus(id, 1, pageable);
     }
@@ -175,6 +173,7 @@ public class DocumentController {
                 updateDocument.setUpdateDate(LocalDate.now());
                 documentService.setWriterByToken(updateDocument);
                 updateDocument.setStatus(documentDTO.getStatus());
+                updateDocument.setTemplate(documentDTO.getTemplate()); //추가
 
                 if (documentDTO.getStatus() == 0) {
                     // status가 0인 경우 임시저장이므로 그냥 저장
@@ -220,13 +219,13 @@ public class DocumentController {
         Long dno = document.getDno();
 
         // 문서에 해당 결재라인 삭제
-        // 해당 문서번호를 가진 Approval을 모두 조회
         List<Approval> approvals = approvalRepository.findByDocument(dno);
-
-        // 각 Approval을 삭제
         for (Approval approval : approvals) {
             approvalRepository.delete(approval);
         }
+
+        //문서에 해당 첨부파일 삭제
+        attachmentService.deleteAttachmentByDoc(id);
 
         // 문서 삭제
         documentService.deleteDocument(id);
