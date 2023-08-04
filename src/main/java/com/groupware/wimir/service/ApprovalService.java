@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+//import java.time.LocalDate;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,11 +75,9 @@ public class ApprovalService {
             return ResponseEntity.ok(savedApproval);
         } else { //결재자 각각 지정해서 삽입
 
+            int lastIndex = documentDTO.getApprovers().size();
             List<Long> approvers = documentDTO.getApprovers();
-            Long currentMemberId = SecurityUtil.getCurrentMemberId();
-            approvers.add(0, currentMemberId);
-
-            int lastIndex = approvers.size() - 1; // 배열의 맨 마지막 인덱스
+            approvers.add(0, SecurityUtil.getCurrentMemberId());
 
             for (int i = 0; i < approvers.size(); i++) {
                 Long approverId = approvers.get(i);
@@ -105,7 +105,7 @@ public class ApprovalService {
     }
 
 
-    //내 결재 리스트 all
+    //내가 결재라인인 문서 리스트 all
     public List<Document> getApprovals(Long id) {
         List<Approval> approvals = approvalRepository.findByMemberId(id); //memberId를 기준으로 Approval 리스트 찾음
         List<Long> docIds = new ArrayList<>();
@@ -122,7 +122,7 @@ public class ApprovalService {
         List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
 
         for (Long docId : docIds) {
-            Document document = documentRepository.findById(docId)
+            Document document = documentRepository.findByDno(docId)
                     .orElse(null); //id로 Document 찾음
             if (document != null) {
                 myAppDocs.add(document); //Document 리스트에 추가
@@ -152,7 +152,7 @@ public class ApprovalService {
         List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
 
         for (Long docId : docIds) {
-            Document document = documentRepository.findById(docId)
+            Document document = documentRepository.findByDno(docId)
                     .orElse(null); //id로 Document 찾음
             if (document != null) {
                 myAppDocs.add(document); //Document 리스트에 추가
@@ -182,7 +182,7 @@ public class ApprovalService {
         List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
 
         for (Long docId : docIds) {
-            Document document = documentRepository.findById(docId)
+            Document document = documentRepository.findByDno(docId)
                     .orElse(null); //id로 Document 찾음
             if (document != null) {
                 myAppDocs.add(document); //Document 리스트에 추가
@@ -205,7 +205,7 @@ public class ApprovalService {
 
             if (approval.getCurrent().equals("Y")) {
                 // 현재 결재자를 찾았을 경우
-                approval.setAppDate(now());
+                approval.setAppDate(LocalDate.now());
                 approval.setStatus(1);
                 approval.setCurrent("N");
 
@@ -216,7 +216,7 @@ public class ApprovalService {
                 } else {
                     // 다음 결재자가 없는 경우, 즉 리스트의 마지막 결재자인 경우
                     // document의 result=승인
-                    Optional<Document> documentOptional = documentRepository.findById(documentId);
+                    Optional<Document> documentOptional = documentRepository.findByDno(documentId);
                     Document document = documentOptional.orElse(null);
 
                     if (document != null) {
@@ -245,12 +245,12 @@ public class ApprovalService {
             if (approval.getCurrent().equals("Y")) {
                 // 현재 결재자를 찾았을 경우
                 if (!"참조".equals(approval.getRefer())) {
-                    approval.setAppDate(now());
+                    approval.setAppDate(LocalDate.now());
                     approval.setStatus(2);
                     approval.setCurrent("N");
                     approval.setReason(approvalDTO.getReason());
 
-                    Optional<Document> documentOptional = documentRepository.findById(documentId);
+                    Optional<Document> documentOptional = documentRepository.findByDno(documentId);
                     Document document = documentOptional.orElse(null);
 
                     if (document != null) {
@@ -295,7 +295,7 @@ public class ApprovalService {
         }
     }
 
-    // 결재회수
+    // 결재 회수
     public void backApproval(Long id) {
         Document document = documentService.findDocumentById(id);
         if (document != null) {
@@ -320,6 +320,36 @@ public class ApprovalService {
         } else {
             throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
         }
+    }
+
+    //내가 참조인 문서 리스트
+    public List<Document> getReferencedDocuments(Long memberId) {
+
+        List<Approval> myApps = approvalRepository.findByMemberId(memberId);
+        List<Approval> myAppsRefer = myApps.stream()
+                .filter(approval -> "참조".equals(approval.getRefer()))
+                .collect(Collectors.toList());
+        List<Long> docIds = new ArrayList<>();
+
+        for (Approval approval : myAppsRefer) {
+            Long docId = approval.getDocument(); //Approval에서 document만 찾음
+            if (docId != null) {
+                docIds.add(docId); //docIds 리스트에 추가
+            } else {
+                continue; //null이면 건너뜀
+            }
+        }
+
+        List<Document> myAppDocsRefer = new ArrayList<>(); // myAppDocs 리스트를 초기화
+
+        for (Long docId : docIds) {
+            Document document = documentRepository.findByDno(docId)
+                    .orElse(null); //id로 Document 찾음
+            if (document != null) {
+                myAppDocsRefer.add(document); //Document 리스트에 추가
+            }
+        }
+        return myAppDocsRefer; // 리스트 반환
     }
 
 

@@ -28,6 +28,7 @@ public class DocumentDTO {
     private Template template; // 양식명
     private List<Long> approvers; //결재라인 아이디
     private Long lineId; //즐겨찾기 결재라인 아이디
+//    private Long category; //카테고리,, 양식명
 
     public Template getTemplate() {
         return template;

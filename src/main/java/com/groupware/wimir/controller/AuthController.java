@@ -112,6 +112,7 @@ public class AuthController {
         return ResponseEntity.ok(memberResponseDTO);
     }
 
+    //사원 정보 수정
     @PostMapping("/admin/members/{memberId}/edit")
     public ResponseEntity<MemberResponseDTO> changeUserDetails(
             @PathVariable Long memberId,
@@ -186,9 +187,6 @@ public class AuthController {
 
     }
 
-
-
-
     // 사용자의 권한을 ROLE_BLOCK으로 업데이트
     @PostMapping("/admin/members/{memberId}/block")
     public ResponseEntity<String> blockUser(@PathVariable Long memberId) {
@@ -204,13 +202,4 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-    //결재완료된 모든 문서 목록
-    @GetMapping("/listdone")
-    public List<Document> approvedDocs() {
-        List<Document> approvedDocs = documentService.getApprovedDocuments();
-        return approvedDocs;
-    }
-
-
 }
