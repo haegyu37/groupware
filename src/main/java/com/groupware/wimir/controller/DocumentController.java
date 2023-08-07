@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/documents")
@@ -143,7 +144,7 @@ public class DocumentController {
     //문서 조회
     @GetMapping(value = "/{id}")
     public DocumentResponseDTO readDocument(@PathVariable("id") Long id) {
-        Document document = documentRepository.findByDno(id);
+        Document document = documentService.findDocumentById(id);
         Long dno = document.getDno();
         List<Approval> approvals = lineService.getByDocument(dno);
         Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);

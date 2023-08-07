@@ -37,71 +37,143 @@ public class ApprovalService {
 
     //결재 요청
     public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {
-        Approval savedApproval = null;
+        //저장
+        if(documentDTO.getStatus() == 1) {
+            Approval savedApproval = null;
 
-        Long maxDno = documentRepository.findMaxDno(); // DB에서 문서아이디의 최대값을 가져옴
-        if (maxDno == null) {
-            maxDno = 1L;
-        } else {
-            maxDno = maxDno + 1;
-        }
+            Long maxDno = documentRepository.findMaxDno(); // DB에서 저장번호 최댓값
+            if (maxDno == null) {
+                maxDno = 1L;
+            } else {
+                maxDno = maxDno + 1;
+            }
 
-        if (documentDTO.getLineId() != null) {
-            List<Approval> approvals = approvalRepository.findByLineId(documentDTO.getLineId());
+            if (documentDTO.getLineId() != null) {
+                List<Approval> approvals = approvalRepository.findByLineId(documentDTO.getLineId());
 
-            List<Long> memberIds = approvals.stream().map(Approval::getMemberId).collect(Collectors.toList());
-            List<Long> writers = approvals.stream().map(Approval::getWriter).collect(Collectors.toList());
-            List<String> names = approvals.stream().map(Approval::getName).collect(Collectors.toList());
-            List<String> refers = approvals.stream().map(Approval::getRefer).collect(Collectors.toList());
-            // 다른 필드들에 대해서도 필요한 경우에 리스트로 추출
+                List<Long> memberIds = approvals.stream().map(Approval::getMemberId).collect(Collectors.toList());
+                List<Long> writers = approvals.stream().map(Approval::getWriter).collect(Collectors.toList());
+                List<String> names = approvals.stream().map(Approval::getName).collect(Collectors.toList());
+                List<String> refers = approvals.stream().map(Approval::getRefer).collect(Collectors.toList());
+                // 다른 필드들에 대해서도 필요한 경우에 리스트로 추출
 
-            // 리스트로 만들어진 각 칼럼들의 값들을 approval 엔티티에 삽입
-            for (int i = 0; i < approvals.size(); i++) {
-                Approval approval = new Approval();
-                approval.setMemberId(memberIds.get(i));
-                approval.setWriter(writers.get(i));
-                approval.setName(names.get(i));
-                approval.setRefer(refers.get(i));
-                approval.setDocument(maxDno);
+                // 리스트로 만들어진 각 칼럼들의 값들을 approval 엔티티에 삽입
+                for (int i = 0; i < approvals.size(); i++) {
+                    Approval approval = new Approval();
+                    approval.setMemberId(memberIds.get(i));
+                    approval.setWriter(writers.get(i));
+                    approval.setName(names.get(i));
+                    approval.setRefer(refers.get(i));
+                    approval.setDocument(maxDno);
 
-                if (i == 0) {
-                    approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
-                } else {
-                    approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
+                    if (i == 0) {
+                        approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
+                    } else {
+                        approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
+                    }
+
+                    savedApproval = approvalRepository.save(approval);
+                }
+                return ResponseEntity.ok(savedApproval);
+            } else { //결재자 각각 지정해서 삽입
+
+                int lastIndex = documentDTO.getApprovers().size();
+                List<Long> approvers = documentDTO.getApprovers();
+                approvers.add(0, SecurityUtil.getCurrentMemberId());
+
+                for (int i = 0; i < approvers.size(); i++) {
+                    Long approverId = approvers.get(i);
+                    Approval approval = new Approval();
+                    approval.setDocument(maxDno);
+                    approval.setMemberId(approverId);
+                    approval.setRefer("결재");
+
+                    // 맨 마지막 인덱스인 경우 refer를 "참조"로 설정
+                    if (i == lastIndex) {
+                        approval.setRefer("참조");
+                    }
+
+                    if (i == 0) {
+                        approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
+                    } else {
+                        approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
+                    }
+
+                    savedApproval = approvalRepository.save(approval);
                 }
 
-                savedApproval = approvalRepository.save(approval);
             }
             return ResponseEntity.ok(savedApproval);
-        } else { //결재자 각각 지정해서 삽입
+        //임시저장
+        } else {
+            Approval savedApproval = null;
 
-            int lastIndex = documentDTO.getApprovers().size();
-            List<Long> approvers = documentDTO.getApprovers();
-            approvers.add(0, SecurityUtil.getCurrentMemberId());
-
-            for (int i = 0; i < approvers.size(); i++) {
-                Long approverId = approvers.get(i);
-                Approval approval = new Approval();
-                approval.setDocument(maxDno);
-                approval.setMemberId(approverId);
-                approval.setRefer("결재");
-
-                // 맨 마지막 인덱스인 경우 refer를 "참조"로 설정
-                if (i == lastIndex) {
-                    approval.setRefer("참조");
-                }
-
-                if (i == 0) {
-                    approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
-                } else {
-                    approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
-                }
-
-                savedApproval = approvalRepository.save(approval);
+            Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장번호 최댓값
+            if (maxSno == null) {
+                maxSno = 1L;
+            } else {
+                maxSno = maxSno + 1;
             }
 
+            if (documentDTO.getLineId() != null) {
+                List<Approval> approvals = approvalRepository.findByLineId(documentDTO.getLineId());
+
+                List<Long> memberIds = approvals.stream().map(Approval::getMemberId).collect(Collectors.toList());
+                List<Long> writers = approvals.stream().map(Approval::getWriter).collect(Collectors.toList());
+                List<String> names = approvals.stream().map(Approval::getName).collect(Collectors.toList());
+                List<String> refers = approvals.stream().map(Approval::getRefer).collect(Collectors.toList());
+                // 다른 필드들에 대해서도 필요한 경우에 리스트로 추출
+
+                // 리스트로 만들어진 각 칼럼들의 값들을 approval 엔티티에 삽입
+                for (int i = 0; i < approvals.size(); i++) {
+                    Approval approval = new Approval();
+                    approval.setMemberId(memberIds.get(i));
+                    approval.setWriter(writers.get(i));
+                    approval.setName(names.get(i));
+                    approval.setRefer(refers.get(i));
+                    approval.setDocument(maxSno);
+                    approval.setCurrent("N");
+
+//                    if (i == 0) {
+//                        approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
+//                    } else {
+//                        approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
+//                    }
+
+                    savedApproval = approvalRepository.save(approval);
+                }
+                return ResponseEntity.ok(savedApproval);
+            } else { //결재자 각각 지정해서 삽입
+
+                int lastIndex = documentDTO.getApprovers().size();
+                List<Long> approvers = documentDTO.getApprovers();
+                approvers.add(0, SecurityUtil.getCurrentMemberId());
+
+                for (int i = 0; i < approvers.size(); i++) {
+                    Long approverId = approvers.get(i);
+                    Approval approval = new Approval();
+                    approval.setDocument(maxSno);
+                    approval.setMemberId(approverId);
+                    approval.setRefer("결재");
+
+                    // 맨 마지막 인덱스인 경우 refer를 "참조"로 설정
+                    if (i == lastIndex) {
+                        approval.setRefer("참조");
+                    }
+
+//                    if (i == 0) {
+//                        approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
+//                    } else {
+//                        approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
+//                    }
+
+                    savedApproval = approvalRepository.save(approval);
+                }
+
+            }
+            return ResponseEntity.ok(savedApproval);
+
         }
-        return ResponseEntity.ok(savedApproval);
     }
 
 

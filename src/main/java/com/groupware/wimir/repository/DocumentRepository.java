@@ -47,9 +47,9 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
     Page<Document> findByWriterIdAndStatusAndResult(Long id, int status, String result, Pageable pageable);
 
-//    Optional<Document> findByDno(Long dno);
+    Document findByDno(Long dno);
 
-        Document findByDno(Long dno);
+//        Document findByDno(Long dno);
 
     Document findBySno(Long sno);
 }
