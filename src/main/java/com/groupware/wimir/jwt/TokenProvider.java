@@ -112,7 +112,6 @@ public class TokenProvider {
         }
         return false;
     }
-
     //parseClaim 토큰을 claims형태로 만든 메소드 이를 통해 위에서 권한 정보가 있는지 없는지 체크 가능
     private Claims parseClaims(String accessToken) {
         try {
