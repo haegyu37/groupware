@@ -62,12 +62,12 @@ public class AttachmentService {
     private String getUniqueFileName(String originalFileName) {
         String baseName = FilenameUtils.getBaseName(originalFileName);
         String extension = FilenameUtils.getExtension(originalFileName);
-        int count = 1;
+        String timestamp = Long.toString(System.currentTimeMillis());
 
-        String uniqueFileName = originalFileName;
+        String uniqueFileName = baseName + "_" + timestamp + "." + extension;
         while (Files.exists(this.attachmentStorageLocation.resolve(uniqueFileName))) {
-            uniqueFileName = baseName + "(" + count + ")." + extension;
-            count++;
+            timestamp = Long.toString(System.currentTimeMillis());
+            uniqueFileName = baseName + "_" + timestamp + "." + extension;
         }
         return uniqueFileName;
     }
