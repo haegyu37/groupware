@@ -134,33 +134,18 @@ public class ApprovalService {
 
     //내 결재 리스트 근데 이제 내가 결재할 차례인 .. 그것들 리스트
     public List<Document> getApprovalsNow(Long id) {
-        List<Approval> approvals = approvalRepository.findByMemberId(id);
-        List<Approval> currentApprovals = approvals.stream()
-                .filter(approval -> approval.getCurrent().equals("Y"))
+        List<Approval> approvals = approvalRepository.findByMemberId(id); //내 아이디가 있는 결재 찾기
+
+        List<Document> myAppDocs = approvals.stream()
+                .filter(approval -> "Y".equals(approval.getCurrent())) //그 중에서 내 차례인거
+                .map(approval -> documentRepository.findByDno(approval.getDocument())) //그 중에서 document 아이디로 문서 찾기
+                .filter(Optional::isPresent) //객체의 값이 존재하는지 확인
+                .map(Optional::get)
                 .collect(Collectors.toList());
-        List<Long> docIds = new ArrayList<>();
 
-        for (Approval approval : currentApprovals) {
-            Long docId = approval.getDocument(); //Approval에서 document만 찾음
-            if (docId != null) {
-                docIds.add(docId); //docIds 리스트에 추가
-            } else {
-                continue; //null이면 건너뜀
-            }
-        }
-
-        List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
-
-        for (Long docId : docIds) {
-            Document document = documentRepository.findByDno(docId)
-                    .orElse(null); //id로 Document 찾음
-            if (document != null) {
-                myAppDocs.add(document); //Document 리스트에 추가
-            }
-        }
-
-        return myAppDocs; // 리스트 반환
+        return myAppDocs;
     }
+
 
     //내가 결재 완 리스트 all
     public List<Document> getApproved(Long id) {
