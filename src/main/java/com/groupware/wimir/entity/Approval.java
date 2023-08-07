@@ -26,6 +26,8 @@ public class Approval {
 
     private Long document; //문서 아이디
 
+    private Long sno;
+
     private String reason; //반려사유
 
     private LocalDate appDate; //결재완료일
@@ -44,7 +46,7 @@ public class Approval {
 
     private String current; //현재 결재순서(Y/N)
 
-    private String refer; //"참조" 참조자
+    private String refer; //"참조" 참조자, "결재" 결재자
 
     public static Map<Long, List<Approval>> groupByLineId(List<Approval> approvals) {
         return approvals.stream()
