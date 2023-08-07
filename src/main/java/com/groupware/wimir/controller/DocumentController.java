@@ -143,7 +143,7 @@ public class DocumentController {
     //문서 조회
     @GetMapping(value = "/{id}")
     public DocumentResponseDTO readDocument(@PathVariable("id") Long id) {
-        Document document = documentService.findDocumentById(id);
+        Document document = documentRepository.findByDno(id);
         Long dno = document.getDno();
         List<Approval> approvals = lineService.getByDocument(dno);
         Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
@@ -153,6 +153,21 @@ public class DocumentController {
 
         return new DocumentResponseDTO(document, groupedApprovals);
     }
+
+    //문서 조회 - 임시저장
+    @GetMapping(value = "/save/{id}")
+    public Document readSaveDocument(@PathVariable("id") Long id) {
+        Document document = documentRepository.findBySno(id);
+//        Long dno = document.getDno();
+//        List<Approval> approvals = lineService.getByDocument(dno);
+//        Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
+//        if (document == null) {
+//            throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
+//        }
+
+        return document;
+    }
+
 
     // 문서 수정
     @PutMapping(value = "/update/{id}")

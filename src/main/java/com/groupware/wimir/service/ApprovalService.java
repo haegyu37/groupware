@@ -122,8 +122,8 @@ public class ApprovalService {
         List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
 
         for (Long docId : docIds) {
-            Document document = documentRepository.findByDno(docId)
-                    .orElse(null); //id로 Document 찾음
+            Document document = documentRepository.findByDno(docId);
+//                    .orElse(null); //id로 Document 찾음
             if (document != null) {
                 myAppDocs.add(document); //Document 리스트에 추가
             }
@@ -139,8 +139,8 @@ public class ApprovalService {
         List<Document> myAppDocs = approvals.stream()
                 .filter(approval -> "Y".equals(approval.getCurrent())) //그 중에서 내 차례인거
                 .map(approval -> documentRepository.findByDno(approval.getDocument())) //그 중에서 document 아이디로 문서 찾기
-                .filter(Optional::isPresent) //객체의 값이 존재하는지 확인
-                .map(Optional::get)
+//                .filter(Optional::isPresent) //객체의 값이 존재하는지 확인, 값이 존재하는 경우에만 스트림에 남김
+//                .map(Optional::get)
                 .collect(Collectors.toList());
 
         return myAppDocs;
@@ -167,8 +167,8 @@ public class ApprovalService {
         List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
 
         for (Long docId : docIds) {
-            Document document = documentRepository.findByDno(docId)
-                    .orElse(null); //id로 Document 찾음
+            Document document = documentRepository.findByDno(docId);
+//                    .orElse(null); //id로 Document 찾음
             if (document != null) {
                 myAppDocs.add(document); //Document 리스트에 추가
             }
@@ -201,8 +201,8 @@ public class ApprovalService {
                 } else {
                     // 다음 결재자가 없는 경우, 즉 리스트의 마지막 결재자인 경우
                     // document의 result=승인
-                    Optional<Document> documentOptional = documentRepository.findByDno(documentId);
-                    Document document = documentOptional.orElse(null);
+                    Document document = documentRepository.findByDno(documentId);
+//                    Document document = documentOptional.orElse(null);
 
                     if (document != null) {
                         document.setResult("승인");
@@ -235,8 +235,8 @@ public class ApprovalService {
                     approval.setCurrent("N");
                     approval.setReason(approvalDTO.getReason());
 
-                    Optional<Document> documentOptional = documentRepository.findByDno(documentId);
-                    Document document = documentOptional.orElse(null);
+                    Document document = documentRepository.findByDno(documentId);
+//                    Document document = documentOptional.orElse(null);
 
                     if (document != null) {
                         document.setResult("반려");
@@ -328,8 +328,8 @@ public class ApprovalService {
         List<Document> myAppDocsRefer = new ArrayList<>(); // myAppDocs 리스트를 초기화
 
         for (Long docId : docIds) {
-            Document document = documentRepository.findByDno(docId)
-                    .orElse(null); //id로 Document 찾음
+            Document document = documentRepository.findByDno(docId);
+//                    .orElse(null); //id로 Document 찾음
             if (document != null) {
                 myAppDocsRefer.add(document); //Document 리스트에 추가
             }
