@@ -11,10 +11,7 @@ import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.TemplateRepository;
-import com.groupware.wimir.service.ApprovalService;
-import com.groupware.wimir.service.DocumentService;
-import com.groupware.wimir.service.LineService;
-import com.groupware.wimir.service.MemberService;
+import com.groupware.wimir.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +19,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +37,7 @@ public class DocumentController {
     private final TemplateRepository templateRepository;
     private final ApprovalRepository approvalRepository;
     private final LineService lineService;
+    private final AttachmentService attachmentService;
 
     // 문서 목록(정상 저장 전체 다 보도록)
     @GetMapping(value = "/list")
@@ -82,20 +81,26 @@ public class DocumentController {
         return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "반려", pageable);
     }
 
+    //결재 완료된 문서 목록 all
+    @GetMapping("/listdone")
+    public List<Document> approvedDocs() {
+        List<Document> approvedDocs = documentService.getApprovedDocuments();
+        return approvedDocs;
+    }
 
-    //    // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
-//    @GetMapping(value ="/categorylist/{id}")
-//    public Page<Document> getDocumentsByTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
-//        return documentService.findDocumentListByTemplateIdAndStatus(id, 1, pageable);
-//    }
-//
-//    // 카테고리별 자신이 작성한 문서 리스트(fun8번 결재 상태 추가되어야 함)
-//    @GetMapping(value = "/categorymylist/{id}")
-//    public Page<Document> getDocumentsByMyTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
-//        Long currentMemberId = SecurityUtil.getCurrentMemberId();
-//        return documentService.findDocumentListByWriterAndTemplateIdAndStatus(currentMemberId, id, 1, pageable);
-//    }
-//
+    // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
+    @GetMapping(value = "/categorylist/{id}")
+    public Page<Document> getDocumentsByTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
+        return documentService.findDocumentListByTemplateIdAndStatus(id, 1, pageable);
+    }
+
+    // 카테고리별 자신이 작성한 문서 리스트(fun8번 결재 상태 추가되어야 함)
+    @GetMapping(value = "/categorymylist/{id}")
+    public Page<Document> getDocumentsByMyTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return documentService.findDocumentListByWriterAndTemplateIdAndStatus(currentMemberId, id, 1, pageable);
+    }
+
     // 문서 작성
     @PostMapping(value = "/create")
     public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO) {
@@ -104,13 +109,10 @@ public class DocumentController {
         document.setTitle(documentDTO.getTitle());
         document.setContent(documentDTO.getContent());
         documentService.setWriterByToken(document);
-        document.setCreateDate(LocalDateTime.now());
+        document.setCreateDate(LocalDate.now());
         document.setStatus(documentDTO.getStatus());
         document.setTemplate(documentDTO.getTemplate());    // 양식명
         document.setResult("진행중");
-//        approvalService.setApproval(documentDTO);
-
-//        int result = approvalService.submitApproval(documentDTO);
 
         //임시저장 관련
         if (document.getStatus() == 0) {
@@ -130,7 +132,6 @@ public class DocumentController {
             approvalService.setApproval(documentDTO);
             document.setResult("진행중");
 
-
         }
 
         // 문서를 저장하고 저장된 문서를 반환
@@ -140,7 +141,7 @@ public class DocumentController {
     }
 
     //문서 조회
-    @GetMapping(value = "/read/{id}")
+    @GetMapping(value = "/{id}")
     public DocumentResponseDTO readDocument(@PathVariable("id") Long id) {
         Document document = documentService.findDocumentById(id);
         Long dno = document.getDno();
@@ -169,15 +170,16 @@ public class DocumentController {
             if (updateDocument != null) {
                 updateDocument.setTitle(documentDTO.getTitle());
                 updateDocument.setContent(documentDTO.getContent());
-                updateDocument.setUpdateDate(LocalDateTime.now());
+                updateDocument.setUpdateDate(LocalDate.now());
                 documentService.setWriterByToken(updateDocument);
                 updateDocument.setStatus(documentDTO.getStatus());
-                updateDocument.setResult("진행중");
+                updateDocument.setTemplate(documentDTO.getTemplate()); //추가
 
                 if (documentDTO.getStatus() == 0) {
                     // status가 0인 경우 임시저장이므로 그냥 저장
                 } else {
                     approvalService.setApproval(documentDTO);
+                    updateDocument.setResult("진행중");
 
                     // status가 1인 경우 작성인 경우
                     Long maxDno = documentRepository.findMaxDno();
@@ -217,13 +219,13 @@ public class DocumentController {
         Long dno = document.getDno();
 
         // 문서에 해당 결재라인 삭제
-        // 해당 문서번호를 가진 Approval을 모두 조회
         List<Approval> approvals = approvalRepository.findByDocument(dno);
-
-        // 각 Approval을 삭제
         for (Approval approval : approvals) {
             approvalRepository.delete(approval);
         }
+
+        //문서에 해당 첨부파일 삭제
+        attachmentService.deleteAttachmentByDoc(id);
 
         // 문서 삭제
         documentService.deleteDocument(id);

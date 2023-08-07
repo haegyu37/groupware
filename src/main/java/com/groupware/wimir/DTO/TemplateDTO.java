@@ -9,7 +9,7 @@ import java.util.Map;
 @Getter
 @Setter
 public class TemplateDTO {
-    private Long id;
+//    private Long id;
     private String category;
     private String content;
 

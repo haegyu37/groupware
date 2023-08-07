@@ -4,6 +4,7 @@ import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.entity.*;
 import com.groupware.wimir.repository.ApprovalRepository;
+import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.MemberService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -26,10 +28,9 @@ public class ApprovalController {
     @Autowired
     private MemberService memberService;
     @Autowired
-    ApprovalService approvalService;
+    private ApprovalService approvalService;
     @Autowired
-    ApprovalRepository approvalRepository;
-
+    private ApprovalRepository approvalRepository;
     //팀 모두 출력
     @GetMapping("/team")
     public List<String> getAllTeam() {
@@ -95,6 +96,13 @@ public class ApprovalController {
         //id를 기준으로 Approval을 찾는 메소드
         List<Document> myAppDocs = approvalService.getApprovals(currentMemberId);
         return myAppDocs;
+    }
+
+    //내가 결재라인인데 이제 참조인 문서 목록
+    @GetMapping("/list/refer")
+    public List<Document> referDocs() {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return approvalService.getReferencedDocuments(currentMemberId);
     }
 
     //내가 결재라인인 문서 목록 근데 이제 내 차례인 ..
