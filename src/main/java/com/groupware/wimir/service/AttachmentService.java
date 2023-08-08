@@ -1,6 +1,5 @@
 package com.groupware.wimir.service;
 
-import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Attachment;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.repository.AttachmentRepository;
@@ -32,22 +31,15 @@ public class AttachmentService {
         this.attachmentRepository = attachmentRepository;
         this.documentRepository = documentRepository;
 
-       // 첨부파일 업로드 경로
+       // 파일 저장 디렉토리 설정
         String uploadPath = "C:\\uploads";
         this.attachmentStorageLocation = Paths.get(uploadPath);
 
-        // 업로드 폴더 생성(폴더가 없으면 생성)
+        // 파일 저장 디렉토리 생성
         try {
             Files.createDirectories(this.attachmentStorageLocation);
         } catch (IOException e) {
             throw new RuntimeException("파일 저장 디렉토리를 생성할 수 없습니다.", e);
-        }
-
-        // 다운로드 폴더 생성(폴더가 없으면 생성)
-        try {
-            Files.createDirectories(Paths.get(DOWNLOAD_PATH));
-        } catch (IOException e) {
-            throw new RuntimeException("다운로드 폴더를 생성할 수 없습니다.", e);
         }
     }
 
@@ -68,7 +60,7 @@ public class AttachmentService {
         String uniqueFileName = originalFileName;
         while (Files.exists(this.attachmentStorageLocation.resolve(uniqueFileName))) {
             uniqueFileName = baseName + "(" + count + ")." + extension;
-            count++; //서버 껐다가 키면 도루묵??
+            count++;
         }
         return uniqueFileName;
     }
@@ -134,14 +126,6 @@ public class AttachmentService {
 //            throw new RuntimeException("첨부파일을 삭제할 수 없습니다.", ex);
 //        }
         attachmentRepository.delete(attachment); // 파일 정보만 DB에서 삭제
-    }
-
-    //문서번호로 첨부파일 삭제
-    public void deleteAttachmentByDoc(Long id) {
-        List<Attachment> attachments = attachmentRepository.findByDocumentId(id);
-        for (Attachment attachment : attachments) {
-            attachmentRepository.delete(attachment);
-        }
     }
 
     public void saveAttachments(List<Attachment> attachments, Long documentId) {
