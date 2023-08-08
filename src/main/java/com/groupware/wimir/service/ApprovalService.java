@@ -152,7 +152,7 @@ public class ApprovalService {
     public List<Document> getApproved(Long id) {
         List<Approval> approvals = approvalRepository.findByMemberId(id); //memberId를 기준으로 Approval 리스트 찾음
         List<Approval> approved = approvals.stream()
-                .filter(approval -> approval.getStatus() != 0 && approval.getAppDate() != null)
+                .filter(approval -> !approval.getStatus().equals("대기") && approval.getAppDate() != null)
                 .collect(Collectors.toList());
         List<Long> docIds = new ArrayList<>();
 
@@ -228,7 +228,7 @@ public class ApprovalService {
             if (approval.getCurrent().equals("Y")) {
                 // 현재 결재자를 찾았을 경우
                 approval.setAppDate(LocalDate.now());
-                approval.setStatus(1);
+                approval.setStatus("승인");
                 approval.setCurrent("N");
 
                 // 다음 결재자가 있을 경우 current를 Y로 지정
@@ -279,7 +279,7 @@ public class ApprovalService {
                 // 현재 결재자를 찾았을 경우
                 if (!"참조".equals(approval.getRefer())) {
                     approval.setAppDate(LocalDate.now());
-                    approval.setStatus(2);
+                    approval.setStatus("반려");
                     approval.setCurrent("N");
                     approval.setReason(approvalDTO.getReason());
 
@@ -312,7 +312,7 @@ public class ApprovalService {
 
             //결재 취소 처리
             secondApprover.setAppDate(null);
-            secondApprover.setStatus(0);
+            secondApprover.setStatus("대기");
             approvalRepository.save(secondApprover);
 
             //다음 결재자 currnent N
@@ -324,7 +324,7 @@ public class ApprovalService {
             Approval firstApprover = approvals.get(0);
             firstApprover.setCurrent("N");
             firstApprover.setAppDate(null);
-            secondApprover.setStatus(0);
+            secondApprover.setStatus("대기");
         }
     }
 

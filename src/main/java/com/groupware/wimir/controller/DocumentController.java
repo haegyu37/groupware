@@ -160,8 +160,8 @@ public class DocumentController {
     public Document readSaveDocument(@PathVariable("id") Long id) {
         Document document = documentRepository.findBySno(id);
         Long sno = document.getSno();
-        List<Approval> approvals = lineService.getBySno(sno); // 이러면 안될듯 ..
-        Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
+//        List<Approval> approvals = lineService.getBySno(sno); // 이러면 안될듯 ..
+//        Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
         if (document == null) {
             throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
         }
