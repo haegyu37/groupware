@@ -24,7 +24,8 @@ public class JwtFilter extends OncePerRequestFilter {
         // Request Header 에서 토큰을 꺼냄
         String jwt = resolveToken(request);
 
-        if (!request.getServletPath().equals("/auth/login") && !request.getServletPath().equals("/auth/admin/signup") && !request.getServletPath().equals("/auth/error") && !request.getServletPath().equals("/auth/refresh")){
+        //로그인, 회원등록, 팀 부서 출력은 토큰 없어도 가능하도록 -> 회원등록 부분은 추후 수정 필요
+        if (!request.getServletPath().equals("/auth/login") && !request.getServletPath().equals("/auth/admin/signup") && !request.getServletPath().equals("/approval/team") && !request.getServletPath().equals("/approval/position") && !request.getServletPath().equals("/auth/error") && !request.getServletPath().equals("/auth/refresh")){
             // validateToken 으로 토큰 유효성 검사
             // 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
             TokenStatus tokenStatus = tokenProvider.validateToken(jwt);

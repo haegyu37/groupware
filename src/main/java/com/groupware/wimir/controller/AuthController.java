@@ -40,21 +40,21 @@ public class AuthController {
     private final MemberService memberService;
     private final DocumentService documentService;
 
-    //직원 등록
+    //직원 등록 -> 관리자
     @PostMapping("/admin/signup")
     public ResponseEntity<MemberResponseDTO> signup(@RequestBody MemberRequestDTO requestDto) {
 
         return ResponseEntity.ok(authService.signup(requestDto));
     }
 
-    //직원 목록
+    //직원 목록 -> 관리자
     @GetMapping("/admin/members")
     public ResponseEntity<List<MemberResponseDTO>> getAllMembers() {
         List<MemberResponseDTO> members = memberService.getAllMembers();
         return ResponseEntity.ok(members);
     }
 
-    //직원 삭제
+    //직원 삭제 -> 관리자
     @DeleteMapping("/admin/members/{memberId}")
     public ResponseEntity<String> deleteMemberById(@PathVariable Long memberId) {
         try {
@@ -106,7 +106,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.refresh(tokenRequestDTO));
     }
 
-    //해당 사원 정보보기
+    //해당 사원 정보보기 -> 관리자
     @GetMapping("/admin/members/{id}")
     public ResponseEntity<MemberResponseDTO> getMemberById(@PathVariable Long id) {
         Member member = memberService.getMemberById(id);
@@ -114,7 +114,7 @@ public class AuthController {
         return ResponseEntity.ok(memberResponseDTO);
     }
 
-    //사원 정보 수정
+    //사원 정보 수정 -> 관리자
     @PostMapping("/admin/members/{memberId}/edit")
     public ResponseEntity<MemberResponseDTO> changeUserDetails(
             @PathVariable Long memberId,
@@ -189,7 +189,7 @@ public class AuthController {
 
     }
 
-    // 사용자의 권한을 ROLE_BLOCK으로 업데이트
+    // 사용자의 권한을 ROLE_BLOCK으로 업데이트 -> 관리자
     @PostMapping("/admin/members/{memberId}/block")
     public ResponseEntity<String> blockUser(@PathVariable Long memberId) {
         try {

@@ -82,7 +82,7 @@ public class DocumentController {
         return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "반려", pageable);
     }
 
-    //결재 완료된 문서 목록 all
+    //결재 완료된 문서 목록 all -> 관리자
     @GetMapping("/listdone")
     public List<Document> approvedDocs() {
         List<Document> approvedDocs = documentService.getApprovedDocuments();
