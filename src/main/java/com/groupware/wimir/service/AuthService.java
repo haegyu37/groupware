@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.groupware.wimir.jwt.TokenStatus.StatusCode.OK;
+import static com.groupware.wimir.jwt.TokenStatus.StatusCode.REFRESH_EXPIRED;
 
 
 @Service
@@ -71,6 +72,13 @@ public class AuthService {
     public TokenDTO refresh(TokenRequestDTO tokenRequestDto) {
 
         //Refresh Token 검증
+        TokenStatus refreshStatus = tokenProvider.validateToken(tokenRequestDto.getRefreshToken());
+
+        if (refreshStatus.getStatusCode().equals(REFRESH_EXPIRED)) {
+            throw new RuntimeException(("리프레시 토큰이 만료되었습니다."));
+        }
+
+
         if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken()).getStatusCode().equals(OK)) {
             throw new RuntimeException("유효하지 않은 리프레시 토큰입니다.");
         }
@@ -100,9 +108,7 @@ public class AuthService {
 
 
 }
-//    public void logout() {
-//
-//    }
+
 
 
 

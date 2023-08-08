@@ -27,6 +27,7 @@ public class TokenStatus {
         if (UNAUTHORIZED.equals(status)){
             return new TokenStatus(UNAUTHORIZED);
         }
+
         if (EXPIRED.equals(status)){
             return new TokenStatus(EXPIRED);
         }
