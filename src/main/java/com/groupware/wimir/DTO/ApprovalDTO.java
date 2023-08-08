@@ -15,5 +15,4 @@ public class ApprovalDTO {
     private String reason;
     private Long document;
 
-
 }

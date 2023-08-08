@@ -21,7 +21,7 @@ public class AttachmentController {
         this.attachmentService = attachmentService;
     }
 
-    // 첨부파일 업로드(현재 저장 파일명이 원본 파일명으로 저장됨, savedName은 저장시 임의로 저장하는 이름이라 업로드에서는 null로 해도 될듯)
+    // 첨부파일 업로드
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> uploadAttachments(@RequestParam("attachments") List<MultipartFile> files,
                                                     @RequestParam("documentId") Long documentId) {
@@ -39,21 +39,6 @@ public class AttachmentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-
-//    @GetMapping(value = "/download/{id}")
-//    public ResponseEntity<byte[]> downloadAttachment(@PathVariable Long id) {
-//        try {
-//            byte[] fileBytes = attachmentService.downloadAttachment(id);
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-//            headers.setContentDispositionFormData("attachment", "attachment");
-//            return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }
 
     // 첨부파일 다운로드(오류는 없으나, postman에서는 확인 불가능)
     @GetMapping(value = "/download/{id}")
