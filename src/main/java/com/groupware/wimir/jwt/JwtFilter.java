@@ -34,12 +34,11 @@ public class JwtFilter extends OncePerRequestFilter {
                 Authentication authentication = tokenProvider.getAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                // 토큰이 만료된 경우 응답에 만료된 토큰에 관한 메시지를 담아준다.
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 ObjectMapper objectMapper = new ObjectMapper();
-                String message = "만료된토큰입니다"; // 여기에 원하는 메시지를 설정할 수 있습니다.
-                objectMapper.writeValue(response.getWriter(), new TokenStatus(tokenStatusCode, message));
+                TokenStatus tokenStatus = TokenStatus.makeTokenStatus(tokenStatusCode);
+                objectMapper.writeValue(response.getWriter(), tokenStatus);
                 return;
             }
         }
