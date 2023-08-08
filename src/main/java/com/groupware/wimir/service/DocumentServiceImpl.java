@@ -39,6 +39,13 @@ public class DocumentServiceImpl implements DocumentService {
                 .orElse(null);
     }
 
+    @Override
+    public Document findDocumentBySno(Long sno) {
+        return documentRepository.findBySno(sno);
+//                .orElse(null);
+    }
+
+
 //    @Override
 //    public Page<Document> findDocumentListByWriter(Member writer, Pageable pageable) {
 ////        Page<Document> Documents = documentRepository.findByWriter(writer, pageable);

@@ -186,4 +186,8 @@ public class LineService {
     }
 
 
+    public List<Approval> getBySno(Long sno) {
+        List<Approval> lines = approvalRepository.findBySno(sno);
+        return lines;
+    }
 }

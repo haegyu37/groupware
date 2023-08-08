@@ -15,6 +15,8 @@ public interface DocumentService {
 
     Document findDocumentById(Long id);
 
+    Document findDocumentBySno(Long sno);
+
     Document saveDocument(Document document);
 
     void deleteDocument(Long id);

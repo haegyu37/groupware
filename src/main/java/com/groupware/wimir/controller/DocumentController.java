@@ -112,10 +112,10 @@ public class DocumentController {
         documentService.setWriterByToken(document);
         document.setCreateDate(LocalDate.now());
         document.setStatus(documentDTO.getStatus());
-        document.setTemplate(documentDTO.getTemplate());    // 양식명
-        document.setResult("진행중");
+        document.setTemplate(documentDTO.getTemplate());    // 양식
+        document.setResult("결재대기");
 
-        //임시저장 관련
+        //임시저장
         if (document.getStatus() == 0) {
             // 임시저장인 경우
             Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장 번호의 최대값을 가져옴
@@ -123,15 +123,15 @@ public class DocumentController {
                 maxSno = 0L;
             }
             document.setSno(maxSno + 1); // 임시저장 번호 생성
+
+            //저장
         } else {
-            // 작성인 경우
             Long maxDno = documentRepository.findMaxDno(); // DB에서 문서 번호의 최대값을 가져옴
             if (maxDno == null) {
                 maxDno = 0L;
             }
             document.setDno(maxDno + 1); // 작성 번호 생성
-            approvalService.setApproval(documentDTO);
-            document.setResult("진행중");
+            approvalService.setApproval(documentDTO); //결재 요청
 
         }
 
@@ -159,12 +159,12 @@ public class DocumentController {
     @GetMapping(value = "/save/{id}")
     public Document readSaveDocument(@PathVariable("id") Long id) {
         Document document = documentRepository.findBySno(id);
-//        Long dno = document.getDno();
-//        List<Approval> approvals = lineService.getByDocument(dno);
-//        Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
-//        if (document == null) {
-//            throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
-//        }
+        Long sno = document.getSno();
+        List<Approval> approvals = lineService.getBySno(sno); // 이러면 안될듯 ..
+        Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
+        if (document == null) {
+            throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
+        }
 
         return document;
     }
@@ -177,10 +177,11 @@ public class DocumentController {
                 .orElseThrow(() -> new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id));
 
         if (updateDocument != null) {
-            // result가 "승인"이거나 "반려"인 경우 수정을 제한
+
+            // result 진행중, 승인, 반려인 경우 수정 안됨
             String result = updateDocument.getResult();
-            if ("승인".equals(result) || "반려".equals(result)) {
-                throw new UnsupportedOperationException("결재가 완료된 문서는 수정할 수 없습니다.");
+            if ("진행중".equals(result) || "승인".equals(result) || "반려".equals(result)) {
+                throw new UnsupportedOperationException("결재가 진행된 문서는 수정할 수 없습니다.");
             }
 
             if (updateDocument != null) {
@@ -191,13 +192,11 @@ public class DocumentController {
                 updateDocument.setStatus(documentDTO.getStatus());
                 updateDocument.setTemplate(documentDTO.getTemplate()); //추가
 
-                if (documentDTO.getStatus() == 0) {
-                    // status가 0인 경우 임시저장이므로 그냥 저장
-                } else {
-                    approvalService.setApproval(documentDTO);
-                    updateDocument.setResult("진행중");
+                //저장인 경우
+                if (documentDTO.getStatus() != 0) {
+                    approvalService.setApproval(documentDTO); //결재요청
+                    updateDocument.setResult("결재대기");
 
-                    // status가 1인 경우 작성인 경우
                     Long maxDno = documentRepository.findMaxDno();
                     if (maxDno == null) {
                         maxDno = 0L;
@@ -212,11 +211,12 @@ public class DocumentController {
                     }
                     updateDocument.setSno(null);
                     updateDocument.setStatus(1);
-
                 }
-                return documentRepository.save(updateDocument);
+
             }
+            return documentRepository.save(updateDocument);
         }
+
         throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
     }
 
@@ -227,10 +227,10 @@ public class DocumentController {
         Document document = documentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id));
 
-        // result가 "승인"이거나 "반려"인 경우 삭제를 제한
+        // result 진행중, 승인, 반려인 경우 삭제 안됨
         String result = document.getResult();
-        if ("승인".equals(result) || "반려".equals(result)) {
-            throw new UnsupportedOperationException("이미 승인 또는 반려된 문서는 삭제할 수 없습니다.");
+        if ("진행중".equals(result) || "승인".equals(result) || "반려".equals(result)) {
+            throw new UnsupportedOperationException("결재가 진행된 문서는 삭제할 수 없습니다.");
         }
         Long dno = document.getDno();
 
