@@ -6,6 +6,7 @@ import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Position;
 import com.groupware.wimir.entity.Team;
+import com.groupware.wimir.jwt.TokenStatus;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.AuthService;
 import com.groupware.wimir.service.DocumentService;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.List;
@@ -112,6 +114,7 @@ public class AuthController {
         return ResponseEntity.ok(memberResponseDTO);
     }
 
+    //사원 정보 수정
     @PostMapping("/admin/members/{memberId}/edit")
     public ResponseEntity<MemberResponseDTO> changeUserDetails(
             @PathVariable Long memberId,
@@ -186,9 +189,6 @@ public class AuthController {
 
     }
 
-
-
-
     // 사용자의 권한을 ROLE_BLOCK으로 업데이트
     @PostMapping("/admin/members/{memberId}/block")
     public ResponseEntity<String> blockUser(@PathVariable Long memberId) {
@@ -205,12 +205,14 @@ public class AuthController {
         }
     }
 
-    //결재완료된 모든 문서 목록
-    @GetMapping("/listdone")
-    public List<Document> approvedDocs() {
-        List<Document> approvedDocs = documentService.getApprovedDocuments();
-        return approvedDocs;
+    @RequestMapping(value = "/error", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
+    public String authorizeError(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+        if (httpServletResponse.getHeader("STATUS").equals(TokenStatus.StatusCode.UNAUTHORIZED.name())){
+            return "UNAUTHORIZED";
+        }
+        if (httpServletResponse.getHeader("STATUS").equals(TokenStatus.StatusCode.EXPIRED.name())){
+            return "EXPIRED";
+        }
+        return "UNKNOWN";
     }
-
-
 }

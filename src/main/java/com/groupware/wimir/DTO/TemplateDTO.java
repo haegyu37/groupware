@@ -9,8 +9,8 @@ import java.util.Map;
 @Getter
 @Setter
 public class TemplateDTO {
-    private Long id;
-    private String title;
+//    private Long id;
+    private String category;
     private String content;
 
     // 기본 생성자
@@ -18,9 +18,9 @@ public class TemplateDTO {
     }
 
     // 모든 필드를 받는 생성자
-    public TemplateDTO(Long id, String title, String content) {
-        this.id = id;
-        this.title = title;
+    public TemplateDTO(String category, String content) {
+//        this.id = id;
+        this.category = category;
         this.content = content;
     }
 }

@@ -39,6 +39,13 @@ public class DocumentServiceImpl implements DocumentService {
                 .orElse(null);
     }
 
+    @Override
+    public Document findDocumentBySno(Long sno) {
+        return documentRepository.findBySno(sno);
+//                .orElse(null);
+    }
+
+
 //    @Override
 //    public Page<Document> findDocumentListByWriter(Member writer, Pageable pageable) {
 ////        Page<Document> Documents = documentRepository.findByWriter(writer, pageable);
@@ -157,6 +164,11 @@ public class DocumentServiceImpl implements DocumentService {
         return allDocs.stream()
                 .filter(document -> !document.getResult().equals("진행중") && document.getAppDate() != null)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<Document> findDocumentListByWriterAndStatusAndResult(Long id, int status, String result, Pageable pageable) {
+        return documentRepository.findByWriterIdAndStatusAndResult (id, status, result, pageable);
     }
 
 //    public Document getDocumentById(Long documentId) {

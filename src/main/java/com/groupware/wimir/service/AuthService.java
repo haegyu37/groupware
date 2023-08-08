@@ -1,5 +1,6 @@
 package com.groupware.wimir.service;
 
+import antlr.Token;
 import com.groupware.wimir.DTO.MemberRequestDTO;
 import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.DTO.TokenRequestDTO;
@@ -8,6 +9,7 @@ import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.RefreshToken;
 import com.groupware.wimir.jwt.TokenProvider;
+import com.groupware.wimir.jwt.TokenStatus;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.groupware.wimir.jwt.TokenStatus.StatusCode.OK;
 
 
 @Service
@@ -67,7 +71,7 @@ public class AuthService {
     public TokenDTO refresh(TokenRequestDTO tokenRequestDto) {
 
         //Refresh Token 검증
-        if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
+        if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken()).getStatusCode().equals(OK)) {
             throw new RuntimeException("유효하지 않은 리프레시 토큰입니다.");
         }
 
