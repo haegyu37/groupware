@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 
 @Slf4j
@@ -29,8 +30,8 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";   //사용자 권한(authorities) 식별하는데 사용
     private static final String BEARER_TYPE = "bearer";     // 토큰유형 지정시 사용 Oauth 2.0 인증 프로토콜에서 사용되는 토큰 유형
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24;       // 24시간 액세스토큰
-
+//    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24;       // 24시간 액세스토큰
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 30;       // 30초 액세스토큰
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일 리프레쉬토큰
 
     private final Key key;  //토큰 생성시 사용할 키
@@ -97,20 +98,19 @@ public class TokenProvider {
     }
 
     // validateToken 토큰을 검증하기 위한 메소드
-    public boolean validateToken(String token) {
+    public TokenStatus validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.info("잘못된 JWT 서명입니다, 토큰 파싱 실패");
+            if (StringUtils.hasText(Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getSignature())){
+                return TokenStatus.of(TokenStatus.StatusCode.OK);
+            }
+            return TokenStatus.of(TokenStatus.StatusCode.UNKNOWN);
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException | UnsupportedJwtException e) {
+            return TokenStatus.of(TokenStatus.StatusCode.UNKNOWN);
+        } catch (IllegalArgumentException e){
+            return TokenStatus.of(TokenStatus.StatusCode.UNAUTHORIZED);
         } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.info("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
+            return TokenStatus.of(TokenStatus.StatusCode.EXPIRED);
         }
-        return false;
     }
 
     //parseClaim 토큰을 claims형태로 만든 메소드 이를 통해 위에서 권한 정보가 있는지 없는지 체크 가능

@@ -164,17 +164,20 @@ public class LineService {
                 groupedApprovals.putIfAbsent(document, new ArrayList<>());
 
                 Map<String, Object> approvalInfo = new HashMap<>();
-                approvalInfo.put("document", document); // lineId 정보 추가
+//                approvalInfo.put("document", document); // lineId 정보 추가
 
                 // Retrieve member information
                 Member memberInfo = memberRepository.findById(approval.getMemberId()).orElse(null);
                 if (memberInfo != null) {
-                    approvalInfo.put("lineId", approval.getLineId());
-                    approvalInfo.put("lineName", approval.getName());
-                    approvalInfo.put("id", memberInfo.getId());
-                    approvalInfo.put("name", memberInfo.getName());
-                    approvalInfo.put("team", memberInfo.getTeam());
-                    approvalInfo.put("position", memberInfo.getPosition());
+//                    approvalInfo.put("lineId", approval.getLineId());
+                    approvalInfo.put("no", memberInfo.getNo()); //직원 사번
+                    approvalInfo.put("name", memberInfo.getName()); //직원 이름
+                    approvalInfo.put("team", memberInfo.getTeam()); //직원 부서
+                    approvalInfo.put("position", memberInfo.getPosition()); //직원 직급
+                    approvalInfo.put("lineName", approval.getName()); //즐찾라인 이름
+                    approvalInfo.put("status", approval.getStatus()); //결재 결과
+                    approvalInfo.put("appDate", approval.getAppDate()); //결재일
+
                 }
 
                 // 그룹에 결재 정보를 추가합니다
@@ -186,4 +189,8 @@ public class LineService {
     }
 
 
+    public List<Approval> getBySno(Long sno) {
+        List<Approval> lines = approvalRepository.findBySno(sno);
+        return lines;
+    }
 }

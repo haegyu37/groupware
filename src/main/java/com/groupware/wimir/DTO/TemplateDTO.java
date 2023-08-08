@@ -13,7 +13,7 @@ public class TemplateDTO {
     private String content;
 
     public TemplateDTO(Long id, String category, String content) {
-        this.id = id;
+//        this.id = id;
         this.category = category;
         this.content = content;
     }

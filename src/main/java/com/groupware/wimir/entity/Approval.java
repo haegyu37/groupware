@@ -26,6 +26,8 @@ public class Approval {
 
     private Long document; //문서 아이디
 
+    private Long sno;
+
     private String reason; //반려사유
 
     private LocalDate appDate; //결재완료일
@@ -40,11 +42,11 @@ public class Approval {
 
     private String category; //결재라인 카테고리
 
-    private int status; //결재자별 결재상태 (0전, 1승인, 2반려)
+    private String status; //결재자별 결재상태 : 대기/승인/반려
 
     private String current; //현재 결재순서(Y/N)
 
-    private String refer; //"참조" 참조자
+    private String refer; //"참조" 참조자, "결재" 결재자
 
     public static Map<Long, List<Approval>> groupByLineId(List<Approval> approvals) {
         return approvals.stream()
