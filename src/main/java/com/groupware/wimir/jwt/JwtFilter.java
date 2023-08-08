@@ -24,13 +24,28 @@ public class JwtFilter extends OncePerRequestFilter {
         // Request Header 에서 토큰을 꺼냄
         String jwt = resolveToken(request);
 
-        // validateToken 으로 토큰 유효성 검사
-        // 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
-        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-            Authentication authentication = tokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
+        if (!request.getServletPath().equals("/auth/login") && !request.getServletPath().equals("/auth/error") && !request.getServletPath().equals("/auth/refresh")){
+            // validateToken 으로 토큰 유효성 검사
+            // 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
+            TokenStatus tokenStatus = tokenProvider.validateToken(jwt);
+            if (tokenStatus.getStatusCode().equals(TokenStatus.StatusCode.EXPIRED)){
+                response.setHeader("STATUS","EXPIRED");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                request.getRequestDispatcher("/auth/error").forward(request, response);
+                return;
+            }
+            if (tokenStatus.getStatusCode().equals(TokenStatus.StatusCode.UNAUTHORIZED)){
+                response.setHeader("STATUS","UNAUTHORIZED");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                request.getRequestDispatcher("/auth/error").forward(request, response);
+                return;
+            }
 
+            if (StringUtils.hasText(jwt)) {
+                Authentication authentication = tokenProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
         filterChain.doFilter(request, response);    // 다음 필터로 제어를 넘김
     }
 

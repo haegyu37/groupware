@@ -6,6 +6,7 @@ import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Position;
 import com.groupware.wimir.entity.Team;
+import com.groupware.wimir.jwt.TokenStatus;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.AuthService;
 import com.groupware.wimir.service.DocumentService;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.List;
@@ -201,5 +203,16 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @RequestMapping(value = "/error", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
+    public String authorizeError(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+        if (httpServletResponse.getHeader("STATUS").equals(TokenStatus.StatusCode.UNAUTHORIZED.name())){
+            return "UNAUTHORIZED";
+        }
+        if (httpServletResponse.getHeader("STATUS").equals(TokenStatus.StatusCode.EXPIRED.name())){
+            return "EXPIRED";
+        }
+        return "UNKNOWN";
     }
 }
