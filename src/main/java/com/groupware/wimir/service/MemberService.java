@@ -101,6 +101,7 @@ public class MemberService {
         return MemberResponseDTO.of(updatedMember);
     }
 
+
     // 사용자의 권한을 ROLE_BLOCK으로 업데이트하는 메서드 추가
     public void updateUserAuthorityToBlock(Long userId) {
         Member member = memberRepository.findById(userId)
@@ -109,6 +110,14 @@ public class MemberService {
         member.setAuthority(Authority.ROLE_BLOCK);
         memberRepository.save(member);
     }
+
+
+
+
+
+
+
+
 
     // ID로 회원 조회
     public Member getMemberById(Long memberId) {
@@ -123,6 +132,19 @@ public class MemberService {
                 .thenComparing(Member::getPosition, Comparator.comparingInt(Position::getValue)));
         return members;
     }
+
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException("Member not found with ID: " + memberId));
+    }
+
+
+
+
+
+
+
+
 
 }
 

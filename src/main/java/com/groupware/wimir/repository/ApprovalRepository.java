@@ -25,8 +25,4 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
     List<Approval> findByDocument(Long document);
 
     void deleteByLineId(Long id);
-
-    List<Approval> findBySno(Long sno);
-
-//    List<Long> findByLineId(Long id);
 }
