@@ -28,7 +28,7 @@ public class TemplateController {
     public ResponseEntity<String> createTemplate(@RequestBody TemplateDTO templateDTO) {
         try {
             // 필수 필드인지 확인하고 유효성 검사
-            String title = templateDTO.getTitle();
+            String title = templateDTO.getCategory();
             String content = templateDTO.getContent();
 
             if (title == null || content == null) {

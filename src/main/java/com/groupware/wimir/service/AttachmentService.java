@@ -99,23 +99,6 @@ public class AttachmentService {
         return attachmentOptional.orElseThrow(() -> new RuntimeException("해당 첨부파일을 찾을 수 없습니다."));
     }
 
-//    public ResponseEntity<byte[]> downloadAttachment(Long id, String savedFileName) {
-//        Attachment attachment = getAttachmentById(id);
-//        Path attachmentPath = Paths.get(attachment.getPath(), attachment.getSavedName());
-//        try {
-//            byte[] fileBytes = Files.readAllBytes(attachmentPath);
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-//            // 다운로드 창에 보여줄 파일 이름 설정
-//            headers.setContentDispositionFormData("attachment", savedFileName);
-//
-//            return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
-//        } catch (IOException ex) {
-//            throw new RuntimeException("첨부파일을 다운로드할 수 없습니다.", ex);
-//        }
-//    }
-
     public void deleteAttachment(Long attachmentId) {
         Attachment attachment = getAttachmentById(attachmentId);
 //        Path attachmentPath = Paths.get(attachment.getPath(), attachment.getSavedName());
