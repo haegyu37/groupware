@@ -165,28 +165,34 @@ public class DocumentController {
         Document updateDocument = documentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id));
 
-        if (updateDocument != null) {
+        // result가 "승인"이거나 "반려"인 경우 수정을 제한
+        String result = updateDocument.getResult();
+        if ("결재중".equals(result) || "승인".equals(result) || "반려".equals(result)) {
+            throw new UnsupportedOperationException("결재 중인 문서는 수정할 수 없습니다.");
+        }
+
             updateDocument.setTitle(documentDTO.getTitle());
             updateDocument.setContent(documentDTO.getContent());
             updateDocument.setUpdateDate(LocalDateTime.now());
             documentService.setWriterByToken(updateDocument);
             updateDocument.setStatus(documentDTO.getStatus());
-            updateDocument.setResult("진행중");
-
+            updateDocument.setResult("결재전");
 //            approvalService.updateApproval(documentDTO, id);
 
 
             if (documentDTO.getStatus() == 0) {
                 // status가 0인 경우 임시저장이므로 그냥 저장
             } else {
-                // status가 1인 경우 작성인 경우
                 approvalService.setApproval(documentDTO);
+
+                // status가 1인 경우 작성인 경우
                 Long maxDno = documentRepository.findMaxDno();
                 if (maxDno == null) {
                     maxDno = 0L;
                 }
                 if (updateDocument.getDno() == null || updateDocument.getDno() == 0) {
                     updateDocument.setDno(maxDno + 1);
+
                 }
                 Template template = updateDocument.getTemplate();
                 if (template != null) {
@@ -195,23 +201,32 @@ public class DocumentController {
                 }
                 updateDocument.setSno(null);
                 updateDocument.setStatus(1);
+
+            }
+            return documentRepository.save(updateDocument);
+
+
+    }
+
+
+        // 문서 삭제
+        @DeleteMapping("/delete/{id}")
+        public void deleteDocument (@PathVariable Long id){
+
+            Document document = documentRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id));
+
+            // result가 "승인"이거나 "반려"인 경우 수정을 제한
+            String result = document.getResult();
+            if ("결재중".equals(result) || "승인".equals(result) || "반려".equals(result)) {
+                throw new UnsupportedOperationException("결재 중인 문서는 수정할 수 없습니다.");
             }
 
-            return documentRepository.save(updateDocument);
+            //문서에 해당 첨부파일 삭제
+            attachmentService.deleteAttachmentByDoc(id);
+            documentService.deleteDocument(id);
+
         }
 
-        throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
-    }
-
-
-    // 문서 삭제
-    @DeleteMapping(value = "/delete/{id}")
-    public void deleteDocument(@PathVariable("id") Long id) {
-        //문서에 해당 첨부파일 삭제
-        attachmentService.deleteAttachmentByDoc(id);
-        documentService.deleteDocument(id);
 
     }
-
-
-}
