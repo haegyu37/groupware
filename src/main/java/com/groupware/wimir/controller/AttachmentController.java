@@ -1,6 +1,7 @@
 package com.groupware.wimir.controller;
 
 import com.groupware.wimir.entity.Attachment;
+import com.groupware.wimir.repository.AttachmentRepository;
 import com.groupware.wimir.service.AttachmentService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,11 +16,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/attachments")
 public class AttachmentController {
-    private final AttachmentService attachmentService;
-
-    public AttachmentController(AttachmentService attachmentService) {
-        this.attachmentService = attachmentService;
-    }
+    private AttachmentService attachmentService;
+    private AttachmentRepository attachmentRepository;
 
     // 첨부파일 업로드
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -67,16 +65,8 @@ public class AttachmentController {
 
     // 첨부파일 삭제(db에서 정상 삭제됨)
     @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<String> deleteAttachment(@PathVariable Long id) {
-        try {
-            attachmentService.deleteAttachment(id);
-            String response = "첨부파일이 삭제되었습니다. 첨부파일 ID : " + id;
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            String errorResponse = "첨부파일 삭제를 실패했습니다.";
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-        }
+    public void deleteAttachment(@PathVariable Long id) {
+        attachmentRepository.deleteById(id);
     }
 }
 
