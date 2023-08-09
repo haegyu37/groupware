@@ -4,6 +4,7 @@ import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.DTO.DocumentDTO;
 import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
+import com.groupware.wimir.exception.ResourceNotFoundException;
 import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.DocumentRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,8 @@ public class ApprovalService {
     private ApprovalRepository approvalRepository;
     @Autowired
     private DocumentRepository documentRepository;
+    @Autowired
+    private DocumentService documentService;
 
     //결재 요청
     public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {

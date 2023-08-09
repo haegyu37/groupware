@@ -2,6 +2,8 @@ package com.groupware.wimir.controller;
 
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.DocumentDTO;
+import com.groupware.wimir.DTO.DocumentResponseDTO;
+import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Template;
 import com.groupware.wimir.exception.ResourceNotFoundException;
@@ -10,6 +12,7 @@ import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.TemplateRepository;
 import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.DocumentService;
+import com.groupware.wimir.service.LineService;
 import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/documents")
@@ -32,6 +36,7 @@ public class DocumentController {
     private final MemberService memberService;
     private final ApprovalService approvalService;
     private final TemplateRepository templateRepository;
+    private final LineService lineService;
 
     // 문서 목록(정상 저장 전체 다 보도록)
     @GetMapping(value = "/list")
@@ -131,13 +136,13 @@ public class DocumentController {
 
 
     // 문서 상세 조회
-    @GetMapping(value = "/read/{id}")
-    public Document readDocument(@PathVariable("id") Long id) {
+    public DocumentResponseDTO readDocument(@PathVariable("id") Long id) {
         Document document = documentService.findDocumentById(id);
+        List<Approval> approvals = lineService.getByDocument(id);
+        Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
         if (document == null) {
             throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
         }
-
         return new DocumentResponseDTO(document, groupedApprovals);
     }
 
