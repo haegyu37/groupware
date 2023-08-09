@@ -1,6 +1,8 @@
 package com.groupware.wimir.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -24,29 +26,23 @@ public class JwtFilter extends OncePerRequestFilter {
         // Request Header 에서 토큰을 꺼냄
         String jwt = resolveToken(request);
 
-        //로그인, 회원등록, 팀 부서 출력은 토큰 없어도 가능하도록 -> 회원등록 부분은 추후 수정 필요
-        if (!request.getServletPath().equals("/auth/login") && !request.getServletPath().equals("/auth/admin/signup") && !request.getServletPath().equals("/approval/team") && !request.getServletPath().equals("/approval/position") && !request.getServletPath().equals("/auth/error") && !request.getServletPath().equals("/auth/refresh")){
-            // validateToken 으로 토큰 유효성 검사
-            // 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
-            TokenStatus tokenStatus = tokenProvider.validateToken(jwt);
-            if (tokenStatus.getStatusCode().equals(TokenStatus.StatusCode.EXPIRED)){
-                response.setHeader("STATUS","EXPIRED");
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                request.getRequestDispatcher("/auth/error").forward(request, response);
-                return;
-            }
-            if (tokenStatus.getStatusCode().equals(TokenStatus.StatusCode.UNAUTHORIZED)){
-                response.setHeader("STATUS","UNAUTHORIZED");
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                request.getRequestDispatcher("/auth/error").forward(request, response);
-                return;
-            }
-
-            if (StringUtils.hasText(jwt)) {
+        // validateToken 으로 토큰 유효성 검사
+        // 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
+        TokenStatus.StatusCode tokenStatusCode = tokenProvider.validateToken(jwt);
+        if (StringUtils.hasText(jwt)) {
+            if (tokenStatusCode == TokenStatus.StatusCode.OK) {
                 Authentication authentication = tokenProvider.getAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                ObjectMapper objectMapper = new ObjectMapper();
+                TokenStatus tokenStatus = TokenStatus.makeTokenStatus(tokenStatusCode);
+                objectMapper.writeValue(response.getWriter(), tokenStatus);
+                return;
             }
         }
+
         filterChain.doFilter(request, response);    // 다음 필터로 제어를 넘김
     }
 
