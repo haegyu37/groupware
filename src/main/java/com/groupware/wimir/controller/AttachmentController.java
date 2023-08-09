@@ -1,6 +1,7 @@
 package com.groupware.wimir.controller;
 
 import com.groupware.wimir.entity.Attachment;
+import com.groupware.wimir.repository.AttachmentRepository;
 import com.groupware.wimir.service.AttachmentService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,11 +16,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/attachments")
 public class AttachmentController {
-    private final AttachmentService attachmentService;
-
-    public AttachmentController(AttachmentService attachmentService) {
-        this.attachmentService = attachmentService;
-    }
+    private AttachmentService attachmentService;
+    private AttachmentRepository attachmentRepository;
 
     // 첨부파일 업로드(현재 저장 파일명이 원본 파일명으로 저장됨, savedName은 저장시 임의로 저장하는 이름이라 업로드에서는 null로 해도 될듯)
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,21 +37,6 @@ public class AttachmentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-
-//    @GetMapping(value = "/download/{id}")
-//    public ResponseEntity<byte[]> downloadAttachment(@PathVariable Long id) {
-//        try {
-//            byte[] fileBytes = attachmentService.downloadAttachment(id);
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-//            headers.setContentDispositionFormData("attachment", "attachment");
-//            return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }
 
     // 첨부파일 다운로드(오류는 없으나, postman에서는 확인 불가능)
     @GetMapping(value = "/download/{id}")
@@ -82,16 +65,8 @@ public class AttachmentController {
 
     // 첨부파일 삭제(db에서 정상 삭제됨)
     @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<String> deleteAttachment(@PathVariable Long id) {
-        try {
-            attachmentService.deleteAttachment(id);
-            String response = "첨부파일이 삭제되었습니다. 첨부파일 ID : " + id;
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            String errorResponse = "첨부파일 삭제를 실패했습니다.";
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-        }
+    public void deleteAttachment(@PathVariable Long id) {
+        attachmentRepository.deleteById(id);
     }
 }
 

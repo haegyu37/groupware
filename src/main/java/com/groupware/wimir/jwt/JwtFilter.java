@@ -19,7 +19,7 @@ public class JwtFilter extends OncePerRequestFilter {
     public static final String AUTHORIZATION_HEADER = "Authorization";      //HTTP 요청 헤더에서 인증정보 전달하기위함
     public static final String BEARER_PREFIX = "Bearer ";       //JWT 토큰을 HTTP 요청 헤더에서 구분하기 위한 접두사
 
-    private final TokenProvider tokenProvider;                  //JWT 토큰의 생성및 검증 담당
+    private final TokenProvider tokenProvider;                  //JWT 토큰의 생성 및 검증 담당
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

@@ -10,10 +10,7 @@ import com.groupware.wimir.exception.ResourceNotFoundException;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.TemplateRepository;
-import com.groupware.wimir.service.ApprovalService;
-import com.groupware.wimir.service.DocumentService;
-import com.groupware.wimir.service.LineService;
-import com.groupware.wimir.service.MemberService;
+import com.groupware.wimir.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +34,7 @@ public class DocumentController {
     private final ApprovalService approvalService;
     private final TemplateRepository templateRepository;
     private final LineService lineService;
+    private final AttachmentService attachmentService;
 
     // 문서 목록(정상 저장 전체 다 보도록)
     @GetMapping(value = "/list")
@@ -121,6 +119,7 @@ public class DocumentController {
             document.setSno(maxSno + 1); // 임시저장 번호 생성
         } else {
             // 작성인 경우
+            approvalService.setApproval(documentDTO); //결재요청
             Long maxDno = documentRepository.findMaxDno(); // DB에서 문서 번호의 최대값을 가져옴
             if (maxDno == null) {
                 maxDno = 0L;
@@ -207,7 +206,10 @@ public class DocumentController {
     // 문서 삭제
     @DeleteMapping(value = "/delete/{id}")
     public void deleteDocument(@PathVariable("id") Long id) {
+        //문서에 해당 첨부파일 삭제
+        attachmentService.deleteAttachmentByDoc(id);
         documentService.deleteDocument(id);
+
     }
 
 
