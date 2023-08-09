@@ -3,6 +3,7 @@ package com.groupware.wimir.controller;
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.entity.*;
+import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.MemberService;
@@ -26,6 +27,8 @@ public class ApprovalController {
     private MemberService memberService;
     @Autowired
     ApprovalService approvalService;
+    @Autowired
+    ApprovalRepository approvalRepository;
 
     //팀 모두 출력
     @GetMapping("/team")
