@@ -23,7 +23,7 @@ public class TemplateController {
         this.templateService = templateService;
     }
 
-    // 템플릿 생성
+    // 템플릿 생성 -> 관리자
     @PostMapping(value = "/create")
     public ResponseEntity<String> createTemplate(@RequestBody TemplateDTO templateDTO) {
         try {
@@ -55,7 +55,7 @@ public class TemplateController {
         }
     }
 
-    // 템플릿 수정
+    // 템플릿 수정 -> 관리자
     @PutMapping(value = "/update/{id}")
     public String updateTemplate(@PathVariable Long id, @RequestBody TemplateDTO templateDTO) {
         // db에 양식 데이터 수정
@@ -75,7 +75,7 @@ public class TemplateController {
         return "redirect:/get/" + id;
     }
 
-    // 템플릿 삭제
+    // 템플릿 삭제 -> 관리자
     @DeleteMapping(value = "/delete/{id}")
     public String deleteTemplate(@PathVariable Long id) {
         // db에 양식 데이터 삭제
@@ -107,7 +107,7 @@ public class TemplateController {
         return templateDTO;
     }
 
-    // 템플릿 목록
+    // 템플릿 목록 -> 관리자
     @GetMapping(value = "/list")
     public ResponseEntity<List<Template>> getTemplatesList() {
         try {

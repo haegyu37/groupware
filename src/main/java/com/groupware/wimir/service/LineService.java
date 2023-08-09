@@ -3,6 +3,7 @@ package com.groupware.wimir.service;
 import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.repository.ApprovalRepository;
+import com.groupware.wimir.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ public class LineService {
 
     @Autowired
     private ApprovalRepository approvalRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     public List<Approval> getLineByLineId(Long id) {
         return approvalRepository.findByLineId(id);
@@ -147,9 +150,13 @@ public class LineService {
         return groupedApprovals;
     }
 
-
-    public List<Approval> getBySno(Long sno) {
-        List<Approval> lines = approvalRepository.findBySno(sno);
-        return lines;
+    public List<Approval> getByDocument(Long id) {
+        List<Approval> approvals = approvalRepository.findByDocument(id); //document로 approval 리스트 만듦
+        return approvals;
     }
+
+//    public List<Approval> getBySno(Long sno) {
+//        List<Approval> lines = approvalRepository.findBySno(sno);
+//        return lines;
+//    }
 }

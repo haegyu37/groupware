@@ -2,6 +2,8 @@ package com.groupware.wimir.controller;
 
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.DocumentDTO;
+import com.groupware.wimir.DTO.DocumentResponseDTO;
+import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Template;
 import com.groupware.wimir.exception.ResourceNotFoundException;
@@ -10,6 +12,7 @@ import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.TemplateRepository;
 import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.DocumentService;
+import com.groupware.wimir.service.LineService;
 import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/documents")
@@ -32,6 +36,7 @@ public class DocumentController {
     private final MemberService memberService;
     private final ApprovalService approvalService;
     private final TemplateRepository templateRepository;
+    private final LineService lineService;
 
     // 문서 목록(정상 저장 전체 다 보도록)
     @GetMapping(value = "/list")
@@ -55,18 +60,39 @@ public class DocumentController {
     }
 
 
-//    // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
-//    @GetMapping(value ="/categorylist/{id}")
-//    public Page<Document> getDocumentsByTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
-//        return documentService.findDocumentListByTemplateIdAndStatus(id, 1, pageable);
-//    }
-//
-//    // 카테고리별 자신이 작성한 문서 리스트(fun8번 결재 상태 추가되어야 함)
-//    @GetMapping(value = "/categorymylist/{id}")
-//    public Page<Document> getDocumentsByMyTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
-//        Long currentMemberId = SecurityUtil.getCurrentMemberId();
-//        return documentService.findDocumentListByWriterAndTemplateIdAndStatus(currentMemberId, id, 1, pageable);
-//    }
+    //내가 작성한 저장 리스트 승인
+    @GetMapping(value = "/mylist/approved")
+    public Page<Document> getMyListApproved(@PageableDefault Pageable pageable) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "승인", pageable);
+    }
+
+    //내가 작성한 저장 리스트 반려
+    @GetMapping(value = "/mylist/rejected")
+    public Page<Document> getMyListRejected(@PageableDefault Pageable pageable) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "반려", pageable);
+    }
+
+    //결재 완료된 문서 목록 all -> 관리자
+    @GetMapping("/listdone")
+    public List<Document> approvedDocs() {
+        List<Document> approvedDocs = documentService.getApprovedDocuments();
+        return approvedDocs;
+    }
+
+    // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
+    @GetMapping(value = "/categorylist/{id}")
+    public Page<Document> getDocumentsByTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
+        return documentService.findDocumentListByTemplateIdAndStatus(id, 1, pageable);
+    }
+
+    // 카테고리별 자신이 작성한 문서 리스트(fun8번 결재 상태 추가되어야 함)
+    @GetMapping(value = "/categorymylist/{id}")
+    public Page<Document> getDocumentsByMyTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return documentService.findDocumentListByWriterAndTemplateIdAndStatus(currentMemberId, id, 1, pageable);
+    }
 
     // 문서 작성
     @PostMapping(value = "/create")
@@ -110,13 +136,13 @@ public class DocumentController {
 
 
     // 문서 상세 조회
-    @GetMapping(value = "/read/{id}")
-    public Document readDocument(@PathVariable("id") Long id) {
+    public DocumentResponseDTO readDocument(@PathVariable("id") Long id) {
         Document document = documentService.findDocumentById(id);
+        List<Approval> approvals = lineService.getByDocument(id);
+        Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
         if (document == null) {
             throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
         }
-
         return new DocumentResponseDTO(document, groupedApprovals);
     }
 
