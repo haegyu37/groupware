@@ -3,7 +3,6 @@ package com.groupware.wimir.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,9 +22,9 @@ public class Document {
     @Column(columnDefinition = "TEXT")
     private String content; //문서내용
 
-    private LocalDate createDate; //작성일
+    private LocalDateTime createDate; //작성일
 
-    private LocalDate updateDate; //수정일
+    private LocalDateTime updateDate; //수정일
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -41,7 +40,7 @@ public class Document {
 
     private Long sno = 0L; // 문서 임시저장 번호(디폴트 값은 0)
 
-    private String result; //진행중, 승인, 반려
+    private String result; //결재 전, 승인, 반려
 
     private LocalDateTime appDate; //결재완료일
 
@@ -49,8 +48,8 @@ public class Document {
 
 
     @Builder
-    public Document(Long id, String title, String content, LocalDate createDate,
-                    LocalDate updateDate, Member writer, Template template, int status, Long dno, Long sno, Long tempNo) {
+    public Document(Long id, String title, String content, LocalDateTime createDate,
+                    LocalDateTime updateDate, Member writer, Template template, int status, Long dno, Long sno, Long tempNo) {
         this.id = id;
         this.title = title;
         this.content = content;

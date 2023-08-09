@@ -3,7 +3,6 @@ package com.groupware.wimir.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +22,11 @@ public class Approval {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private Long document; //문서 아이디
-
-    private Long sno;
 
     private String reason; //반려사유
 
-    private LocalDate appDate; //결재완료일
+    private LocalDateTime appDate; //결재완료일
 
     private Long memberId; //결재자
 
@@ -46,19 +42,12 @@ public class Approval {
 
     private String current; //현재 결재순서(Y/N)
 
-    private String refer; //"참조" 참조자, "결재" 결재자
+    private String refer; //"참조" 참조자
 
     public static Map<Long, List<Approval>> groupByLineId(List<Approval> approvals) {
         return approvals.stream()
                 .filter(approval -> approval.getLineId() != null) // lineId가 null이 아닌 경우만 필터링
                 .collect(Collectors.groupingBy(Approval::getLineId));
     }
-
-    public static Map<Long, List<Approval>> groupByLineName(List<Approval> approvals) {
-        return approvals.stream()
-                .filter(approval -> approval.getName() != null) // lineId가 null이 아닌 경우만 필터링
-                .collect(Collectors.groupingBy(Approval::getLineId));
-    }
-
 
 }

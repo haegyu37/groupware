@@ -3,8 +3,6 @@ package com.groupware.wimir.controller;
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.entity.*;
-import com.groupware.wimir.repository.ApprovalRepository;
-import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.MemberService;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -28,9 +25,8 @@ public class ApprovalController {
     @Autowired
     private MemberService memberService;
     @Autowired
-    private ApprovalService approvalService;
-    @Autowired
-    private ApprovalRepository approvalRepository;
+    ApprovalService approvalService;
+
     //팀 모두 출력
     @GetMapping("/team")
     public List<String> getAllTeam() {
@@ -98,13 +94,6 @@ public class ApprovalController {
         return myAppDocs;
     }
 
-    //내가 결재라인인데 이제 참조인 문서 목록
-    @GetMapping("/list/refer")
-    public List<Document> referDocs() {
-        Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        return approvalService.getReferencedDocuments(currentMemberId);
-    }
-
     //내가 결재라인인 문서 목록 근데 이제 내 차례인 ..
     @GetMapping("/listnow")
     public List<Document> getMyApprovalsNow() {
@@ -123,7 +112,7 @@ public class ApprovalController {
         return myAppDocs;
     }
 
-    //결재 승인 앤나 반려
+    //    결재 승인 앤나 반려
     @PostMapping("/approve")
     public ResponseEntity<String> approveDocument(@RequestBody ApprovalDTO approvalDTO) {
         if (approvalDTO.getStatus() == 1) {
@@ -137,11 +126,6 @@ public class ApprovalController {
         }
     }
 
-    //결재 취소
-    @PostMapping("/cancel")
-    public void cancleApproval(@RequestBody ApprovalDTO approvalDTO) {
-        approvalService.cancelApproval(approvalDTO.getDocument());
-    }
 
     //결재 회수
     @PostMapping("/back")

@@ -15,8 +15,6 @@ public interface DocumentService {
 
     Document findDocumentById(Long id);
 
-    Document findDocumentBySno(Long sno);
-
     Document saveDocument(Document document);
 
     void deleteDocument(Long id);
@@ -32,8 +30,6 @@ public interface DocumentService {
     Page<Document> findDocumentListByWriterAndTemplateIdAndStatus(Long memberId, Long id, int status, Pageable pageable);
 
     List<Document> getApprovedDocuments();
-
-    Page<Document> findDocumentListByWriterAndStatusAndResult(Long id, int status, String result, Pageable pageable);
 
 
 //    List<Document> getDocumentsByCategory(String category);
