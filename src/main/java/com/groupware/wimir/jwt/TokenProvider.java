@@ -98,18 +98,21 @@ public class TokenProvider {
     }
 
     // validateToken 토큰을 검증하기 위한 메소드
-    public TokenStatus validateToken(String token) {
+    public TokenStatus.StatusCode validateToken(String token) {
         try {
-            if (StringUtils.hasText(Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getSignature())){
-                return TokenStatus.of(TokenStatus.StatusCode.OK);
-            }
-            return TokenStatus.of(TokenStatus.StatusCode.UNKNOWN);
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException | UnsupportedJwtException e) {
-            return TokenStatus.of(TokenStatus.StatusCode.UNKNOWN);
-        } catch (IllegalArgumentException e){
-            return TokenStatus.of(TokenStatus.StatusCode.UNAUTHORIZED);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            log.info("유효한 JWT 토큰입니다.");
+            return TokenStatus.StatusCode.OK;
         } catch (ExpiredJwtException e) {
-            return TokenStatus.of(TokenStatus.StatusCode.EXPIRED);
+            log.info("만료된 JWT 토큰입니다.");
+            return TokenStatus.StatusCode.EXPIRED;
+        } catch (UnsupportedJwtException | io.jsonwebtoken.security.SecurityException |
+                 MalformedJwtException e) {
+            log.info("잘못된 JWT 서명입니다");
+            return TokenStatus.StatusCode.UNAUTHORIZED;
+        } catch (IllegalArgumentException e) {
+            log.info("JWT 토큰이 잘못되었습니다.");
+            return TokenStatus.StatusCode.UNKNOWN;
         }
     }
 
