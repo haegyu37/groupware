@@ -104,7 +104,7 @@ public class DocumentController {
         document.setStatus(documentDTO.getStatus());
         document.setTemplate(documentDTO.getTemplate());    // 양식명
         System.out.println(documentDTO.getTemplate());
-        document.setResult("진행중");
+        document.setResult("결재전");
 //        approvalService.setApproval(documentDTO);
 
 //        int result = approvalService.submitApproval(documentDTO);

@@ -47,15 +47,17 @@ public class TemplateService {
 //        templateRepository.save(template);
 //    }
 
-    public void deleteTemplate(Long id) {
-        templateRepository.deleteById(id);
-    }
+//    public void deleteTemplate(Long id) {
+//        templateRepository.deleteById(id);
+//    }
+//
+//    public List<Template> getTemplatesList() {
+//        return templateRepository.findAll();
+//    }
+//
+//    public void setTemplatesList(List<Template> templatesList) {
+//        this.templatesList = templatesList;
+//    }
+//}
 
-    public List<Template> getTemplatesList() {
-        return templateRepository.findAll();
-    }
-
-    public void setTemplatesList(List<Template> templatesList) {
-        this.templatesList = templatesList;
-    }
 }

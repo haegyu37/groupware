@@ -1,5 +1,6 @@
 package com.groupware.wimir.service;
 
+import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.DTO.DocumentDTO;
 import com.groupware.wimir.entity.Approval;
@@ -37,7 +38,7 @@ public class ApprovalService {
     public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {
         Approval savedApproval = null;
 
-        Long maxDocId = documentRepository.findMaxDocId(); // DB에서 문서아이디의 최대값을 가져옴
+        Long maxDocId = documentRepository.findMaxDno(); // DB에서 문서아이디의 최대값을 가져옴 -> 중간에 문서가 삭제될 시, 잘못 번호가 매겨짐
         if (maxDocId == null) {
             maxDocId = 1L;
         } else {
@@ -74,6 +75,13 @@ public class ApprovalService {
         } else { //결재자 각각 지정해서 삽입
 
             List<Long> approvers = documentDTO.getApprovers();
+            Long currentMemberId = SecurityUtil.getCurrentMemberId();
+            if (currentMemberId != null) {
+                approvers.add(0, currentMemberId);
+            } else {
+                System.out.println("로그인 아이디가  null : " + currentMemberId);
+            }
+
             int lastIndex = documentDTO.getApprovers().size() - 1; // 배열의 맨 마지막 인덱스
 
             for (int i = 0; i < approvers.size(); i++) {
