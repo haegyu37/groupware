@@ -6,6 +6,7 @@ import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Position;
 import com.groupware.wimir.entity.Team;
+import com.groupware.wimir.jwt.TokenStatus;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.AuthService;
 import com.groupware.wimir.service.DocumentService;
@@ -19,8 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -211,6 +214,18 @@ public class AuthController {
         List<Document> approvedDocs = documentService.getApprovedDocuments();
         return approvedDocs;
     }
+
+// 토큰상태 검증 api
+//    @RequestMapping(value = "/error", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
+//    public ResponseEntity<String> authorizeError(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+//        if (httpServletResponse.getHeader("STATUS").equals(TokenStatus.StatusCode.UNAUTHORIZED.name())) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNAUTHORIZED");
+//        }
+//        if (httpServletResponse.getHeader("STATUS").equals(TokenStatus.StatusCode.EXPIRED.name())) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("EXPIRED");
+//        }
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNKNOWN");
+//    }
 
 
 }
