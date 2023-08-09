@@ -30,7 +30,7 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";   //사용자 권한(authorities) 식별하는데 사용
     private static final String BEARER_TYPE = "bearer";     // 토큰유형 지정시 사용 Oauth 2.0 인증 프로토콜에서 사용되는 토큰 유형
-//    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24;       // 24시간 액세스토큰
+    //    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24;       // 24시간 액세스토큰
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 30;       // 30초 액세스토큰
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일 리프레쉬토큰
 
@@ -98,18 +98,21 @@ public class TokenProvider {
     }
 
     // validateToken 토큰을 검증하기 위한 메소드
-    public TokenStatus validateToken(String token) {
+    public TokenStatus.StatusCode validateToken(String token) {
         try {
-            if (StringUtils.hasText(Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getSignature())){
-                return TokenStatus.of(TokenStatus.StatusCode.OK);
-            }
-            return TokenStatus.of(TokenStatus.StatusCode.UNKNOWN);
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException | UnsupportedJwtException e) {
-            return TokenStatus.of(TokenStatus.StatusCode.UNKNOWN);
-        } catch (IllegalArgumentException e){
-            return TokenStatus.of(TokenStatus.StatusCode.UNAUTHORIZED);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            log.info("유효한 JWT 토큰입니다.");
+            return TokenStatus.StatusCode.OK;
         } catch (ExpiredJwtException e) {
-            return TokenStatus.of(TokenStatus.StatusCode.EXPIRED);
+            log.info("만료된 JWT 토큰입니다.");
+            return TokenStatus.StatusCode.EXPIRED;
+        } catch (UnsupportedJwtException | io.jsonwebtoken.security.SecurityException |
+                 MalformedJwtException e) {
+            log.info("잘못된 JWT 서명입니다");
+            return TokenStatus.StatusCode.UNAUTHORIZED;
+        } catch (IllegalArgumentException e) {
+            log.info("JWT 토큰이 잘못되었습니다.");
+            return TokenStatus.StatusCode.UNKNOWN;
         }
     }
 

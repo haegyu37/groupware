@@ -1,5 +1,6 @@
 package com.groupware.wimir.jwt;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +8,8 @@ import lombok.Getter;
 import static com.groupware.wimir.jwt.TokenStatus.StatusCode.*;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class TokenStatus {
     public enum StatusCode {
         OK,
@@ -17,10 +19,12 @@ public class TokenStatus {
         UNKNOWN
     }
     private StatusCode statusCode;
+
     public static TokenStatus of(StatusCode status){
         return makeTokenStatus(status);
     }
-    private static TokenStatus makeTokenStatus(StatusCode status) {
+
+    public static TokenStatus makeTokenStatus(StatusCode status) {
         if (OK.equals(status)){
             return new TokenStatus(OK);
         }
