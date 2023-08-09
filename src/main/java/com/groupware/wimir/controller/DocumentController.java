@@ -180,6 +180,7 @@ public class DocumentController {
                 // status가 0인 경우 임시저장이므로 그냥 저장
             } else {
                 // status가 1인 경우 작성인 경우
+                approvalService.setApproval(documentDTO);
                 Long maxDno = documentRepository.findMaxDno();
                 if (maxDno == null) {
                     maxDno = 0L;

@@ -76,11 +76,11 @@ public class ApprovalService {
 
             List<Long> approvers = documentDTO.getApprovers();
             Long currentMemberId = SecurityUtil.getCurrentMemberId();
-            if (currentMemberId != null) {
+//            if (currentMemberId != null) {
                 approvers.add(0, currentMemberId);
-            } else {
-                System.out.println("로그인 아이디가  null : " + currentMemberId);
-            }
+//            } else {
+//                System.out.println("로그인 아이디가  null : " + currentMemberId);
+//            }
 
             int lastIndex = documentDTO.getApprovers().size() - 1; // 배열의 맨 마지막 인덱스
 
