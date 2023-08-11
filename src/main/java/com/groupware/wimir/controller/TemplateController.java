@@ -33,31 +33,45 @@ public class TemplateController {
     @PutMapping(value = "/update/{id}")
     public Template updateTemplate(@PathVariable Long id, @RequestBody TemplateDTO templateDTO) {
         Template updateTemplate = templateRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id));
-        updateTemplate.setCategory(templateDTO.getCategory());
-        updateTemplate.setCategory(templateDTO.getContent());
+                .orElseThrow(() -> new ResourceNotFoundException("양식을 찾을 수 없습니다. : " + id));
 
+        if (!updateTemplate.isActive()) {
+            throw new IllegalArgumentException("해당 양식은 사용할 수 없습니다.");
+        }
+        updateTemplate.setCategory(templateDTO.getCategory());
+        updateTemplate.setContent(templateDTO.getContent());
         return templateRepository.save(updateTemplate);
     }
+
 
     // 템플릿 삭제 -> 관리자
     @DeleteMapping(value = "/delete/{id}")
     public void deleteTemplate(@PathVariable Long id) {
-        templateRepository.deleteById(id);
+        Template template = templateRepository.findById(id).orElse(null);
+
+        if (template != null) {
+            template.setActive(false); // 비활성화
+            templateRepository.save(template);
+        }
     }
 
     // 템플릿 조회
     @GetMapping(value = "/{id}")
     public Template readTemplate(@PathVariable Long id) {
         Template template = templateService.getTemplateById(id);
+        if (!template.isActive()) {
+            throw new ResourceNotFoundException("템플릿을 찾을 수 없습니다. : " + id);
+        }
         return template;
     }
+
 
     // 템플릿 목록
     @GetMapping(value = "/list")
     public List<Template> getTemplatesList() {
-        List<Template> templates = templateRepository.findAll();
-        return templates;
+        List<Template> activeTemplates = templateRepository.findByActiveTrue();
+        return activeTemplates;
     }
+
 
 }

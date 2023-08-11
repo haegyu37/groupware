@@ -22,11 +22,14 @@ public class Template {
     @Column(columnDefinition = "TEXT")
     private String content; //양식 내용
 
+    private boolean active = true; // 활성/비활성 상태
+
     @Builder
-    public Template(Long id, String category, String content) {
+    public Template(Long id, String category, String content, boolean active) {
         this.id = id;
         this.category = category;
         this.content = content;
+        this.active = active;
     }
 
 }

@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -102,8 +103,15 @@ public class DocumentController {
         documentService.setWriterByToken(document);
         document.setCreateDate(LocalDateTime.now());
         document.setStatus(documentDTO.getStatus());
+
+        // 템플릿의 활성화 상태 확인(비활성화된 템플릿도 보인다면)
+//        Template template = templateRepository.findById(documentDTO.getTemplate().getId()).orElse(null);
+//        if (template == null || !template.isActive()) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // 비활성화된 템플릿 선택 시 에러 응답
+//        }
+
         document.setTemplate(documentDTO.getTemplate());    // 양식명
-        System.out.println(documentDTO.getTemplate());
+
         document.setResult("진행중");
 //        approvalService.setApproval(documentDTO);
 
@@ -135,14 +143,15 @@ public class DocumentController {
 
 
     // 문서 상세 조회
-    public DocumentResponseDTO readDocument(@PathVariable("id") Long id) {
+    @GetMapping(value = "/read/{id}")
+    public Document readDocument(@PathVariable("id") Long id) {
         Document document = documentService.findDocumentById(id);
         List<Approval> approvals = lineService.getByDocument(id);
         Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
         if (document == null) {
             throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
         }
-        return new DocumentResponseDTO(document, groupedApprovals);
+        return document;
     }
 
     //문서 조회 - 임시저장

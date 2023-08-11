@@ -47,10 +47,6 @@ public class TemplateService {
 //        templateRepository.save(template);
 //    }
 
-    public void deleteTemplate(Long id) {
-        templateRepository.deleteById(id);
-    }
-
     public List<Template> getTemplatesList() {
         return templateRepository.findAll();
     }
