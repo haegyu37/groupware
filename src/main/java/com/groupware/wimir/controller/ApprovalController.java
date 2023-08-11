@@ -152,6 +152,7 @@ public class ApprovalController {
 //
 //    }
 
+    //결재 취소
     @PostMapping("/cancel")
     public void cancleApproval(@RequestBody ApprovalDTO approvalDTO) {
         approvalService.cancelApproval(approvalDTO.getDocument());
@@ -163,8 +164,8 @@ public class ApprovalController {
         List<Approval> approvals = approvalRepository.findByDocument(approvalDTO.getDocument());
         Approval secondApprover = approvals.get(1);
 
-        //두번째 결재자가 이미 결재 했으면 결제 취소 먼저 요청해야됨
-        if (secondApprover.getStatus() != "대기" && secondApprover.getAppDate() != null) {
+        //두번째 결재자가 이미 결재 했으면 결재 취소 먼저 요청해야됨
+        if (secondApprover.getStatus() != null && secondApprover.getAppDate() != null) {
             return ResponseEntity.ok("이미 결재가 진행된 건을 회수할 수 없습니다.");
         }
         approvalService.backApproval(approvalDTO.getDocument());
