@@ -7,6 +7,7 @@ import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.entity.Template;
 import com.groupware.wimir.exception.ResourceNotFoundException;
+import com.groupware.wimir.repository.ApprovalRepository;
 import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.TemplateRepository;
@@ -36,6 +37,7 @@ public class DocumentController {
     private final TemplateRepository templateRepository;
     private final LineService lineService;
     private final AttachmentService attachmentService;
+    private final ApprovalRepository approvalRepository;
 
     // 문서 목록(정상 저장 전체 다 보도록)
     @GetMapping(value = "/list")
@@ -153,7 +155,7 @@ public class DocumentController {
     @GetMapping(value = "/save/{id}")
     public Document readSaveDocument(@PathVariable("id") Long id) {
         Document document = documentRepository.findBySno(id);
-        Long sno = document.getSno();
+//        Long sno = document.getSno();
 //        List<Approval> approvals = lineService.getBySno(sno); // 이러면 안될듯 ..
 //        Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
         if (document == null) {
@@ -228,6 +230,9 @@ public class DocumentController {
 
             //문서에 해당 첨부파일 삭제
             attachmentService.deleteAttachmentByDoc(id);
+            //문서 해당 결재 삭제
+            Long dno = document.getDno();
+            approvalRepository.deleteByDocument(dno);
             documentService.deleteDocument(id);
 
         }
