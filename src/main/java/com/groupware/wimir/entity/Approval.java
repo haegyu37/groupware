@@ -3,6 +3,7 @@ package com.groupware.wimir.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,7 @@ public class Approval {
 
     private String reason; //반려사유
 
-    private LocalDateTime appDate; //결재완료일
+    private LocalDate appDate; //결재완료일
 
     private Long memberId; //결재자
 
@@ -38,7 +39,7 @@ public class Approval {
 
     private String category; //결재라인 카테고리
 
-    private int status; //결재자별 결재상태 (0전, 1승인, 2반려)
+    private String status; //결재자별 결재상태 : 대기/승인/반려
 
     private String current; //현재 결재순서(Y/N)
 
