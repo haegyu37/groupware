@@ -55,12 +55,12 @@ public class AttachmentService {
     private String getUniqueFileName(String originalFileName) {
         String baseName = FilenameUtils.getBaseName(originalFileName);
         String extension = FilenameUtils.getExtension(originalFileName);
-        int count = 1;
+        String timestamp = Long.toString(System.currentTimeMillis());
 
-        String uniqueFileName = originalFileName;
+        String uniqueFileName = baseName + "_" + timestamp + "." + extension;
         while (Files.exists(this.attachmentStorageLocation.resolve(uniqueFileName))) {
-            uniqueFileName = baseName + "(" + count + ")." + extension;
-            count++;
+            timestamp = Long.toString(System.currentTimeMillis());
+            uniqueFileName = baseName + "_" + timestamp + "." + extension;
         }
         return uniqueFileName;
     }
@@ -85,15 +85,6 @@ public class AttachmentService {
         return newAttachment.getId();
     }
 
-    private String getName(MultipartFile file) {
-        String originalFilename = file.getOriginalFilename();
-        if (StringUtils.hasText(originalFilename)) {
-            return StringUtils.cleanPath(originalFilename);
-        } else {
-            return file.getName();
-        }
-    }
-
     public Attachment getAttachmentById(Long id) {
         Optional<Attachment> attachmentOptional = attachmentRepository.findById(id);
         return attachmentOptional.orElseThrow(() -> new RuntimeException("해당 첨부파일을 찾을 수 없습니다."));
@@ -116,33 +107,41 @@ public class AttachmentService {
 //        }
 //    }
 
-    public void deleteAttachment(Long attachmentId) {
-        Attachment attachment = getAttachmentById(attachmentId);
-//        Path attachmentPath = Paths.get(attachment.getPath(), attachment.getSavedName());
-//        try {
-//            Files.delete(attachmentPath);
-//            attachmentRepository.delete(attachment);
-//        } catch (IOException ex) {
-//            throw new RuntimeException("첨부파일을 삭제할 수 없습니다.", ex);
+//    public void deleteAttachment(Long attachmentId) {
+//        Attachment attachment = getAttachmentById(attachmentId);
+////        Path attachmentPath = Paths.get(attachment.getPath(), attachment.getSavedName());
+////        try {
+////            Files.delete(attachmentPath);
+////            attachmentRepository.delete(attachment);
+////        } catch (IOException ex) {
+////            throw new RuntimeException("첨부파일을 삭제할 수 없습니다.", ex);
+////        }
+//        attachmentRepository.delete(attachment); // 파일 정보만 DB에서 삭제
+//    }
+
+//    public void saveAttachments(List<Attachment> attachments, Long documentId) {
+//        Document document = new Document();
+//        document.setId(documentId);
+//        for (Attachment attachment : attachments) {
+//            attachment.setDocument(document);
 //        }
-        attachmentRepository.delete(attachment); // 파일 정보만 DB에서 삭제
-    }
-
-    public void saveAttachments(List<Attachment> attachments, Long documentId) {
-        Document document = new Document();
-        document.setId(documentId);
-        for (Attachment attachment : attachments) {
-            attachment.setDocument(document);
-        }
-        attachmentRepository.saveAll(attachments);
-    }
-
+//        attachmentRepository.saveAll(attachments);
+//    }
+//
     private Document findDocumentById(Long documentId) {
         Optional<Document> documentOptional = documentRepository.findById(documentId);
         return documentOptional.orElseThrow(() -> new RuntimeException("해당 문서를 찾을 수 없습니다."));
     }
-
-    public List<Attachment> getAttachmentsByDocumentId(Long documentId) {
-        return attachmentRepository.findByDocumentId(documentId);
+//
+//    public List<Attachment> getAttachmentsByDocumentId(Long documentId) {
+//        return attachmentRepository.findByDocumentId(documentId);
+//    }
+//
+    //문서번호로 첨부파일 삭제
+    public void deleteAttachmentByDoc(Long id) {
+        List<Attachment> attachments = attachmentRepository.findByDocumentId(id);
+        for (Attachment attachment : attachments) {
+            attachmentRepository.delete(attachment);
+        }
     }
 }
