@@ -104,7 +104,7 @@ public class DocumentController {
         document.setCreateDate(LocalDateTime.now());
         document.setStatus(documentDTO.getStatus());
 
-        // 템플릿의 활성화 상태 확인(비활성화된 템플릿도 보인다면)
+        // 템플릿의 활성화 상태 확인(비활성화된 템플릿도 보인다면 적용)
 //        Template template = templateRepository.findById(documentDTO.getTemplate().getId()).orElse(null);
 //        if (template == null || !template.isActive()) {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // 비활성화된 템플릿 선택 시 에러 응답

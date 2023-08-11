@@ -1,6 +1,5 @@
 package com.groupware.wimir.service;
 
-import com.groupware.wimir.DTO.TemplateDTO;
 import com.groupware.wimir.entity.Template;
 import com.groupware.wimir.repository.TemplateRepository;
 import org.springframework.stereotype.Service;
