@@ -114,6 +114,7 @@ public class LineController {
                 Map<String, Object> approvalInfo = new HashMap<>();
                 // 결재 정보에서 필요한 데이터를 approvalInfo Map에 담음
                 approvalInfo.put("lineName", approval.getName());
+                approvalInfo.put("lineId", approval.getLineId());
 
                 // 멤버 정보 추가
                 // 결재 정보에 포함된 멤버 ID를 사용하여 멤버 정보를 조회

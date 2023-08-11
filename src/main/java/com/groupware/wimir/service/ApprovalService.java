@@ -364,10 +364,10 @@ public class ApprovalService {
     }
 
     //결재 삭제
-//    public void deleteAppByDocument(Long id){
-//        List<Approval> approvals = approvalRepository.findByDocument(id);
-//        approvalRepository.deleteByDocument();
-//    }
+    public void deleteAppByDocument(Long id){
+        List<Approval> approvals = approvalRepository.findByDocument(id);
+        approvalRepository.deleteByDocument(id);
+    }
 
 
 }

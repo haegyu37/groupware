@@ -232,7 +232,7 @@ public class DocumentController {
             attachmentService.deleteAttachmentByDoc(id);
             //문서 해당 결재 삭제
             Long dno = document.getDno();
-            approvalRepository.deleteByDocument(dno);
+            approvalService.deleteAppByDocument(dno);
             documentService.deleteDocument(id);
 
         }
