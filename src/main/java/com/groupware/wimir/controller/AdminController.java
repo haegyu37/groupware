@@ -4,11 +4,11 @@ package com.groupware.wimir.controller;
 import com.groupware.wimir.DTO.ChangeUserDTO;
 import com.groupware.wimir.DTO.MemberRequestDTO;
 import com.groupware.wimir.DTO.MemberResponseDTO;
-import com.groupware.wimir.entity.Document;
-import com.groupware.wimir.entity.Member;
-import com.groupware.wimir.entity.Position;
-import com.groupware.wimir.entity.Team;
+import com.groupware.wimir.DTO.TemplateDTO;
+import com.groupware.wimir.entity.*;
+import com.groupware.wimir.exception.ResourceNotFoundException;
 import com.groupware.wimir.repository.MemberRepository;
+import com.groupware.wimir.repository.TemplateRepository;
 import com.groupware.wimir.service.AuthService;
 import com.groupware.wimir.service.DocumentService;
 import com.groupware.wimir.service.MemberService;
@@ -36,6 +36,7 @@ public class AdminController {
     private final MemberRepository memberRepository;
     private final MemberService memberService;
     private final DocumentService documentService;
+    private final TemplateRepository templateRepository;
 
     //직원 등록
     @PostMapping("/signup")
@@ -75,6 +76,7 @@ public class AdminController {
         return ResponseEntity.ok(memberResponseDTO);
     }
 
+    //사원 정보 수정
     @PostMapping("/edit/{id}")
     public ResponseEntity<MemberResponseDTO> changeUserDetails(
             @PathVariable Long id,
@@ -167,10 +169,40 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    //결재 완료된 모든 문서 목록
     @GetMapping("/documents/done")
     public List<Document> approvedDocs() {
         List<Document> approvedDocs = documentService.getApprovedDocuments();
         return approvedDocs;
     }
+
+    // 템플릿 생성 -> 관리자
+    @PostMapping(value = "/templates/create")
+    public Template createTemplate(@RequestBody TemplateDTO templateDTO) {
+        Template template = new Template();
+        template.setCategory(templateDTO.getCategory());
+        template.setContent(templateDTO.getContent());
+        return templateRepository.save(template);
+    }
+
+    // 템플릿 수정 -> 관리자
+    @PutMapping(value = "/templates/edit/{id}")
+    public Template updateTemplate(@PathVariable Long id, @RequestBody TemplateDTO templateDTO) {
+        Template updateTemplate = templateRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id));
+        updateTemplate.setCategory(templateDTO.getCategory());
+        updateTemplate.setCategory(templateDTO.getContent());
+
+        return templateRepository.save(updateTemplate);
+    }
+
+    // 템플릿 삭제 -> 관리자
+    @DeleteMapping(value = "/templates/delete/{id}")
+    public void deleteTemplate(@PathVariable Long id) {
+        templateRepository.deleteById(id);
+    }
+
+
 
 }
