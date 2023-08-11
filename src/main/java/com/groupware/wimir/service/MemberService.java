@@ -112,13 +112,6 @@ public class MemberService {
     }
 
 
-
-
-
-
-
-
-
     // ID로 회원 조회
     public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
