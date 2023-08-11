@@ -20,9 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/documents")
@@ -153,8 +153,8 @@ public class DocumentController {
 
     //문서 조회 - 임시저장
     @GetMapping(value = "/save/{id}")
-    public Document readSaveDocument(@PathVariable("id") Long id) {
-        Document document = documentRepository.findBySno(id);
+    public Optional<Document> readSaveDocument(@PathVariable("id") Long id) {
+        Optional<Document> document = documentRepository.findById(id);
 //        Long sno = document.getSno();
 //        List<Approval> approvals = lineService.getBySno(sno); // 이러면 안될듯 ..
 //        Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
