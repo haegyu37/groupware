@@ -140,7 +140,8 @@ public class DocumentController {
     // 문서 상세 조회
     public DocumentResponseDTO readDocument(@PathVariable("id") Long id) {
         Document document = documentService.findDocumentById(id);
-        List<Approval> approvals = lineService.getByDocument(id);
+        Long dno = document.getDno();
+        List<Approval> approvals = lineService.getByDocument(dno);
         Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
         if (document == null) {
             throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
