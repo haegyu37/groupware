@@ -124,10 +124,10 @@ public class ApprovalController {
     //결재 승인 앤나 반려
     @PostMapping("/approve")
     public ResponseEntity<String> approveDocument(@RequestBody ApprovalDTO approvalDTO) {
-        if (approvalDTO.getStatus() == 1) {
+        if (approvalDTO.getStatus().equals("승인")) {
             approvalService.approveDocument(approvalDTO.getDocument());
             return ResponseEntity.ok("결재가 승인되었습니다.");
-        } else if (approvalDTO.getStatus() == 2) {
+        } else if (approvalDTO.getStatus().equals("반려")) {
             approvalService.rejectDocument(approvalDTO, approvalDTO.getDocument());
             return ResponseEntity.ok("결재가 반려되었습니다.");
         } else {

@@ -18,6 +18,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -100,11 +101,11 @@ public class DocumentController {
         document.setTitle(documentDTO.getTitle());
         document.setContent(documentDTO.getContent());
         documentService.setWriterByToken(document);
-        document.setCreateDate(LocalDateTime.now());
+        document.setCreateDate(LocalDate.now());
         document.setStatus(documentDTO.getStatus());
         document.setTemplate(documentDTO.getTemplate());    // 양식명
-        System.out.println(documentDTO.getTemplate());
-        document.setResult("결재전");
+//        System.out.println(documentDTO.getTemplate());
+        document.setResult("결재대기");
 //        approvalService.setApproval(documentDTO);
 
 //        int result = approvalService.submitApproval(documentDTO);
@@ -133,6 +134,8 @@ public class DocumentController {
         return ResponseEntity.ok(document);
     }
 
+
+    @GetMapping(value = "/{id}")
 
     // 문서 상세 조회
     public DocumentResponseDTO readDocument(@PathVariable("id") Long id) {
@@ -167,16 +170,16 @@ public class DocumentController {
 
         // result가 "승인"이거나 "반려"인 경우 수정을 제한
         String result = updateDocument.getResult();
-        if ("결재중".equals(result) || "승인".equals(result) || "반려".equals(result)) {
+        if ("진행중".equals(result) || "승인".equals(result) || "반려".equals(result)) {
             throw new UnsupportedOperationException("결재 중인 문서는 수정할 수 없습니다.");
         }
 
             updateDocument.setTitle(documentDTO.getTitle());
             updateDocument.setContent(documentDTO.getContent());
-            updateDocument.setUpdateDate(LocalDateTime.now());
+            updateDocument.setUpdateDate(LocalDate.now());
             documentService.setWriterByToken(updateDocument);
             updateDocument.setStatus(documentDTO.getStatus());
-            updateDocument.setResult("결재전");
+            updateDocument.setResult("결재대기");
 //            approvalService.updateApproval(documentDTO, id);
 
 
@@ -218,7 +221,7 @@ public class DocumentController {
 
             // result가 "승인"이거나 "반려"인 경우 수정을 제한
             String result = document.getResult();
-            if ("결재중".equals(result) || "승인".equals(result) || "반려".equals(result)) {
+            if ("진행중".equals(result) || "승인".equals(result) || "반려".equals(result)) {
                 throw new UnsupportedOperationException("결재 중인 문서는 수정할 수 없습니다.");
             }
 

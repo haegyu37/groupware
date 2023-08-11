@@ -77,7 +77,7 @@ public class ApprovalService {
             List<Long> approvers = documentDTO.getApprovers();
             Long currentMemberId = SecurityUtil.getCurrentMemberId();
 //            if (currentMemberId != null) {
-                approvers.add(0, currentMemberId);
+            approvers.add(0, currentMemberId);
 //            } else {
 //                System.out.println("로그인 아이디가  null : " + currentMemberId);
 //            }
@@ -206,6 +206,11 @@ public class ApprovalService {
 
         for (int i = 0; i < appNotRefer.size(); i++) {
             Approval approval = appNotRefer.get(i);
+            if (i == 0) {
+                Optional<Document> documentOptional = documentRepository.findById(documentId);
+                Document document = documentOptional.orElse(null);
+                document.setResult("진행중"); //첫번째 결재자가 결재하면 문서 상태를 진행중으로 ..
+            }
 
             if (approval.getCurrent().equals("Y")) {
                 // 현재 결재자를 찾았을 경우
@@ -225,7 +230,7 @@ public class ApprovalService {
 
                     if (document != null) {
                         document.setResult("승인");
-                        document.setAppDate(LocalDateTime.now());
+                        document.setAppDate(LocalDate.now());
                         documentRepository.save(document);
                     }
                 }
@@ -259,7 +264,7 @@ public class ApprovalService {
 
                     if (document != null) {
                         document.setResult("반려");
-                        document.setAppDate(LocalDateTime.now());
+                        document.setAppDate(LocalDate.now());
                         documentRepository.save(document);
                     }
                     break;
