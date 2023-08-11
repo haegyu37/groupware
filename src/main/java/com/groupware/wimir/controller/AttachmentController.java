@@ -3,6 +3,7 @@ package com.groupware.wimir.controller;
 import com.groupware.wimir.entity.Attachment;
 import com.groupware.wimir.repository.AttachmentRepository;
 import com.groupware.wimir.service.AttachmentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,8 +17,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/attachments")
 public class AttachmentController {
-    private AttachmentService attachmentService;
-    private AttachmentRepository attachmentRepository;
+
+    private final AttachmentService attachmentService;
+    private final AttachmentRepository attachmentRepository;
+
+    @Autowired
+    public AttachmentController(AttachmentService attachmentService, AttachmentRepository attachmentRepository) {
+        this.attachmentService = attachmentService;
+        this.attachmentRepository = attachmentRepository;
+    }
 
     // 첨부파일 업로드
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
