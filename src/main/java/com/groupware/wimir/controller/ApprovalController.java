@@ -106,6 +106,7 @@ public class ApprovalController {
         return myAppDocs;
     }
 
+    //내가 참조인 문서 리스트
     @GetMapping("/listrefer")
     public List<Document> referDocs(){
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
