@@ -110,7 +110,7 @@ public class MemberService {
         member.setAuthority(Authority.ROLE_BLOCK);
         memberRepository.save(member);
     }
-
+    
     // ID로 회원 조회
     public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)

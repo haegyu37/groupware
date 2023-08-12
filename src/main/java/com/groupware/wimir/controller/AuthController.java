@@ -42,6 +42,34 @@ public class AuthController {
     private final DocumentService documentService;
 
     //직원 등록
+    @PostMapping("/admin/signup")
+    public ResponseEntity<MemberResponseDTO> signup(@RequestBody MemberRequestDTO requestDto) {
+
+        return ResponseEntity.ok(authService.signup(requestDto));
+    }
+
+    //직원 목록
+    @GetMapping("/admin/members")
+    public ResponseEntity<List<MemberResponseDTO>> getAllMembers() {
+        List<MemberResponseDTO> members = memberService.getAllMembers();
+        return ResponseEntity.ok(members);
+    }
+
+    //직원 삭제
+    @DeleteMapping("/admin/members/{memberId}")
+    public ResponseEntity<String> deleteMemberById(@PathVariable Long memberId) {
+        try {
+            Optional<Member> memberOptional = memberRepository.findById(memberId);
+            if (memberOptional.isPresent()) {
+                memberRepository.delete(memberOptional.get());
+                return ResponseEntity.ok("회원 정보가 삭제되었습니다.");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     //로그인
     @PostMapping("/login")
