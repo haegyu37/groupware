@@ -82,22 +82,7 @@ public class AuthController {
 
 
 
-    // 사용자의 권한을 ROLE_BLOCK으로 업데이트
-    @PostMapping("/admin/members/{memberId}/block")
-    @Transactional
-    public ResponseEntity<String> blockUser(@PathVariable Long memberId) {
-        try {
-            Optional<Member> memberOptional = memberRepository.findById(memberId);
-            if (memberOptional.isPresent()) {
-                memberService.updateUserAuthorityToBlock(memberId);
-                return ResponseEntity.ok("사용자의 권한이 ROLE_BLOCK으로 업데이트되었습니다.");
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+
 
     //결재완료된 모든 문서 목록
     @GetMapping("/listdone")

@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
@@ -147,4 +148,23 @@ public class AdminController {
 
 
     }
+    // 사용자의 권한을 ROLE_BLOCK으로 업데이트
+    @PostMapping("/members/{memberId}/block")
+    @Transactional
+    public ResponseEntity<String> blockUser(@PathVariable Long memberId) {
+        try {
+            Optional<Member> memberOptional = memberRepository.findById(memberId);
+            if (memberOptional.isPresent()) {
+                memberService.updateUserAuthorityToBlock(memberId);
+                return ResponseEntity.ok("사용자의 권한이 ROLE_BLOCK으로 업데이트되었습니다.");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    
 }
