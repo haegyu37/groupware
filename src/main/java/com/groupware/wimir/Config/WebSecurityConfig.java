@@ -62,7 +62,7 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers("/auth/**", "/member/**").permitAll()
-//                .antMatchers("/admin/**").hasAuthority("ADMIN") //ROLE_ADMIN 계정만 admin에 접근 가능함
+//                .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN") //ROLE_ADMIN 계정만 admin에 접근 가능함
                 .anyRequest().authenticated()
 
                 .and()
