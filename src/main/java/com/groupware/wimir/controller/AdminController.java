@@ -53,10 +53,10 @@ public class AdminController {
     }
 
     //직원 삭제
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteMemberById(@PathVariable Long id) {
+    @DeleteMapping("/members/{memberId}")
+    public ResponseEntity<String> deleteMemberById(@PathVariable Long memberId) {
         try {
-            Optional<Member> memberOptional = memberRepository.findById(id);
+            Optional<Member> memberOptional = memberRepository.findById(memberId);
             if (memberOptional.isPresent()) {
                 memberRepository.delete(memberOptional.get());
                 return ResponseEntity.ok("회원 정보가 삭제되었습니다.");
@@ -69,17 +69,16 @@ public class AdminController {
     }
 
     //해당 사원 정보보기
-    @GetMapping("/{id}")
+    @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponseDTO> getMemberById(@PathVariable Long id) {
         Member member = memberService.getMemberById(id);
         MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
         return ResponseEntity.ok(memberResponseDTO);
     }
 
-    //사원 정보 수정
-    @PostMapping("/edit/{id}")
+    @PostMapping("/members/{memberId}/edit")
     public ResponseEntity<MemberResponseDTO> changeUserDetails(
-            @PathVariable Long id,
+            @PathVariable Long memberId,
             @RequestPart(name = "image", required = false) MultipartFile image,
             @RequestPart(name = "changeRequest", required = false) ChangeUserDTO changeRequest
     ) {
@@ -88,16 +87,16 @@ public class AdminController {
             boolean imageUploaded = false;
             if (image != null) {
                 String uploadDir = "src/main/resources/static/images";
-                String fileName = "profile_" + id + "." + FilenameUtils.getExtension(image.getOriginalFilename());
+                String fileName = "profile_" + memberId + "." + FilenameUtils.getExtension(image.getOriginalFilename());
                 File file = new File(uploadDir + "/" + fileName);
                 FileUtils.writeByteArrayToFile(file, image.getBytes());
 
-                Member member = memberRepository.findById(id)
+                Member member = memberRepository.findById(memberId)
                         .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
                 member.setImg("/images/" + fileName);
                 memberRepository.save(member);
 
-                log.info("사진 등록이 완료되었습니다. 사용자 ID: {}", id);
+                log.info("사진 등록이 완료되었습니다. 사용자 ID: {}", memberId);
                 imageUploaded = true;
             }
 
@@ -105,8 +104,8 @@ public class AdminController {
             boolean passwordChanged = false;
             if (changeRequest != null && changeRequest.getNewPassword() != null) {
                 String updatedPassword = changeRequest.getNewPassword();
-                MemberResponseDTO updatedUser = memberService.changeUserPasswordByAdmin(id, updatedPassword);
-                log.info("비밀번호 변경이 완료되었습니다. 사용자 ID: {}", id);
+                MemberResponseDTO updatedUser = memberService.changeUserPasswordByAdmin(memberId, updatedPassword);
+                log.info("비밀번호 변경이 완료되었습니다. 사용자 ID: {}", memberId);
                 passwordChanged = true;
             }
 
@@ -114,8 +113,8 @@ public class AdminController {
             boolean positionChanged = false;
             if (changeRequest != null && changeRequest.getPosition() != null) {
                 Position newPosition = changeRequest.getPosition();
-                MemberResponseDTO updatedUser = memberService.changeUserPositionByAdmin(id, newPosition);
-                log.info("직급명 변경이 완료되었습니다. 사용자 ID: {}", id);
+                MemberResponseDTO updatedUser = memberService.changeUserPositionByAdmin(memberId, newPosition);
+                log.info("직급명 변경이 완료되었습니다. 사용자 ID: {}", memberId);
                 positionChanged = true;
             }
 
@@ -123,13 +122,13 @@ public class AdminController {
             boolean teamChanged = false;
             if (changeRequest != null && changeRequest.getTeam() != null) {
                 Team newTeam = changeRequest.getTeam();
-                MemberResponseDTO updatedUser = memberService.changeUserTeamByAdmin(id, newTeam);
-                log.info("팀명 변경이 완료되었습니다. 사용자 ID: {}", id);
+                MemberResponseDTO updatedUser = memberService.changeUserTeamByAdmin(memberId, newTeam);
+                log.info("팀명 변경이 완료되었습니다. 사용자 ID: {}", memberId);
                 teamChanged = true;
             }
 
             // 변경된 사용자 정보 조회
-            Member updatedMember = memberRepository.findById(id)
+            Member updatedMember = memberRepository.findById(memberId)
                     .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
             MemberResponseDTO responseDTO = MemberResponseDTO.builder()
@@ -151,16 +150,14 @@ public class AdminController {
 
 
     }
-
-
     // 사용자의 권한을 ROLE_BLOCK으로 업데이트
-    @PostMapping("/block/{id}")
+    @PostMapping("/members/{memberId}/block")
     @Transactional
-    public ResponseEntity<String> blockUser(@PathVariable Long id) {
+    public ResponseEntity<String> blockUser(@PathVariable Long memberId) {
         try {
-            Optional<Member> memberOptional = memberRepository.findById(id);
+            Optional<Member> memberOptional = memberRepository.findById(memberId);
             if (memberOptional.isPresent()) {
-                memberService.updateUserAuthorityToBlock(id);
+                memberService.updateUserAuthorityToBlock(memberId);
                 return ResponseEntity.ok("사용자의 권한이 ROLE_BLOCK으로 업데이트되었습니다.");
             } else {
                 return ResponseEntity.notFound().build();
@@ -169,6 +166,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
     //결재 완료된 모든 문서 목록
     @GetMapping("/documents/done")

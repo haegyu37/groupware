@@ -42,7 +42,6 @@ public class AuthController {
     private final DocumentService documentService;
 
 
-    //로그인
     @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody MemberRequestDTO requestDto) {
         Member member = memberRepository.findByNo(requestDto.getNo())
@@ -77,6 +76,7 @@ public class AuthController {
     public ResponseEntity<TokenDTO> refresh(@RequestBody TokenRequestDTO tokenRequestDTO) {
         return ResponseEntity.ok(authService.refresh(tokenRequestDTO));
     }
+
 
 
 

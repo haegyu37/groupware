@@ -111,7 +111,6 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-
     // ID로 회원 조회
     public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
@@ -151,4 +150,3 @@ public class MemberService {
 //        member.setPassword(passwordEncoder.encode((newPassword)));
 //        return MemberResponseDTO.of(memberRepository.save(member));
 //    }
-
