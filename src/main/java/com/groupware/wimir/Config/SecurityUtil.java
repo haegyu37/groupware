@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 // SecurityContextHolder를 사용하여 인증된 사용자 정보가 저장되는 시점을 다룸
 // Request가 들어오면 JwtFilter의 doFilter에서 저장되는데 거기에 있는 인증정보를 꺼내서, Long 타입으로 파싱하여 반환
-public class SecurityUtil extends WebSecurityConfigurerAdapter {
+public class SecurityUtil {
 
 //    @Override
 //    public void configure(HttpSecurity http) throws Exception{
