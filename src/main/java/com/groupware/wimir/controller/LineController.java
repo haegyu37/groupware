@@ -167,6 +167,7 @@ public class LineController {
                 // 멤버 정보 추가
                 Member memberInfo = memberRepository.findById(approval.getMemberId()).orElse(null);
                 if (memberInfo != null) {
+                    approvalInfo.put("lineId", approval.getLineId());
                     approvalInfo.put("no", memberInfo.getNo());
                     approvalInfo.put("name", memberInfo.getName());
                     approvalInfo.put("team", memberInfo.getTeam());
