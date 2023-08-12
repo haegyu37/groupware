@@ -107,7 +107,7 @@ public class MemberService {
         Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
-        member.setAuthority(Authority.BLOCK);
+        member.setAuthority(Authority.ROLE_BLOCK);
         memberRepository.save(member);
     }
 

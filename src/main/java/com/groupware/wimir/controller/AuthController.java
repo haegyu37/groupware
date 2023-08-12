@@ -49,7 +49,7 @@ public class AuthController {
                 .orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
 
         // 계정이 차단된 경우 토큰 발급하지 않고 접속 차단 응답 반환
-        if (member.getAuthority() == Authority.BLOCK) {
+        if (member.getAuthority() == Authority.ROLE_BLOCK) {
             log.info("접속이 차단된 계정입니다.");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
