@@ -20,9 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/documents")
@@ -138,23 +138,23 @@ public class DocumentController {
 
 
     @GetMapping(value = "/{id}")
+
+    // 문서 상세 조회
     public DocumentResponseDTO readDocument(@PathVariable("id") Long id) {
         Document document = documentService.findDocumentById(id);
-        if (document == null) {
-            throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
-        }
-
         Long dno = document.getDno();
         List<Approval> approvals = lineService.getByDocument(dno);
         Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
-
+        if (document == null) {
+            throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
+        }
         return new DocumentResponseDTO(document, groupedApprovals);
     }
 
     //문서 조회 - 임시저장
     @GetMapping(value = "/save/{id}")
-    public Optional<Document> readSaveDocument(@PathVariable("id") Long id) {
-        Optional<Document> document = documentRepository.findById(id);
+    public Document readSaveDocument(@PathVariable("id") Long id) {
+        Document document = documentRepository.findBySno(id);
 //        Long sno = document.getSno();
 //        List<Approval> approvals = lineService.getBySno(sno); // 이러면 안될듯 ..
 //        Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);

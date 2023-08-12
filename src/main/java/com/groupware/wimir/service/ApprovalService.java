@@ -47,17 +47,12 @@ public class ApprovalService {
 
         if (documentDTO.getLineId() != null) {
             List<Approval> approvals = approvalRepository.findByLineId(documentDTO.getLineId());
-            System.out.println("즐찾" + approvals);
 
             List<Long> memberIds = approvals.stream().map(Approval::getMemberId).collect(Collectors.toList());
             List<Long> writers = approvals.stream().map(Approval::getWriter).collect(Collectors.toList());
             List<String> names = approvals.stream().map(Approval::getName).collect(Collectors.toList());
             List<String> refers = approvals.stream().map(Approval::getRefer).collect(Collectors.toList());
             // 다른 필드들에 대해서도 필요한 경우에 리스트로 추출
-            System.out.println("즐찾" + memberIds);
-            System.out.println("즐찾" + writers);
-            System.out.println("즐찾" + names);
-            System.out.println("즐찾" + refers);
 
             // 리스트로 만들어진 각 칼럼들의 값들을 approval 엔티티에 삽입
             for (int i = 0; i < approvals.size(); i++) {
@@ -70,7 +65,6 @@ public class ApprovalService {
 
                 if (i == 0) {
                     approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
-//                    approval.setStatus("대기");
                 } else {
                     approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
                 }
@@ -228,7 +222,6 @@ public class ApprovalService {
                 if (i + 1 < appNotRefer.size()) {
                     Approval nextApproval = appNotRefer.get(i + 1);
                     nextApproval.setCurrent("Y");
-//                    approval.setStatus("대기");
                 } else {
                     // 다음 결재자가 없는 경우, 즉 리스트의 마지막 결재자인 경우
                     // document의 result=승인
@@ -295,7 +288,7 @@ public class ApprovalService {
 
             //결재 취소 처리
             secondApprover.setAppDate(null);
-            secondApprover.setStatus(null);
+            secondApprover.setStatus("대기");
             approvalRepository.save(secondApprover);
 
             //다음 결재자 currnent N
@@ -307,7 +300,7 @@ public class ApprovalService {
             Approval firstApprover = approvals.get(0);
             firstApprover.setCurrent("N");
             firstApprover.setAppDate(null);
-            secondApprover.setStatus(null);
+            secondApprover.setStatus("대기");
         }
     }
 
