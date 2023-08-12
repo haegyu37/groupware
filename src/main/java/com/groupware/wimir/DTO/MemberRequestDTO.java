@@ -31,8 +31,8 @@ public class MemberRequestDTO {
                 .password(passwordEncoder.encode(password))
                 .name(name)
                 .position(position)
-              .authority(Authority.ADMIN)
-//               .authority(Authority.USER)
+              .authority(Authority.ROLE_ADMIN)
+//               .authority(Authority.ROLE_USER)
                 .team(team)
                 .build();
     }
