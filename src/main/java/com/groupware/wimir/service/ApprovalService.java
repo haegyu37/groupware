@@ -47,17 +47,12 @@ public class ApprovalService {
 
         if (documentDTO.getLineId() != null) {
             List<Approval> approvals = approvalRepository.findByLineId(documentDTO.getLineId());
-            System.out.println("즐찾" + approvals);
 
             List<Long> memberIds = approvals.stream().map(Approval::getMemberId).collect(Collectors.toList());
             List<Long> writers = approvals.stream().map(Approval::getWriter).collect(Collectors.toList());
             List<String> names = approvals.stream().map(Approval::getName).collect(Collectors.toList());
             List<String> refers = approvals.stream().map(Approval::getRefer).collect(Collectors.toList());
             // 다른 필드들에 대해서도 필요한 경우에 리스트로 추출
-            System.out.println("즐찾" + memberIds);
-            System.out.println("즐찾" + writers);
-            System.out.println("즐찾" + names);
-            System.out.println("즐찾" + refers);
 
             // 리스트로 만들어진 각 칼럼들의 값들을 approval 엔티티에 삽입
             for (int i = 0; i < approvals.size(); i++) {
@@ -204,7 +199,9 @@ public class ApprovalService {
 
 
     //결재 승인
-    public void approveDocument(Long documentId) {
+    public void approveDocument(Long id) {
+        Document doc = documentRepository.findById(id).orElse(null);
+        Long documentId = doc.getDno();
         List<Approval> approvals = approvalRepository.findByDocument(documentId);
         List<Approval> appNotRefer = approvals.stream()
                 .filter(approval -> !approval.getRefer().equals("참조"))
@@ -228,7 +225,6 @@ public class ApprovalService {
                 if (i + 1 < appNotRefer.size()) {
                     Approval nextApproval = appNotRefer.get(i + 1);
                     nextApproval.setCurrent("Y");
-//                    approval.setStatus("대기");
                 } else {
                     // 다음 결재자가 없는 경우, 즉 리스트의 마지막 결재자인 경우
                     // document의 result=승인
@@ -248,7 +244,9 @@ public class ApprovalService {
 
 
     //결재 반려
-    public void rejectDocument(ApprovalDTO approvalDTO, Long documentId) {
+    public void rejectDocument(ApprovalDTO approvalDTO, Long id) {
+        Document doc = documentRepository.findById(id).orElse(null);
+        Long documentId = doc.getDno();
         List<Approval> approvals = approvalRepository.findByDocument(documentId);
         List<Approval> appNotRefer = approvals.stream()
                 .filter(approval -> !approval.getRefer().equals("참조"))
