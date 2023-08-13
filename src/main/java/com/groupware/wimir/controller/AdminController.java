@@ -56,7 +56,7 @@ public class AdminController {
     }
 
     //직원 삭제
-    @DeleteMapping("/members/{memberId}")
+    @DeleteMapping("/delete/{memberId}")
     public ResponseEntity<String> deleteMemberById(@PathVariable Long memberId) {
         try {
             Optional<Member> memberOptional = memberRepository.findById(memberId);
