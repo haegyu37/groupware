@@ -168,6 +168,7 @@ public class LineController {
                 Member memberInfo = memberRepository.findById(approval.getMemberId()).orElse(null);
                 if (memberInfo != null) {
                     approvalInfo.put("lineId", approval.getLineId());
+                    approvalInfo.put("id", memberInfo.getId());
                     approvalInfo.put("no", memberInfo.getNo());
                     approvalInfo.put("name", memberInfo.getName());
                     approvalInfo.put("team", memberInfo.getTeam());
