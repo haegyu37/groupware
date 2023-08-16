@@ -211,8 +211,8 @@ public class ApprovalService {
             Approval approval = appNotRefer.get(i);
             if (i == 0) {
                 Optional<Document> documentOptional = documentRepository.findById(documentId);
-                Document document = documentOptional.orElse(null);
-                document.setResult("진행중"); //첫번째 결재자가 결재하면 문서 상태를 진행중으로 ..
+//                Document document = documentOptional.orElse(null);
+                doc.setResult("진행중"); //첫번째 결재자가 결재하면 문서 상태를 진행중으로 ..
             }
 
             if (approval.getCurrent().equals("Y")) {
