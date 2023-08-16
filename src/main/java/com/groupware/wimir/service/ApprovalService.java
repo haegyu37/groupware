@@ -265,12 +265,12 @@ public class ApprovalService {
                     approval.setReason(approvalDTO.getReason());
 
                     Optional<Document> documentOptional = documentRepository.findById(documentId);
-                    Document document = documentOptional.orElse(null);
+//                    Document document = documentOptional.orElse(null);
 
-                    if (document != null) {
-                        document.setResult("반려");
-                        document.setAppDate(LocalDate.now());
-                        documentRepository.save(document);
+                    if (doc != null) {
+                        doc.setResult("반려");
+                        doc.setAppDate(LocalDate.now());
+                        documentRepository.save(doc);
                     }
                     break;
                 }
