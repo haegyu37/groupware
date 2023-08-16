@@ -17,4 +17,5 @@ public class ChangeUserDTO {
     private String newPassword;
     private Position position;
     private Team team;
+//    private Long id;
 }

@@ -73,59 +73,59 @@ public class AdminController {
         return ResponseEntity.ok(memberResponseDTO);
     }
 
-    @PostMapping("/members/{memberId}/edit")
+    @PostMapping("/members/edit/{id}")
     public ResponseEntity<MemberResponseDTO> changeUserDetails(
-            @PathVariable Long memberId,
+            @PathVariable Long id,
             @RequestPart(name = "image", required = false) MultipartFile image,
-            @RequestPart(name = "changeRequest", required = false) ChangeUserDTO changeRequest
+            @RequestPart(name = "changeRequest", required = false) ChangeUserDTO changeUserDTO
     ) {
         try {
             // 사진 등록
             boolean imageUploaded = false;
             if (image != null) {
                 String uploadDir = "src/main/resources/static/images";
-                String fileName = "profile_" + memberId + "." + FilenameUtils.getExtension(image.getOriginalFilename());
+                String fileName = "profile_" + id + "." + FilenameUtils.getExtension(image.getOriginalFilename());
                 File file = new File(uploadDir + "/" + fileName);
                 FileUtils.writeByteArrayToFile(file, image.getBytes());
 
-                Member member = memberRepository.findById(memberId)
+                Member member = memberRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
                 member.setImg("/images/" + fileName);
                 memberRepository.save(member);
 
-                log.info("사진 등록이 완료되었습니다. 사용자 ID: {}", memberId);
+                log.info("사진 등록이 완료되었습니다. 사용자 ID: {}", id);
                 imageUploaded = true;
             }
 
             // 비밀번호 변경
-            boolean passwordChanged = false;
-            if (changeRequest != null && changeRequest.getNewPassword() != null) {
-                String updatedPassword = changeRequest.getNewPassword();
-                MemberResponseDTO updatedUser = memberService.changeUserPasswordByAdmin(memberId, updatedPassword);
-                log.info("비밀번호 변경이 완료되었습니다. 사용자 ID: {}", memberId);
-                passwordChanged = true;
+//            boolean passwordChanged = false;
+            if (changeUserDTO.getNewPassword() != null) {
+                String updatedPassword = changeUserDTO.getNewPassword();
+                MemberResponseDTO memberResponseDTO = memberService.changeUserPasswordByAdmin(id, updatedPassword);
+                log.info("비밀번호 변경이 완료되었습니다. 사용자 ID: {}", id);
+//                passwordChanged = true;
             }
 
             // 직급명 변경
-            boolean positionChanged = false;
-            if (changeRequest != null && changeRequest.getPosition() != null) {
-                Position newPosition = changeRequest.getPosition();
-                MemberResponseDTO updatedUser = memberService.changeUserPositionByAdmin(memberId, newPosition);
-                log.info("직급명 변경이 완료되었습니다. 사용자 ID: {}", memberId);
-                positionChanged = true;
+//            boolean positionChanged = false;
+            if (changeUserDTO != null && changeUserDTO.getPosition() != null) {
+                Position newPosition = changeUserDTO.getPosition();
+                MemberResponseDTO updatedUser = memberService.changeUserPositionByAdmin(id, newPosition);
+                log.info("직급명 변경이 완료되었습니다. 사용자 ID: {}", id);
+//                positionChanged = true;
             }
 
             // 팀명 변경
-            boolean teamChanged = false;
-            if (changeRequest != null && changeRequest.getTeam() != null) {
-                Team newTeam = changeRequest.getTeam();
-                MemberResponseDTO updatedUser = memberService.changeUserTeamByAdmin(memberId, newTeam);
-                log.info("팀명 변경이 완료되었습니다. 사용자 ID: {}", memberId);
-                teamChanged = true;
+//            boolean teamChanged = false;
+            if (changeUserDTO != null && changeUserDTO.getTeam() != null) {
+                Team newTeam = changeUserDTO.getTeam();
+                MemberResponseDTO updatedUser = memberService.changeUserTeamByAdmin(id, newTeam);
+                log.info("팀명 변경이 완료되었습니다. 사용자 ID: {}", id);
+//                teamChanged = true;
             }
 
             // 변경된 사용자 정보 조회
-            Member updatedMember = memberRepository.findById(memberId)
+            Member updatedMember = memberRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
             MemberResponseDTO responseDTO = MemberResponseDTO.builder()
@@ -147,29 +147,6 @@ public class AdminController {
 
 
     }
-//    // 사용자의 권한을 ROLE_BLOCK으로 업데이트
-//    @PostMapping("/members/block")
-//    @Transactional
-//    public Member blockUser(MemberBlockDTO memberBlockDTO) {
-////        try {
-////            Optional<Member> memberOptional = memberRepository.findById(memberId);
-////            if (memberOptional.isPresent()) {
-////                memberService.updateUserAuthorityToBlock(memberId);
-////                return ResponseEntity.ok("사용자의 권한이 ROLE_BLOCK으로 업데이트되었습니다.");
-////            } else {
-////                return ResponseEntity.notFound().build();
-////            }
-////        } catch (Exception e) {
-////            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-////        }
-//
-//        if(memberBlockDTO.getAuthority().equals("BLOCK")){
-//            return memberService.updateUserAuthorityToBlock(memberBlockDTO.getId());
-//        } else {
-//            return memberService.updateBlockAuthorityToUser(memberBlockDTO.getId());
-//        }
-//    }
-//
 
     //접속차단 앤나 접속차단 해제
     @PostMapping("/members/block")
@@ -188,7 +165,7 @@ public class AdminController {
         }
     }
 
-        // 템플릿 생성 -> 관리자
+    // 템플릿 생성 -> 관리자
     @PostMapping(value = "/templates/create")
     public Template createTemplate(@RequestBody TemplateDTO templateDTO) {
         Template template = new Template();
@@ -213,6 +190,14 @@ public class AdminController {
     public void deleteTemplate(@PathVariable Long id) {
         templateRepository.deleteById(id);
     }
+
+    //결재완료된 모든 문서 목록
+    @GetMapping("/listdone")
+    public List<Document> approvedDocs() {
+        List<Document> approvedDocs = documentService.getApprovedDocuments();
+        return approvedDocs;
+    }
+
 
 
 

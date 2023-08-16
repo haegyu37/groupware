@@ -167,20 +167,44 @@ public class ApprovalService {
         return myAppDocs; // 리스트 반환
     }
 
-    //내가 결재 완 리스트 all
+    //내가 승인한 리스트
     public List<Document> getApproved(Long id) {
         List<Approval> approvals = approvalRepository.findByMemberId(id); //memberId를 기준으로 Approval 리스트 찾음
-        List<Approval> approved = approvals.stream()
-                .filter(approval -> !approval.getStatus().equals("대기") && approval.getAppDate() != null)
-                .collect(Collectors.toList());
         List<Long> docIds = new ArrayList<>();
 
-        for (Approval approval : approved) {
-            Long docId = approval.getDocument(); //Approval에서 document만 찾음
-            if (docId != null) {
-                docIds.add(docId); //docIds 리스트에 추가
-            } else {
-                continue; //null이면 건너뜀
+        for (Approval approval : approvals) {
+            if (approval.getStatus() != null && !approval.getStatus().equals("반려") && approval.getAppDate() != null) {
+                Long docId = approval.getDocument(); //Approval에서 document만 찾음
+                if (docId != null) {
+                    docIds.add(docId); //docIds 리스트에 추가
+                }
+            }
+        }
+
+        List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
+
+        for (Long docId : docIds) {
+            Document document = documentRepository.findById(docId)
+                    .orElse(null); //id로 Document 찾음
+            if (document != null) {
+                myAppDocs.add(document); //Document 리스트에 추가
+            }
+        }
+
+        return myAppDocs; // 리스트 반환
+    }
+
+    //내가 반려한 리스트
+    public List<Document> getRejected(Long id) {
+        List<Approval> approvals = approvalRepository.findByMemberId(id); //memberId를 기준으로 Approval 리스트 찾음
+        List<Long> docIds = new ArrayList<>();
+
+        for (Approval approval : approvals) {
+            if (approval.getStatus() != null && !approval.getStatus().equals("승인") && approval.getAppDate() != null) {
+                Long docId = approval.getDocument(); //Approval에서 document만 찾음
+                if (docId != null) {
+                    docIds.add(docId); //docIds 리스트에 추가
+                }
             }
         }
 
@@ -371,7 +395,7 @@ public class ApprovalService {
     }
 
     //결재 삭제
-    public void deleteAppByDocument(Long id){
+    public void deleteAppByDocument(Long id) {
         List<Approval> approvals = approvalRepository.findByDocument(id);
         approvalRepository.deleteByDocument(id);
     }

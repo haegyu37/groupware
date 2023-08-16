@@ -100,6 +100,9 @@ public class MemberController {
         Long currentId = SecurityUtil.getCurrentMemberId();
         Member member = memberRepository.findById(currentId).orElseThrow(() -> new ResourceNotFoundException("id를 찾을 수 없습니다: " + currentId));
         member.setImg(memberResponseDTO.getImg());
+        if(memberResponseDTO.getPassword() != null){
+            member.setPassword(memberResponseDTO.getPassword());
+        }
         memberRepository.save(member);
         return member;
     }

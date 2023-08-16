@@ -57,6 +57,7 @@ public class MemberService {
 
     }
 
+    //비번 변경
     @Transactional
     public MemberResponseDTO changeUserPasswordByAdmin(Long memberId, String newPassword) {
         Member member = memberRepository.findById(memberId)

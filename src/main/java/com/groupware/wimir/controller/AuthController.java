@@ -84,13 +84,13 @@ public class AuthController {
 
 
 
-    //결재완료된 모든 문서 목록
-    @GetMapping("/listdone")
-    public List<Document> approvedDocs() {
-        List<Document> approvedDocs = documentService.getApprovedDocuments();
-        return approvedDocs;
-    }
-
+//    //결재완료된 모든 문서 목록
+//    @GetMapping("/listdone")
+//    public List<Document> approvedDocs() {
+//        List<Document> approvedDocs = documentService.getApprovedDocuments();
+//        return approvedDocs;
+//    }
+//
 // 토큰상태 검증 api
 //    @RequestMapping(value = "/error", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
 //    public ResponseEntity<String> authorizeError(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {

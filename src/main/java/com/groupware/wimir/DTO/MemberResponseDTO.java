@@ -17,6 +17,7 @@ public class MemberResponseDTO {
     private Team team;
     private Authority authority;
     private String img;
+    private String password;
 
 
     public static MemberResponseDTO of(Member member) {

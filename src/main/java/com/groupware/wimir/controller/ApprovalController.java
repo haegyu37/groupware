@@ -125,13 +125,22 @@ public class ApprovalController {
     }
 
     //내가 승인 앤나 반려한 리스트 just 내가 승인/반려 한 문서 리스트
-    @GetMapping("/listdone")
+    @GetMapping("/list/approve")
     public List<Document> getMyApproved() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         //id를 기준으로 Approval을 찾는 메소드
         List<Document> myAppDocs = approvalService.getApproved(currentMemberId);
         return myAppDocs;
     }
+
+    @GetMapping("/list/reject")
+    public List<Document> getMyRejected() {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        //id를 기준으로 Approval을 찾는 메소드
+        List<Document> myAppDocs = approvalService.getRejected(currentMemberId);
+        return myAppDocs;
+    }
+
 
     //결재 승인 앤나 반려
     @PostMapping("/approve")
