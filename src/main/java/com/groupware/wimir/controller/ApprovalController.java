@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -58,8 +59,15 @@ public class ApprovalController {
     //팀원 출력
     @GetMapping("/team/{team}")
     public List<Member> getTeamMembers(@PathVariable("team") Team team) {
+        List<Member> members = memberRepository.findByTeam(team);
 
-        return memberRepository.findByTeam(team);
+
+        //block 계정 출력 안됨
+        List<Member> filteredMembers = members.stream()
+                .filter(member -> !member.getAuthority().equals(Authority.BLOCK))
+                .collect(Collectors.toList());
+
+        return filteredMembers;
     }
 
     //직급원 출력
@@ -111,7 +119,7 @@ public class ApprovalController {
 
     //내가 참조인 문서 리스트
     @GetMapping("/listrefer")
-    public List<Document> referDocs(){
+    public List<Document> referDocs() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         return approvalService.getReferencedDocuments(currentMemberId);
     }

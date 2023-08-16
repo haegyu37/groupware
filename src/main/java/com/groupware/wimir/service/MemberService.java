@@ -103,12 +103,13 @@ public class MemberService {
 
 
     // 사용자의 권한을 ROLE_BLOCK으로 업데이트하는 메서드 추가
-    public void updateUserAuthorityToBlock(Long userId) {
+    public Member updateUserAuthorityToBlock(Long userId) {
         Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         member.setAuthority(Authority.BLOCK);
         memberRepository.save(member);
+        return member;
     }
     
     // ID로 회원 조회
@@ -131,13 +132,16 @@ public class MemberService {
     }
 
 
+    //접속차단 해제
+    public Member updateBlockAuthorityToUser(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
+        member.setAuthority(Authority.USER);
+        memberRepository.save(member);
+        return member;
 
-
-
-
-
-
+    }
 }
 
 

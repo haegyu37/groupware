@@ -1,14 +1,8 @@
 package com.groupware.wimir.controller;
 
 
-import com.groupware.wimir.DTO.ChangeUserDTO;
-import com.groupware.wimir.DTO.MemberRequestDTO;
-import com.groupware.wimir.DTO.MemberResponseDTO;
-import com.groupware.wimir.DTO.TemplateDTO;
-import com.groupware.wimir.entity.Member;
-import com.groupware.wimir.entity.Position;
-import com.groupware.wimir.entity.Team;
-import com.groupware.wimir.entity.Template;
+import com.groupware.wimir.DTO.*;
+import com.groupware.wimir.entity.*;
 import com.groupware.wimir.exception.ResourceNotFoundException;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.TemplateRepository;
@@ -153,17 +147,41 @@ public class AdminController {
 
 
     }
-    // 사용자의 권한을 ROLE_BLOCK으로 업데이트
-    @PostMapping("/members/{memberId}/block")
+//    // 사용자의 권한을 ROLE_BLOCK으로 업데이트
+//    @PostMapping("/members/block")
+//    @Transactional
+//    public Member blockUser(MemberBlockDTO memberBlockDTO) {
+////        try {
+////            Optional<Member> memberOptional = memberRepository.findById(memberId);
+////            if (memberOptional.isPresent()) {
+////                memberService.updateUserAuthorityToBlock(memberId);
+////                return ResponseEntity.ok("사용자의 권한이 ROLE_BLOCK으로 업데이트되었습니다.");
+////            } else {
+////                return ResponseEntity.notFound().build();
+////            }
+////        } catch (Exception e) {
+////            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+////        }
+//
+//        if(memberBlockDTO.getAuthority().equals("BLOCK")){
+//            return memberService.updateUserAuthorityToBlock(memberBlockDTO.getId());
+//        } else {
+//            return memberService.updateBlockAuthorityToUser(memberBlockDTO.getId());
+//        }
+//    }
+//
+
+    //접속차단 앤나 접속차단 해제
+    @PostMapping("/members/block")
     @Transactional
-    public ResponseEntity<String> blockUser(@PathVariable Long memberId) {
+    public ResponseEntity<String> blockUser(@RequestBody MemberBlockDTO memberBlockDTO) {
         try {
-            Optional<Member> memberOptional = memberRepository.findById(memberId);
-            if (memberOptional.isPresent()) {
-                memberService.updateUserAuthorityToBlock(memberId);
-                return ResponseEntity.ok("사용자의 권한이 ROLE_BLOCK으로 업데이트되었습니다.");
+            if (memberBlockDTO.getAuthority().equals(Authority.BLOCK)) {
+                memberService.updateUserAuthorityToBlock(memberBlockDTO.getId());
+                return ResponseEntity.ok("사용자의 권한이 BLOCK으로 업데이트되었습니다.");
             } else {
-                return ResponseEntity.notFound().build();
+                memberService.updateBlockAuthorityToUser(memberBlockDTO.getId());
+                return ResponseEntity.ok("사용자의 권한이 USER로 업데이트되었습니다.");
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
