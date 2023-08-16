@@ -107,7 +107,7 @@ public class DocumentController {
         document.setStatus(documentDTO.getStatus());
         document.setTemplate(documentDTO.getTemplate());    // 양식명
 //        System.out.println(documentDTO.getTemplate());
-        document.setResult("결재대기");
+//        document.setResult("결재대기");
 //        approvalService.setApproval(documentDTO);
 
 //        int result = approvalService.submitApproval(documentDTO);
@@ -123,6 +123,7 @@ public class DocumentController {
         } else {
             // 작성인 경우
             approvalService.setApproval(documentDTO); //결재요청
+            document.setResult("결재대기");
             Long maxDno = documentRepository.findMaxDno(); // DB에서 문서 번호의 최대값을 가져옴
             if (maxDno == null) {
                 maxDno = 0L;

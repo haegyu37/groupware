@@ -280,10 +280,11 @@ public class ApprovalService {
 
     //결재 취소
     public void cancelApproval(Long id) {
-        // documentId를 사용하여 해당 문서의 결재 정보를 조회합니다.
-        List<Approval> approvals = approvalRepository.findByDocument(id);
-        System.out.println("문서번호" + id);
-        System.out.println("문서목록" + approvals);
+        //id로 문서 찾아서 dno 가져오기
+        Document document = documentRepository.findById(id).orElse(null);
+        Long dno = document.getDno();
+
+        List<Approval> approvals = approvalRepository.findByDocument(dno);
 
 //        두번째 결재자만 결재취소할 수 있음
 //        1: 자기자신, 3: 결재 완료하면 결재 끝임
@@ -311,7 +312,8 @@ public class ApprovalService {
 
     // 결재 회수
     public void backApproval(Long id) {
-        Document document = documentService.findDocumentById(id);
+        Document document = documentRepository.findById(id).orElse(null);
+
         if (document != null) {
             document.setStatus(0); // 문서를 임시저장 상태로 ..
             document.setResult(null);
