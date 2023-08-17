@@ -60,6 +60,21 @@ public class DocumentController {
         return documentService.findDocumentListByWriterAndStatus(currentMemberId, 1, pageable);
     }
 
+    //내가 작성한 저장 리스트 진행중
+    @GetMapping(value = "/mylist/waiting")
+    public Page<Document> getMyListWaiting(@PageableDefault Pageable pageable) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "결재대기", pageable);
+    }
+
+
+    //내가 작성한 저장 리스트 진행중
+    @GetMapping(value = "/mylist/ing")
+    public Page<Document> getMyListApproving(@PageableDefault Pageable pageable) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "진행중", pageable);
+    }
+
 
     //내가 작성한 저장 리스트 승인
     @GetMapping(value = "/mylist/approved")
