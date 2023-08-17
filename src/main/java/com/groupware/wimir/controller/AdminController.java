@@ -87,7 +87,7 @@ public class AdminController {
         if (newPassword == null && newImg == null && newTeam == null && newPosition == null && newName == null) {
             throw new IllegalArgumentException("수정값 없음");
         }
-        
+
         // 비밀번호 변경
         if (newPassword != null) {
             memberService.changeUserPasswordByAdmin(id, newPassword);

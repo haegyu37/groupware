@@ -114,7 +114,7 @@ public class MemberController {
 
 
     //내 정보 수정 -> 비밀번호 변경
-    @PutMapping("/edit")
+    @PostMapping("/edit")
     public Member editMyInfo(@RequestBody ChangeUserDTO changeUserDTO) {
         Long currentId = SecurityUtil.getCurrentMemberId();
         String newPassword = changeUserDTO.getNewPassword();
