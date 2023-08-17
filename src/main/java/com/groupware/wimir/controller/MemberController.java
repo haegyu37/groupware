@@ -3,6 +3,8 @@ package com.groupware.wimir.controller;
 
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.ChangePasswordRequestDTO;
+import com.groupware.wimir.DTO.ChangeUserDTO;
+import com.groupware.wimir.DTO.MemberRequestDTO;
 import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.exception.ResourceNotFoundException;
@@ -95,17 +97,37 @@ public class MemberController {
 //        }
 //    }
 
-    @PostMapping("/edit")
-    public Member editMyInfo(MemberResponseDTO memberResponseDTO){
+    //내 정보 수정 : 사진 수정, 비밀번호 수정
+//    @PostMapping("/edit")
+//    public Member editMyInfo(MemberResponseDTO memberResponseDTO) {
+//        Long currentId = SecurityUtil.getCurrentMemberId();
+//        Member member = memberRepository.findById(currentId).orElseThrow(() -> new ResourceNotFoundException("id를 찾을 수 없습니다: " + currentId));
+//        if (memberResponseDTO.getImg() != null) {
+//            member.setImg(memberResponseDTO.getImg());
+//        }
+//        if (memberResponseDTO.getPassword() != null) {
+//            member.setPassword(memberResponseDTO.getPassword());
+//        }
+//        Member updateMember = memberRepository.save(member);
+//        return updateMember;
+//    }
+
+
+    //내 정보 수정 -> 비밀번호 변경
+    @PutMapping("/edit")
+    public Member editMyInfo(@RequestBody ChangeUserDTO changeUserDTO) {
         Long currentId = SecurityUtil.getCurrentMemberId();
-        Member member = memberRepository.findById(currentId).orElseThrow(() -> new ResourceNotFoundException("id를 찾을 수 없습니다: " + currentId));
-        member.setImg(memberResponseDTO.getImg());
-        if(memberResponseDTO.getPassword() != null){
-            member.setPassword(memberResponseDTO.getPassword());
+        String newPassword = changeUserDTO.getNewPassword();
+
+        if (newPassword == null || newPassword.isEmpty()) {
+         throw new IllegalArgumentException("새 비밀번호를 입력해주세요");
         }
-        memberRepository.save(member);
-        return member;
+
+        memberService.changeUserPasswordByAdmin(currentId, newPassword);
+        Member newMember = memberRepository.findById(currentId).orElse(null);
+        return newMember;
     }
+
 }
 
 

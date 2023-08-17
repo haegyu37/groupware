@@ -57,24 +57,48 @@ public class MemberService {
 
     }
 
-    //비번 변경
+//    //비번 변경
+//    @Transactional
+//    public MemberResponseDTO changeUserPasswordByAdmin(Long memberId, String newPassword) {
+//        Member member = memberRepository.findById(memberId)
+//                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+//
+//        member.setPassword(passwordEncoder.encode(newPassword));
+//        Member updatedMember = memberRepository.save(member);
+//
+//        // 변경된 사용자 정보로 인증 객체 갱신
+//        Authentication authentication = new UsernamePasswordAuthenticationToken(
+//                updatedMember.getId(), newPassword, SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+//        );
+//
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        return MemberResponseDTO.of(updatedMember);
+//    }
+
     @Transactional
     public MemberResponseDTO changeUserPasswordByAdmin(Long memberId, String newPassword) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+
+        // Ensure newPassword is not null or empty
+        if (newPassword == null || newPassword.isEmpty()) {
+            throw new IllegalArgumentException("새 비밀번호를 입력해주세요");
+        }
 
         member.setPassword(passwordEncoder.encode(newPassword));
         Member updatedMember = memberRepository.save(member);
 
         // 변경된 사용자 정보로 인증 객체 갱신
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                updatedMember.getId(), newPassword, SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                updatedMember, null, SecurityContextHolder.getContext().getAuthentication().getAuthorities()
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return MemberResponseDTO.of(updatedMember);
     }
+
 
     // 직급 변경
     @Transactional
