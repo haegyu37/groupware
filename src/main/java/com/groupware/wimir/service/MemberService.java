@@ -1,6 +1,7 @@
 package com.groupware.wimir.service;
 
 import com.groupware.wimir.Config.SecurityUtil;
+import com.groupware.wimir.DTO.ChangeUserDTO;
 import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.Member;
@@ -14,6 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Comparator;
@@ -56,6 +59,8 @@ public class MemberService {
         return MemberResponseDTO.of(updatedMember);
 
     }
+
+
 
 //    //비번 변경
 //    @Transactional

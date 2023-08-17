@@ -1,6 +1,7 @@
 package com.groupware.wimir.controller;
 
 
+import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.*;
 import com.groupware.wimir.entity.*;
 import com.groupware.wimir.exception.ResourceNotFoundException;
@@ -73,80 +74,50 @@ public class AdminController {
         return ResponseEntity.ok(memberResponseDTO);
     }
 
-    @PostMapping("/members/edit/{id}")
-    public ResponseEntity<MemberResponseDTO> changeUserDetails(
-            @PathVariable Long id,
-            @RequestPart(name = "image", required = false) MultipartFile image,
-            @RequestPart(name = "changeRequest", required = false) ChangeUserDTO changeUserDTO
-    ) {
-        try {
-            // 사진 등록
-            boolean imageUploaded = false;
-            if (image != null) {
-                String uploadDir = "src/main/resources/static/images";
-                String fileName = "profile_" + id + "." + FilenameUtils.getExtension(image.getOriginalFilename());
-                File file = new File(uploadDir + "/" + fileName);
-                FileUtils.writeByteArrayToFile(file, image.getBytes());
+    //직원 정보 수정
+    @PutMapping("/members/edit/{id}")
+    public Member editMember(@PathVariable Long id, @RequestBody ChangeUserDTO changeUserDTO) {
+        Member member = memberRepository.findById(id).orElse(null);
+        String newPassword = changeUserDTO.getNewPassword();
+        String newImg = changeUserDTO.getImg();
+        Team newTeam = changeUserDTO.getTeam();
+        Position newPosition = changeUserDTO.getPosition();
+        String newName = changeUserDTO.getName();
 
-                Member member = memberRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-                member.setImg("/images/" + fileName);
-                memberRepository.save(member);
-
-                log.info("사진 등록이 완료되었습니다. 사용자 ID: {}", id);
-                imageUploaded = true;
-            }
-
-            // 비밀번호 변경
-//            boolean passwordChanged = false;
-            if (changeUserDTO.getNewPassword() != null) {
-                String updatedPassword = changeUserDTO.getNewPassword();
-                MemberResponseDTO memberResponseDTO = memberService.changeUserPasswordByAdmin(id, updatedPassword);
-                log.info("비밀번호 변경이 완료되었습니다. 사용자 ID: {}", id);
-//                passwordChanged = true;
-            }
-
-            // 직급명 변경
-//            boolean positionChanged = false;
-            if (changeUserDTO != null && changeUserDTO.getPosition() != null) {
-                Position newPosition = changeUserDTO.getPosition();
-                MemberResponseDTO updatedUser = memberService.changeUserPositionByAdmin(id, newPosition);
-                log.info("직급명 변경이 완료되었습니다. 사용자 ID: {}", id);
-//                positionChanged = true;
-            }
-
-            // 팀명 변경
-//            boolean teamChanged = false;
-            if (changeUserDTO != null && changeUserDTO.getTeam() != null) {
-                Team newTeam = changeUserDTO.getTeam();
-                MemberResponseDTO updatedUser = memberService.changeUserTeamByAdmin(id, newTeam);
-                log.info("팀명 변경이 완료되었습니다. 사용자 ID: {}", id);
-//                teamChanged = true;
-            }
-
-            // 변경된 사용자 정보 조회
-            Member updatedMember = memberRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-
-            MemberResponseDTO responseDTO = MemberResponseDTO.builder()
-                    .id(updatedMember.getId())
-                    .no(updatedMember.getNo())
-                    .name(updatedMember.getName())
-                    .position(updatedMember.getPosition())
-                    .team(updatedMember.getTeam())
-                    .authority(updatedMember.getAuthority())
-                    .img(updatedMember.getImg())
-                    .build();
-
-            return ResponseEntity.ok(responseDTO);
-
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        if (newPassword == null && newImg == null || newTeam == null && newPosition == null && newName == null) {
+            throw new IllegalArgumentException("수정값 없음");
         }
 
+        // 비밀번호 변경
+        if (newPassword != null) {
+            memberService.changeUserPasswordByAdmin(id, newPassword);
+        }
 
+        // 사진 변경
+        if (newImg != null) {
+            member.setImg(newImg);
+        }
+
+        // 팀 변경
+        if (newTeam != null) {
+            member.setTeam(newTeam);
+        }
+
+        // 직급 변경
+        if (newPosition != null) {
+            member.setPosition(newPosition);
+        }
+
+        // 이름 변경
+        if (newName != null) {
+            member.setName(newName);
+        }
+
+        memberRepository.save(member);
+        Member newMember = memberRepository.findById(id).orElse(null);
+        return newMember;
     }
+
 
     //접속차단 앤나 접속차단 해제
     @PostMapping("/members/block")
@@ -197,8 +168,6 @@ public class AdminController {
         List<Document> approvedDocs = documentService.getApprovedDocuments();
         return approvedDocs;
     }
-
-
 
 
 }
