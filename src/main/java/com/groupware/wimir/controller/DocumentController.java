@@ -67,14 +67,12 @@ public class DocumentController {
         return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "결재대기", pageable);
     }
 
-
     //내가 작성한 저장 리스트 진행중
     @GetMapping(value = "/mylist/ing")
     public Page<Document> getMyListApproving(@PageableDefault Pageable pageable) {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "진행중", pageable);
     }
-
 
     //내가 작성한 저장 리스트 승인
     @GetMapping(value = "/mylist/approved")
@@ -121,11 +119,6 @@ public class DocumentController {
         document.setCreateDate(LocalDate.now());
         document.setStatus(documentDTO.getStatus());
         document.setTemplate(documentDTO.getTemplate());    // 양식명
-//        System.out.println(documentDTO.getTemplate());
-//        document.setResult("결재대기");
-//        approvalService.setApproval(documentDTO);
-
-//        int result = approvalService.submitApproval(documentDTO);
 
         //임시저장 관련
         if (document.getStatus() == 0) {
@@ -171,9 +164,6 @@ public class DocumentController {
     @GetMapping(value = "/save/{id}")
     public Optional<Document> readSaveDocument(@PathVariable("id") Long id) {
         Optional<Document> document = documentRepository.findById(id);
-//        Long sno = document.getSno();
-//        List<Approval> approvals = lineService.getBySno(sno); // 이러면 안될듯 ..
-//        Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
         if (document == null) {
             throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
         }
@@ -193,65 +183,64 @@ public class DocumentController {
             throw new UnsupportedOperationException("결재 중인 문서는 수정할 수 없습니다.");
         }
 
-            updateDocument.setTitle(documentDTO.getTitle());
-            updateDocument.setContent(documentDTO.getContent());
-            updateDocument.setUpdateDate(LocalDate.now());
-            documentService.setWriterByToken(updateDocument);
-            updateDocument.setStatus(documentDTO.getStatus());
-            updateDocument.setResult("결재대기");
-//            approvalService.updateApproval(documentDTO, id);
+        updateDocument.setTitle(documentDTO.getTitle());
+        updateDocument.setContent(documentDTO.getContent());
+        updateDocument.setUpdateDate(LocalDate.now());
+        documentService.setWriterByToken(updateDocument);
+        updateDocument.setStatus(documentDTO.getStatus());
+        updateDocument.setResult("결재대기");
 
 
-            if (documentDTO.getStatus() == 0) {
-                // status가 0인 경우 임시저장이므로 그냥 저장
-            } else {
-                approvalService.setApproval(documentDTO);
+        if (documentDTO.getStatus() == 0) {
+            // status가 0인 경우 임시저장이므로 그냥 저장
+        } else {
+            approvalService.setApproval(documentDTO);
 
-                // status가 1인 경우 작성인 경우
-                Long maxDno = documentRepository.findMaxDno();
-                if (maxDno == null) {
-                    maxDno = 0L;
-                }
-                if (updateDocument.getDno() == null || updateDocument.getDno() == 0) {
-                    updateDocument.setDno(maxDno + 1);
-
-                }
-                Template template = updateDocument.getTemplate();
-                if (template != null) {
-                    Long maxTempNo = documentRepository.findMaxTempNoByTemplate(template);
-                    updateDocument.setTempNo(maxTempNo + 1);
-                }
-                updateDocument.setSno(null);
-                updateDocument.setStatus(1);
+            // status가 1인 경우 작성인 경우
+            Long maxDno = documentRepository.findMaxDno();
+            if (maxDno == null) {
+                maxDno = 0L;
+            }
+            if (updateDocument.getDno() == null || updateDocument.getDno() == 0) {
+                updateDocument.setDno(maxDno + 1);
 
             }
-            return documentRepository.save(updateDocument);
-
-
-    }
-
-
-        // 문서 삭제
-        @DeleteMapping("/delete/{id}")
-        public void deleteDocument (@PathVariable Long id){
-
-            Document document = documentRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id));
-
-            // result가 "승인"이거나 "반려"인 경우 수정을 제한
-            String result = document.getResult();
-            if ("진행중".equals(result) || "승인".equals(result) || "반려".equals(result)) {
-                throw new UnsupportedOperationException("결재 중인 문서는 수정할 수 없습니다.");
+            Template template = updateDocument.getTemplate();
+            if (template != null) {
+                Long maxTempNo = documentRepository.findMaxTempNoByTemplate(template);
+                updateDocument.setTempNo(maxTempNo + 1);
             }
-
-            //문서에 해당 첨부파일 삭제
-            attachmentService.deleteAttachmentByDoc(id);
-            //문서 해당 결재 삭제
-            Long dno = document.getDno();
-            approvalService.deleteAppByDocument(dno);
-            documentService.deleteDocument(id);
+            updateDocument.setSno(null);
+            updateDocument.setStatus(1);
 
         }
+        return documentRepository.save(updateDocument);
 
 
     }
+
+
+    // 문서 삭제
+    @DeleteMapping("/delete/{id}")
+    public void deleteDocument(@PathVariable Long id) {
+
+        Document document = documentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id));
+
+        // result가 "승인"이거나 "반려"인 경우 수정을 제한
+        String result = document.getResult();
+        if ("진행중".equals(result) || "승인".equals(result) || "반려".equals(result)) {
+            throw new UnsupportedOperationException("결재 중인 문서는 수정할 수 없습니다.");
+        }
+
+        //문서에 해당 첨부파일 삭제
+        attachmentService.deleteAttachmentByDoc(id);
+        //문서 해당 결재 삭제
+        Long dno = document.getDno();
+        approvalService.deleteAppByDocument(dno);
+        documentService.deleteDocument(id);
+
+    }
+
+
+}

@@ -75,7 +75,7 @@ public class AdminController {
     }
 
     //직원 정보 수정
-    @PutMapping("/members/edit/{id}")
+    @PostMapping("/members/edit/{id}")
     public Member editMember(@PathVariable Long id, @RequestBody ChangeUserDTO changeUserDTO) {
         Member member = memberRepository.findById(id).orElse(null);
         String newPassword = changeUserDTO.getNewPassword();
@@ -84,10 +84,10 @@ public class AdminController {
         Position newPosition = changeUserDTO.getPosition();
         String newName = changeUserDTO.getName();
 
-        if (newPassword == null && newImg == null || newTeam == null && newPosition == null && newName == null) {
+        if (newPassword == null && newImg == null && newTeam == null && newPosition == null && newName == null) {
             throw new IllegalArgumentException("수정값 없음");
         }
-
+        
         // 비밀번호 변경
         if (newPassword != null) {
             memberService.changeUserPasswordByAdmin(id, newPassword);
