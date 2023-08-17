@@ -60,7 +60,7 @@ public class DocumentController {
         return documentService.findDocumentListByWriterAndStatus(currentMemberId, 1, pageable);
     }
 
-    //내가 작성한 저장 리스트 진행중
+    //내가 작성한 저장 리스트 결재대기
     @GetMapping(value = "/mylist/waiting")
     public Page<Document> getMyListWaiting(@PageableDefault Pageable pageable) {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
