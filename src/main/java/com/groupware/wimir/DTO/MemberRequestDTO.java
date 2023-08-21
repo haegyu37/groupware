@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -16,18 +17,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @NoArgsConstructor
 @Builder
 public class MemberRequestDTO {
-    private Long id;
+//    private Long id;
     private String no;
     private String password;
     private String name;
     private Position position; // 직급 이름
     private Team team; // 팀 이름
-    private String img; //이미지 추가
+    private ProfileDTO profileDTO;
+    private Long imgId;
 
     public Member toMember(PasswordEncoder passwordEncoder) {
 
         return Member.builder()
-                .id(id)
+//                .id(id)
                 .no(no)
                 .password(passwordEncoder.encode(password))
                 .name(name)
@@ -35,11 +37,21 @@ public class MemberRequestDTO {
               .authority(Authority.ADMIN)
 //               .authority(Authority.USER)
                 .team(team)
-                .img(img)
+//                .imgId(imgId)
                 .build();
     }
     public UsernamePasswordAuthenticationToken toAuthentication() {
         return new UsernamePasswordAuthenticationToken(no, password);
+    }
+
+    public static ModelMapper modelMapper = new ModelMapper();
+
+    public Member createMember(){
+        return modelMapper.map(this, Member.class);
+    }
+
+    public static MemberRequestDTO of(Member member){
+        return modelMapper.map(member, MemberRequestDTO.class);
     }
 
 

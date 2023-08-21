@@ -157,8 +157,8 @@ public class ApprovalService {
         List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
 
         for (Long docId : docIds) {
-            Document document = documentRepository.findById(docId)
-                    .orElse(null); //id로 Document 찾음
+            Document document = documentRepository.findByDno(docId);
+//                    .orElse(null); //id로 Document 찾음
             if (document != null) {
                 myAppDocs.add(document); //Document 리스트에 추가
             }

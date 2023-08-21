@@ -39,7 +39,6 @@ public class AdminController {
     //직원 등록
     @PostMapping("/signup")
     public ResponseEntity<MemberResponseDTO> signup(@RequestBody MemberRequestDTO requestDto) {
-
         return ResponseEntity.ok(authService.signup(requestDto));
     }
 
@@ -93,10 +92,10 @@ public class AdminController {
             memberService.changeUserPasswordByAdmin(id, newPassword);
         }
 
-        // 사진 변경
-        if (newImg != null) {
-            member.setImg(newImg);
-        }
+//        // 사진 변경
+//        if (newImg != null) {
+//            member.setImg(newImg);
+//        }
 
         // 팀 변경
         if (newTeam != null) {

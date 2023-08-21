@@ -16,8 +16,8 @@ public class MemberResponseDTO {
     private Position position;
     private Team team;
     private Authority authority;
-    private String img;
     private String password;
+//    private Long imgId;
 
 
     public static MemberResponseDTO of(Member member) {
@@ -28,7 +28,7 @@ public class MemberResponseDTO {
                 .position(member.getPosition())
                 .team(member.getTeam())
                 .authority(member.getAuthority())
-                .img(member.getImg())
+//                .img(member.getImg())
                 .build();
     }
 

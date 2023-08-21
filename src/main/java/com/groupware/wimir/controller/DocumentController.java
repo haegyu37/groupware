@@ -118,7 +118,8 @@ public class DocumentController {
         documentService.setWriterByToken(document);
         document.setCreateDate(LocalDate.now());
         document.setStatus(documentDTO.getStatus());
-        document.setTemplate(documentDTO.getTemplate());    // 양식명
+        Template template = templateRepository.findById(documentDTO.getTemplate()).orElse(null);
+        document.setTemplate(template);    // 양식명
 
         //임시저장 관련
         if (document.getStatus() == 0) {
@@ -145,7 +146,7 @@ public class DocumentController {
         return ResponseEntity.ok(document);
     }
 
-
+    //문서 조회
     @GetMapping(value = "/{id}")
     public DocumentResponseDTO readDocument(@PathVariable("id") Long id) {
         Document document = documentService.findDocumentById(id);

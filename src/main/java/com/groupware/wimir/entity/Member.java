@@ -34,14 +34,12 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Authority authority; //직원 권한
 
-    private String img; //직원사진
-
     public void setPassword(String password) {
         this.password = password;
     }
 
     @Builder
-    public Member(Long id, String no, String password, String name, Position position, Authority authority, Team team, String img) {
+    public Member(Long id, String no, String password, String name, Position position, Authority authority, Team team) {
         this.id = id;
         this.no = no;
         this.password = password;
@@ -49,7 +47,6 @@ public class Member {
         this.position = position;
         this.authority = authority;
         this.team = team;
-        this.img = img;
     }
 
 }

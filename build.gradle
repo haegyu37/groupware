@@ -45,6 +45,8 @@ dependencies {
 	implementation 'org.odftoolkit:simple-odf:0.9.0'
 	// summernote
 	implementation 'org.webjars.npm:summernote:0.8.20'
+	//model mapper
+	implementation 'org.modelmapper:modelmapper:2.3.9'
 
 
 	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.27'
