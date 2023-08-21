@@ -153,7 +153,7 @@ public class DocumentServiceImpl implements DocumentService {
         List<Document> allDocs = documentRepository.findAll();
 
         return allDocs.stream()
-                .filter(document -> !document.getResult().equals("진행중") && document.getAppDate() != null)
+                .filter(document -> document.getAppDate() != null)
                 .collect(Collectors.toList());
     }
 

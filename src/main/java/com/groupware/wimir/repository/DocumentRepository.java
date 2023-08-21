@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -21,15 +22,15 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     @Query("SELECT MAX(dno) FROM Document")
     Long findMaxDno();
 
-    Page<Document> findByWriter(Member writer, Pageable pageable);
+    List<Document> findByWriter(Member writer);
 
-    Page<Document> findByStatusNot(int status, Pageable pageable);
+    List<Document> findByStatusNot(int status);
 
-    Page<Document> findByWriterIdAndStatus(Long memberId, int status, Pageable pageable);
+    List<Document> findByWriterIdAndStatus(Long memberId, int status);
 
-    Page<Document> findByTemplateIdAndStatus(Long id, int status, Pageable pageable);
+    List<Document> findByTemplateIdAndStatus(Long id, int status);
 
-    Page<Document> findByWriterAndTemplateIdAndStatus(Long memberId, Long id, int status, Pageable pageable);
+    List<Document> findByWriterAndTemplateIdAndStatus(Long memberId, Long id, int status);
 
     @Query("SELECT MAX(id) FROM Document")
     Long findMaxDocId();
@@ -51,6 +52,6 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
     Document findBySno(Long sno);
 
-    Page<Document> findByWriterIdAndStatusAndResult(Long id, int status, String result, Pageable pageable);
+    List<Document> findByWriterIdAndStatusAndResult(Long id, int status, String result);
 }
 
