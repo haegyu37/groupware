@@ -9,10 +9,8 @@ import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.TemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -120,8 +118,8 @@ public class DocumentServiceImpl implements DocumentService {
 //    }
 
     @Override
-    public Page<Document> findDocumentListByStatusNot(int status, Pageable pageable) {
-        return documentRepository.findByStatusNot(status, pageable);
+    public List<Document> findDocumentListByStatusNot(int status) {
+        return documentRepository.findByStatusNot(status);
     }
 
     @Override
@@ -136,18 +134,18 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Page<Document> findDocumentListByWriterAndStatus(Long memberId, int status, Pageable pageable) {
-        return documentRepository.findByWriterIdAndStatus(memberId, status, pageable);
+    public List<Document> findDocumentListByWriterAndStatus(Long memberId, int status) {
+        return documentRepository.findByWriterIdAndStatus(memberId, status);
     }
 
     @Override
-    public Page<Document> findDocumentListByTemplateIdAndStatus(Long id, int status, Pageable pageable) {
-        return documentRepository.findByTemplateIdAndStatus(id, status, pageable);
+    public List<Document> findDocumentListByTemplateIdAndStatus(Long id, int status) {
+        return documentRepository.findByTemplateIdAndStatus(id, status);
     }
 
     @Override
-    public Page<Document> findDocumentListByWriterAndTemplateIdAndStatus(Long memberId, Long id, int status, Pageable pageable) {
-        return documentRepository.findByWriterAndTemplateIdAndStatus(memberId, id, status, pageable);
+    public List<Document> findDocumentListByWriterAndTemplateIdAndStatus(Long memberId, Long id, int status) {
+        return documentRepository.findByWriterAndTemplateIdAndStatus(memberId, id, status);
     }
 
     @Override
@@ -161,8 +159,8 @@ public class DocumentServiceImpl implements DocumentService {
 
 
     @Override
-    public Page<Document> findDocumentListByWriterAndStatusAndResult(Long id, int status, String result, Pageable pageable) {
-        return documentRepository.findByWriterIdAndStatusAndResult (id, status, result, pageable);
+    public List<Document> findDocumentListByWriterAndStatusAndResult(Long id, int status, String result) {
+        return documentRepository.findByWriterIdAndStatusAndResult (id, status, result);
     }
 
 

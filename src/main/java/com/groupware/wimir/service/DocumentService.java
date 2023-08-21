@@ -19,19 +19,19 @@ public interface DocumentService {
 
     void deleteDocument(Long id);
 
-    public Page<Document> findDocumentListByStatusNot(int status, Pageable pageable);
+    public List<Document> findDocumentListByStatusNot(int status);
 
     void setWriterByToken(Document document);
 
-    Page<Document> findDocumentListByWriterAndStatus(Long memberId, int status, Pageable pageable);
+    List<Document> findDocumentListByWriterAndStatus(Long memberId, int status);
 
-    Page<Document> findDocumentListByTemplateIdAndStatus(Long id, int status, Pageable pageable);
+    List<Document> findDocumentListByTemplateIdAndStatus(Long id, int status);
 
-    Page<Document> findDocumentListByWriterAndTemplateIdAndStatus(Long memberId, Long id, int status, Pageable pageable);
+    List<Document> findDocumentListByWriterAndTemplateIdAndStatus(Long memberId, Long id, int status);
 
     List<Document> getApprovedDocuments();
 
-    Page<Document> findDocumentListByWriterAndStatusAndResult(Long currentMemberId, int i, String 승인, Pageable pageable);
+    List<Document> findDocumentListByWriterAndStatusAndResult(Long currentMemberId, int i, String 승인);
 
 
 //    List<Document> getDocumentsByCategory(String category);

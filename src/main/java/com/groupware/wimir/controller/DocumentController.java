@@ -41,71 +41,66 @@ public class DocumentController {
 
     // 문서 목록(정상 저장 전체 다 보도록)
     @GetMapping(value = "/list")
-    public List<Document> documentList(@PageableDefault Pageable pageable) {
+    public List<Document> documentList() {
         // 임시저장 상태가 아닌(1인) 문서만 조회하도록 수정
-        return documentService.findDocumentListByStatusNot(0, pageable).getContent();
+        return documentService.findDocumentListByStatusNot(0);
     }
 
     //내가 작성한 임시저장 리스트
     @GetMapping(value = "/savelist")
-    public Page<Document> getMySaveList(@PageableDefault Pageable pageable) {
+    public List<Document> getMySaveList() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        return documentService.findDocumentListByWriterAndStatus(currentMemberId, 0, pageable);
+        return documentService.findDocumentListByWriterAndStatus(currentMemberId, 0);
     }
 
     //내가 작성한 저장 리스트
     @GetMapping(value = "/mylist")
-    public Page<Document> getMyList(@PageableDefault Pageable pageable) {
+    public List<Document> getMyList() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        return documentService.findDocumentListByWriterAndStatus(currentMemberId, 1, pageable);
+        return documentService.findDocumentListByWriterAndStatus(currentMemberId, 1);
     }
 
     //내가 작성한 저장 리스트 결재대기
     @GetMapping(value = "/mylist/waiting")
-    public Page<Document> getMyListWaiting(@PageableDefault Pageable pageable) {
+    public List<Document> getMyListWaiting() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "결재대기", pageable);
+        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "결재대기");
     }
 
     //내가 작성한 저장 리스트 진행중
     @GetMapping(value = "/mylist/ing")
-    public Page<Document> getMyListApproving(@PageableDefault Pageable pageable) {
+    public List<Document> getMyListApproving() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "진행중", pageable);
+        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "진행중");
     }
 
     //내가 작성한 저장 리스트 승인
     @GetMapping(value = "/mylist/approved")
-    public Page<Document> getMyListApproved(@PageableDefault Pageable pageable) {
+    public List<Document> getMyListApproved() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "승인", pageable);
+        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "승인");
     }
 
     //내가 작성한 저장 리스트 반려
     @GetMapping(value = "/mylist/rejected")
-    public Page<Document> getMyListRejected(@PageableDefault Pageable pageable) {
+    public List<Document> getMyListRejected() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "반려", pageable);
+        return documentService.findDocumentListByWriterAndStatusAndResult(currentMemberId, 1, "반려");
     }
 
-    //결재 완료된 문서 목록 all -> 관리자
-//    @GetMapping("/listdone")
-//    public List<Document> approvedDocs() {
-//        List<Document> approvedDocs = documentService.getApprovedDocuments();
-//        return approvedDocs;
 //    }
 
     // 카테고리별 작성된 문서 리스트(fun11번에 이용할듯)-승인, 반려 기능 추가되면
     @GetMapping(value = "/categorylist/{id}")
-    public Page<Document> getDocumentsByTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
-        return documentService.findDocumentListByTemplateIdAndStatus(id, 1, pageable);
+    public List<Document> getDocumentsByTemplateList(@PathVariable Long id, @RequestParam(required = false) Integer status) {
+        return documentService.findDocumentListByTemplateIdAndStatus(id, 1);
     }
 
     // 카테고리별 자신이 작성한 문서 리스트(fun8번 결재 상태 추가되어야 함)
     @GetMapping(value = "/categorymylist/{id}")
-    public Page<Document> getDocumentsByMyTemplateList(@PageableDefault Pageable pageable, @PathVariable Long id, @RequestParam(required = false) Integer status) {
+    public List<Document> getDocumentsByMyTemplateList(@PathVariable Long id, @RequestParam(required = false) Integer status) {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        return documentService.findDocumentListByWriterAndTemplateIdAndStatus(currentMemberId, id, 1, pageable);
+        return documentService.findDocumentListByWriterAndTemplateIdAndStatus(currentMemberId, id, 1);
     }
 
     // 문서 작성
