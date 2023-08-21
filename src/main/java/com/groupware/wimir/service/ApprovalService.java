@@ -141,10 +141,9 @@ public class ApprovalService {
     public List<Document> getApprovalsNow(Long id) {
         List<Approval> approvals = approvalRepository.findByMemberId(id);
         List<Approval> currentApprovals = approvals.stream()
-                .filter(approval -> approval.getCurrent().equals("Y"))
+                .filter(approval -> approval != null && approval.getCurrent() != null && approval.getCurrent().equals("Y"))
                 .collect(Collectors.toList());
         List<Long> docIds = new ArrayList<>();
-
         for (Approval approval : currentApprovals) {
             Long docId = approval.getDocument(); //Approval에서 document만 찾음
             if (docId != null) {

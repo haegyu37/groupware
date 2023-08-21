@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @NoArgsConstructor
 @Builder
 public class MemberRequestDTO {
-//    private Long id;
+    private Long id;
     private String no;
     private String password;
     private String name;
@@ -29,7 +29,7 @@ public class MemberRequestDTO {
     public Member toMember(PasswordEncoder passwordEncoder) {
 
         return Member.builder()
-//                .id(id)
+                .id(id)
                 .no(no)
                 .password(passwordEncoder.encode(password))
                 .name(name)
@@ -37,22 +37,21 @@ public class MemberRequestDTO {
               .authority(Authority.ADMIN)
 //               .authority(Authority.USER)
                 .team(team)
-//                .imgId(imgId)
                 .build();
     }
     public UsernamePasswordAuthenticationToken toAuthentication() {
         return new UsernamePasswordAuthenticationToken(no, password);
     }
 
-    public static ModelMapper modelMapper = new ModelMapper();
-
-    public Member createMember(){
-        return modelMapper.map(this, Member.class);
-    }
-
-    public static MemberRequestDTO of(Member member){
-        return modelMapper.map(member, MemberRequestDTO.class);
-    }
+//    public static ModelMapper modelMapper = new ModelMapper();
+//
+//    public Member createMember(){
+//        return modelMapper.map(this, Member.class);
+//    }
+//
+//    public static MemberRequestDTO of(Member member){
+//        return modelMapper.map(member, MemberRequestDTO.class);
+//    }
 
 
 

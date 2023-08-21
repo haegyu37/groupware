@@ -6,10 +6,12 @@ import com.groupware.wimir.DTO.TokenRequestDTO;
 import com.groupware.wimir.DTO.TokenDTO;
 import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.Member;
+import com.groupware.wimir.entity.Profile;
 import com.groupware.wimir.entity.RefreshToken;
 import com.groupware.wimir.jwt.TokenProvider;
 import com.groupware.wimir.jwt.TokenStatus;
 import com.groupware.wimir.repository.MemberRepository;
+import com.groupware.wimir.repository.ProfileRepository;
 import com.groupware.wimir.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Service
@@ -29,15 +32,26 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ProfileService profileService;
+    private final ProfileRepository profileRepository;
 
     //signup 회원가입
-    public MemberResponseDTO signup(MemberRequestDTO requestDto) {
+    public MemberResponseDTO signup(MemberRequestDTO requestDto, MultipartFile multipartFile) throws Exception {
         if (memberRepository.existsByNo(requestDto.getNo())) {
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
 
+        // 직원 등록
         Member member = requestDto.toMember(passwordEncoder);
-        return MemberResponseDTO.of(memberRepository.save(member));
+        member = memberRepository.save(member);
+
+        // 이미지 등록
+        Profile profile = new Profile();
+        profile.setMember(member);
+        profileService.saveProfile(profile, multipartFile);
+
+        // MemberResponseDTO로 변환하여 반환
+        return MemberResponseDTO.of(member);
     }
 
 

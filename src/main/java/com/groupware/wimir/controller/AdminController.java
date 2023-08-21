@@ -1,7 +1,6 @@
 package com.groupware.wimir.controller;
 
 
-import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.*;
 import com.groupware.wimir.entity.*;
 import com.groupware.wimir.exception.ResourceNotFoundException;
@@ -12,15 +11,12 @@ import com.groupware.wimir.service.DocumentService;
 import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,8 +34,15 @@ public class AdminController {
 
     //직원 등록
     @PostMapping("/signup")
-    public ResponseEntity<MemberResponseDTO> signup(@RequestBody MemberRequestDTO requestDto) {
-        return ResponseEntity.ok(authService.signup(requestDto));
+    public ResponseEntity<?> signup(@RequestBody MemberRequestDTO requestDto, @RequestParam("profile") MultipartFile multipartFile) {
+        try {
+            authService.signup(requestDto, multipartFile);
+            return ResponseEntity.ok(authService.signup(requestDto, multipartFile));
+
+        } catch (Exception e) {
+            // 예외 처리: 예외가 발생하면 에러 응답 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
+        }
     }
 
     //직원 목록
