@@ -89,15 +89,15 @@ public class AdminController {
     }
 
     //직원 조회
-//    @GetMapping("/members/{id}")
-//    public MemberResponseDTO getMemberById(@PathVariable Long id) throws MalformedURLException {
-//        Member member = memberService.getMemberById(id);
-//        MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
-//        Profile profile = profileRepository.findByMember(member);
-////        System.out.println("프로필" + profile);
+    @GetMapping("/members/{id}")
+    public MemberResponseDTO getMemberById(@PathVariable Long id) throws MalformedURLException {
+        Member member = memberService.getMemberById(id);
+        MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
+        Profile profile = profileRepository.findByMember(member);
+        System.out.println("프로필" + profile);
 //        new UrlResource("img:" + profile.getImgUrl());
-//        return memberResponseDTO;
-//    }
+        return memberResponseDTO;
+    }
 
 //    @GetMapping("/members/{id}")
 //    public MemberResponseDTO getMemberWithProfileById(@PathVariable Long id) throws MalformedURLException{
@@ -127,7 +127,7 @@ public class AdminController {
 //    }
 
 
-//    //직원 조회
+    //직원 조회
 //    @GetMapping("/profile/{id}")
 //    public Profile getprofileById(@PathVariable Long id) {
 ////        Profile profile = profileRepository.findByMember(id);

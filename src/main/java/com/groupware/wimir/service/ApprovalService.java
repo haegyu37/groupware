@@ -334,10 +334,11 @@ public class ApprovalService {
                 break; // 루프를 종료합니다.
             }
         }
+        System.out.println("인덱스" + memberIndex);
 
         Approval nowApprover = approvals.get(memberIndex);
         Approval nextApprover = approvals.get(memberIndex + 1);
-        Approval beforeApprover = approvals.get(memberIndex - 1);
+//        if (memberIndex != 0){Approval beforeApprover = approvals.get(memberIndex - 1);}
 
         if (nextApprover.getAppDate() == null || nextApprover.getStatus() == null) {
             if (nowApprover != null) {
@@ -347,13 +348,24 @@ public class ApprovalService {
                 nowApprover.setStatus(null);
                 approvalRepository.save(nowApprover);
 
-                //다음 결재자 currnent N
-                nextApprover.setCurrent("N");
-                approvalRepository.save(nextApprover);
+                if(nextApprover !=null) {
+                    //다음 결재자 currnent N
+                    nextApprover.setCurrent("N");
+                    approvalRepository.save(nextApprover);
+                }
+                
+                if (memberIndex != 0){
+                    Approval beforeApprover = approvals.get(memberIndex - 1);
+                    beforeApprover.setCurrent("Y");
+                    approvalRepository.save(beforeApprover);
 
-                //이전 결재자의 current Y
-                beforeApprover.setCurrent("Y");
-                approvalRepository.save(beforeApprover);
+                }
+
+//                if(beforeApprover != null) {
+//                    //이전 결재자의 current Y
+//                    beforeApprover.setCurrent("Y");
+//                    approvalRepository.save(beforeApprover);
+//                }
 
             }
             return ResponseEntity.ok("결재가 취소되었습니다.");
