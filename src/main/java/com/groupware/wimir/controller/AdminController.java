@@ -1,6 +1,7 @@
 package com.groupware.wimir.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.groupware.wimir.DTO.*;
 import com.groupware.wimir.entity.*;
 import com.groupware.wimir.exception.ResourceNotFoundException;
@@ -33,12 +34,26 @@ public class AdminController {
     private final TemplateRepository templateRepository;
 
     //직원 등록
-    @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody MemberRequestDTO requestDto, @RequestParam("profile") MultipartFile multipartFile) {
+//    @PostMapping("/signup")
+//    public ResponseEntity<?> signup( @RequestPart(value="post", required = true) MemberRequestDTO requestDto,  @RequestPart(value="image", required = true) MultipartFile multipartFile) {
+//        try {
+//            authService.signup(requestDto, multipartFile);
+//            return ResponseEntity.ok(authService.signup(requestDto, multipartFile));
+//
+//        } catch (Exception e) {
+//            // 예외 처리: 예외가 발생하면 에러 응답 반환
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
+//        }
+//    }
+    @PostMapping(value = "/signup", consumes = "multipart/form-data")
+    public ResponseEntity<?> signup(@RequestParam("post") String post, @RequestParam("image") MultipartFile multipartFile) {
         try {
-            authService.signup(requestDto, multipartFile);
-            return ResponseEntity.ok(authService.signup(requestDto, multipartFile));
+            // 파일 업로드와 JSON 데이터 처리 로직
+            // post 변수에는 JSON 데이터가 들어옵니다.
+            MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
 
+            MemberResponseDTO responseDto = authService.signup(requestDto, multipartFile);
+            return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             // 예외 처리: 예외가 발생하면 에러 응답 반환
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());

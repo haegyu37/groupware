@@ -54,6 +54,9 @@ dependencies {
 	implementation 'org.webjars.npm:summernote:0.8.20'
 	//model mapper
 	implementation 'org.modelmapper:modelmapper:2.3.9'
+	//dsl
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 
 
 	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.27'
@@ -95,11 +98,29 @@ tasks.withType(JavaCompile) {
 	options.compilerArgs << "-Xlint:deprecation"
 }
 
-sourceSets {
-	main {
-		java {
-			srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
-		}
-	}
+//sourceSets {
+//	main {
+//		java {
+//			srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
+//		}
+//	}
+//}
+
+// script for querydsl
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+	jpa = true
+	querydslSourcesDir = querydslDir
 }
+sourceSets {
+	main.java.srcDir querydslDir
+}
+configurations {
+	querydsl.extendsFrom compileClasspath
+}
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
+}
+
+
 
