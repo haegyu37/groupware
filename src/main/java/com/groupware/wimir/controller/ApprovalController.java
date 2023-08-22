@@ -145,8 +145,9 @@ public class ApprovalController {
     //결재 승인 앤나 반려
     @PostMapping("/approve")
     public ResponseEntity<String> approveDocument(@RequestBody ApprovalDTO approvalDTO) {
+        Long currentId = SecurityUtil.getCurrentMemberId();
         if (approvalDTO.getStatus().equals("승인")) {
-            approvalService.approveDocument(approvalDTO.getDocument());
+            approvalService.approveDocument(approvalDTO.getDocument(), currentId);
             return ResponseEntity.ok("결재가 승인되었습니다.");
         } else if (approvalDTO.getStatus().equals("반려")) {
             approvalService.rejectDocument(approvalDTO, approvalDTO.getDocument());
@@ -158,8 +159,14 @@ public class ApprovalController {
 
     //결재 취소
     @PostMapping("/cancel")
-    public void cancleApproval(@RequestBody ApprovalDTO approvalDTO) {
-        approvalService.cancelApproval(approvalDTO.getDocument());
+    public ResponseEntity<?> cancleApproval(@RequestBody ApprovalDTO approvalDTO) {
+        Long currentId = SecurityUtil.getCurrentMemberId();
+        ResponseEntity<?> result = approvalService.cancelApproval(approvalDTO.getDocument(), currentId);
+        if(result == null){
+            return ResponseEntity.ok("다음 결재자가 취소 후 결재 취소가 가능합니다.");
+        } else {
+            return ResponseEntity.ok("결재가 취소되었습니다.");
+        }
     }
 
     //결재 회수

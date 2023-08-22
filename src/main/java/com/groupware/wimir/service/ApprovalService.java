@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.time.LocalDateTime.now;
+import static org.apache.jena.atlas.iterator.Iter.collect;
 
 @Service
 @RequiredArgsConstructor
@@ -113,6 +114,7 @@ public class ApprovalService {
     //내가 결재라인인 문서 리스트 all
     public List<Document> getApprovals(Long id) {
         List<Approval> approvals = approvalRepository.findByMemberId(id); //memberId를 기준으로 Approval 리스트 찾음
+        System.out.println("내결재" + approvals);
         List<Long> docIds = new ArrayList<>();
 
         for (Approval approval : approvals) {
@@ -122,35 +124,7 @@ public class ApprovalService {
             } else {
                 continue; //null이면 건너뜀
             }
-        }
-
-        List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
-
-        for (Long docId : docIds) {
-            Document document = documentRepository.findById(docId)
-                    .orElse(null); //id로 Document 찾음
-            if (document != null) {
-                myAppDocs.add(document); //Document 리스트에 추가
-            }
-        }
-
-        return myAppDocs; // 리스트 반환
-    }
-
-    //내 결재 리스트 근데 이제 내가 결재할 차례인 .. 그것들 리스트
-    public List<Document> getApprovalsNow(Long id) {
-        List<Approval> approvals = approvalRepository.findByMemberId(id);
-        List<Approval> currentApprovals = approvals.stream()
-                .filter(approval -> approval != null && approval.getCurrent() != null && approval.getCurrent().equals("Y"))
-                .collect(Collectors.toList());
-        List<Long> docIds = new ArrayList<>();
-        for (Approval approval : currentApprovals) {
-            Long docId = approval.getDocument(); //Approval에서 document만 찾음
-            if (docId != null) {
-                docIds.add(docId); //docIds 리스트에 추가
-            } else {
-                continue; //null이면 건너뜀
-            }
+            System.out.println("내결재" + docId);
         }
 
         List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
@@ -162,6 +136,40 @@ public class ApprovalService {
                 myAppDocs.add(document); //Document 리스트에 추가
             }
         }
+        System.out.println("내결재" + myAppDocs);
+
+        return myAppDocs; // 리스트 반환
+    }
+
+    //내 결재 리스트 근데 이제 내가 결재할 차례인 .. 그것들 리스트
+    public List<Document> getApprovalsNow(Long id) {
+        List<Approval> approvals = approvalRepository.findByMemberId(id);
+        List<Approval> currentApprovals = approvals.stream()
+                .filter(approval -> approval != null && approval.getCurrent() != null && approval.getCurrent().equals("Y"))
+                .collect(Collectors.toList());
+
+        List<Long> docIds = new ArrayList<>();
+        for (Approval approval : currentApprovals) {
+            Long docId = approval.getDocument(); //Approval에서 document만 찾음
+            if (docId != null) {
+                docIds.add(docId); //docIds 리스트에 추가
+            } else {
+                continue; //null이면 건너뜀
+            }
+
+        }
+
+
+        List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
+
+        for (Long docId : docIds) {
+            Document document = documentRepository.findByDno(docId);
+//                    .orElse(null); //id로 Document 찾음
+            if (document != null) {
+                myAppDocs.add(document); //Document 리스트에 추가
+            }
+        }
+
 
         return myAppDocs; // 리스트 반환
     }
@@ -222,8 +230,9 @@ public class ApprovalService {
 
 
     //결재 승인
-    public void approveDocument(Long id) {
-        Document doc = documentRepository.findById(id).orElse(null);
+    public void approveDocument(Long docId, Long memberId) {
+        //문서 찾아서
+        Document doc = documentRepository.findById(docId).orElse(null);
         Long documentId = doc.getDno();
         List<Approval> approvals = approvalRepository.findByDocument(documentId);
         List<Approval> appNotRefer = approvals.stream()
@@ -302,34 +311,54 @@ public class ApprovalService {
     }
 
     //결재 취소
-    public void cancelApproval(Long id) {
+    public ResponseEntity<?> cancelApproval(Long docId, Long id) {
+
         //id로 문서 찾아서 dno 가져오기
-        Document document = documentRepository.findById(id).orElse(null);
+        Document document = documentRepository.findById(docId).orElse(null);
         Long dno = document.getDno();
 
+        //해당 문서의 결재 리스트
         List<Approval> approvals = approvalRepository.findByDocument(dno);
 
-//        두번째 결재자만 결재취소할 수 있음
-//        1: 자기자신, 3: 결재 완료하면 결재 끝임
-        Approval secondApprover = approvals.get(1);
+        //해당 문서의 결재자 리스트
+        List<Long> memberIds = approvals.stream()
+                .map(Approval::getMemberId)
+                .collect(Collectors.toList());
 
-        if (secondApprover != null) {
+        int memberIndex = -1; // 초기값을 -1로 설정
 
-            //결재 취소 처리
-            secondApprover.setAppDate(null);
-            secondApprover.setStatus(null);
-            approvalRepository.save(secondApprover);
+        // 결재자 리스트 중에서 현재 결재자 아이디 가져오기
+        for (int i = 0; i < memberIds.size(); i++) {
+            if (memberIds.get(i) == id) {
+                memberIndex = i; // 일치하는 값이 발견되면 memberIndex를 설정하고
+                break; // 루프를 종료합니다.
+            }
+        }
 
-            //다음 결재자 currnent N
-            Approval thirdApprover = approvals.get(2);
-            thirdApprover.setCurrent("N");
-            approvalRepository.save(thirdApprover);
+        Approval nowApprover = approvals.get(memberIndex);
+        Approval nextApprover = approvals.get(memberIndex + 1);
+        Approval beforeApprover = approvals.get(memberIndex - 1);
 
-            //이전 결재자 current N 그리고 결재 취소 처리
-            Approval firstApprover = approvals.get(0);
-            firstApprover.setCurrent("N");
-            firstApprover.setAppDate(null);
-            secondApprover.setStatus(null);
+        if (nextApprover.getAppDate() == null || nextApprover.getStatus() == null) {
+            if (nowApprover != null) {
+
+                //내 결재 취소 처리
+                nowApprover.setAppDate(null);
+                nowApprover.setStatus(null);
+                approvalRepository.save(nowApprover);
+
+                //다음 결재자 currnent N
+                nextApprover.setCurrent("N");
+                approvalRepository.save(nextApprover);
+
+                //이전 결재자의 current Y
+                beforeApprover.setCurrent("Y");
+                approvalRepository.save(beforeApprover);
+
+            }
+            return ResponseEntity.ok("결재가 취소되었습니다.");
+        } else {
+            return null;
         }
     }
 

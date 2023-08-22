@@ -6,18 +6,21 @@ import com.groupware.wimir.DTO.*;
 import com.groupware.wimir.entity.*;
 import com.groupware.wimir.exception.ResourceNotFoundException;
 import com.groupware.wimir.repository.MemberRepository;
+import com.groupware.wimir.repository.ProfileRepository;
 import com.groupware.wimir.repository.TemplateRepository;
 import com.groupware.wimir.service.AuthService;
 import com.groupware.wimir.service.DocumentService;
 import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +35,7 @@ public class AdminController {
     private final MemberService memberService;
     private final DocumentService documentService;
     private final TemplateRepository templateRepository;
+    private final ProfileRepository profileRepository;
 
     //직원 등록
 //    @PostMapping("/signup")
@@ -45,6 +49,7 @@ public class AdminController {
 //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
 //        }
 //    }
+    //직원 등록
     @PostMapping(value = "/signup", consumes = "multipart/form-data")
     public ResponseEntity<?> signup(@RequestParam("post") String post, @RequestParam("image") MultipartFile multipartFile) {
         try {
@@ -83,13 +88,54 @@ public class AdminController {
         }
     }
 
-    //해당 사원 정보보기
-    @GetMapping("/members/{id}")
-    public ResponseEntity<MemberResponseDTO> getMemberById(@PathVariable Long id) {
-        Member member = memberService.getMemberById(id);
-        MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
-        return ResponseEntity.ok(memberResponseDTO);
-    }
+    //직원 조회
+//    @GetMapping("/members/{id}")
+//    public MemberResponseDTO getMemberById(@PathVariable Long id) throws MalformedURLException {
+//        Member member = memberService.getMemberById(id);
+//        MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
+//        Profile profile = profileRepository.findByMember(member);
+////        System.out.println("프로필" + profile);
+//        new UrlResource("img:" + profile.getImgUrl());
+//        return memberResponseDTO;
+//    }
+
+//    @GetMapping("/members/{id}")
+//    public MemberResponseDTO getMemberWithProfileById(@PathVariable Long id) throws MalformedURLException{
+//        Member member = memberService.getMemberById(id);
+//        MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
+//
+//        Profile profile = profileRepository.findByMember(member);
+//        memberResponseDTO.setImgUrl(profile.getImgUrl());
+//
+//            return new UrlResource("file:" + file.getFullPath(filename));
+////        if (member == null) {
+////            return ResponseEntity.notFound().build();
+////        }
+//
+//
+////        if (profile == null) {
+////            return ResponseEntity.notFound().build();
+////        }
+//
+////        MemberResponseDTO responseDTO = new MemberResponseDTO();
+////        responseDTO.setId(member.getId());
+////        responseDTO.setName(member.getName());
+////        responseDTO.setEmail(member.getEmail());
+////        responseDTO.setImgUrl(profile.getImgUrl());
+//
+//        return memberResponseDTO;
+//    }
+
+
+//    //직원 조회
+//    @GetMapping("/profile/{id}")
+//    public Profile getprofileById(@PathVariable Long id) {
+////        Profile profile = profileRepository.findByMember(id);
+////        System.out.println("프로필" + profile);
+////        new UrlResource("img:" + file.getFullPath(filename));
+//        return profile;
+//    }
+
 
     //직원 정보 수정
     @PostMapping("/members/edit/{id}")

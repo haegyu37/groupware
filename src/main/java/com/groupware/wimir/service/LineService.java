@@ -138,6 +138,7 @@ public class LineService {
                     approvalInfo.put("position", memberInfo.getPosition()); //직원 직급
                     approvalInfo.put("lineId", approval.getLineId()); //즐찾라인 아이디
                     approvalInfo.put("lineName", approval.getName()); //즐찾라인 이름
+                    approvalInfo.put("current", approval.getCurrent()); //현재 결재 순서인지
                     approvalInfo.put("status", approval.getStatus()); //결재 결과
                     approvalInfo.put("appDate", approval.getAppDate()); //결재일
 
