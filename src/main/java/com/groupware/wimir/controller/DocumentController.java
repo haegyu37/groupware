@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/documents")
@@ -153,7 +154,10 @@ public class DocumentController {
         List<Approval> approvals = lineService.getByDocument(dno);
         Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
 
-        return new DocumentResponseDTO(document, groupedApprovals);
+        Long currentId = SecurityUtil.getCurrentMemberId();
+        Map<String, Object> appInfoForCancel = lineService.appInfoForCancel(approvals, currentId);
+
+        return new DocumentResponseDTO(document, groupedApprovals, appInfoForCancel);
     }
 
     //문서 조회 - 임시저장

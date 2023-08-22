@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -156,6 +157,34 @@ public class LineService {
     public List<Approval> getByDocument(Long id) {
         List<Approval> approvals = approvalRepository.findByDocument(id); //document로 approval 리스트 만듦
         return approvals;
+    }
+
+    //취소를 위한 결재정보
+    public Map<String, Object> appInfoForCancel(List<Approval> approvals, Long id) {
+
+        List<Long> memberIds = approvals.stream()
+                .map(Approval::getMemberId)
+                .collect(Collectors.toList());
+
+        int memberIndex = -1; // 초기값을 -1로 설정
+
+        // 결재자 리스트 중에서 현재 결재자 아이디 가져오기
+        for (int i = 0; i < memberIds.size(); i++) {
+            if (memberIds.get(i) == id) {
+                memberIndex = i; // 일치하는 값이 발견되면 memberIndex를 설정하고
+                break; // 루프를 종료합니다.
+            }
+        }
+
+        Approval currentApprover = approvals.get(memberIndex);
+        Approval nextApprover = approvals.get(memberIndex + 1);
+
+        Map<String, Object> appInfoForCancel = new HashMap<>();
+        appInfoForCancel.put("nextStauts", nextApprover.getStatus());
+        appInfoForCancel.put("myCurrent", currentApprover.getCurrent());
+        appInfoForCancel.put("myStatus", currentApprover.getStatus());
+
+        return appInfoForCancel;
     }
 
 }

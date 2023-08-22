@@ -13,4 +13,5 @@ import java.util.Map;
 public class DocumentResponseDTO {
     private Document document;
     private Map<Long, List<Map<String, Object>>> groupedApprovals;
+    private Map<String, Object> appInfoForCancel;
 }
