@@ -353,7 +353,7 @@ public class ApprovalService {
                     nextApprover.setCurrent("N");
                     approvalRepository.save(nextApprover);
                 }
-                
+
                 if (memberIndex != 0){
                     Approval beforeApprover = approvals.get(memberIndex - 1);
                     beforeApprover.setCurrent("Y");
@@ -367,6 +367,10 @@ public class ApprovalService {
 //                    approvalRepository.save(beforeApprover);
 //                }
 
+            }
+
+            if (memberIndex == 0){
+                document.setResult("결재대기");
             }
             return ResponseEntity.ok("결재가 취소되었습니다.");
         } else {
