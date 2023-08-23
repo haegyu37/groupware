@@ -2,8 +2,8 @@ package com.groupware.wimir.controller;
 
 
 import com.fasterxml.classmate.MemberResolver;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.groupware.wimir.Config.ByteArrayMultipartFile;
 import com.groupware.wimir.DTO.*;
 import com.groupware.wimir.entity.*;
 import com.groupware.wimir.exception.ResourceNotFoundException;
@@ -69,63 +69,44 @@ public class AdminController {
 //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
 //        }
 //    }
-//직원등록 바이트 배열로 디코딩이 안됨
+////직원등록 바이트 배열로 디코딩이 안됨
 //    @PostMapping(value = "/signup", consumes = "multipart/form-data")
-//    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value = "image", required = false) String base64Image) {
-//        try {
-//            System.out.println("사진1: " + base64Image);
+//    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value = "image", required = false) String base64Image) throws Exception {
+////        try {
+////            System.out.println("사진1: " + base64Image);
 //
-//            MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
+//        MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
 //
-//            // base64 이미지를 바이트 배열로 디코딩
-//            byte[] imageBytes = Base64Utils.decodeFromString(base64Image);
+//        // base64 이미지를 바이트 배열로 디코딩
+//        byte[] imageBytes = Base64Utils.decodeFromString(base64Image);
+//        System.out.println("사진" + imageBytes);
 //
-//            // 바이트 배열을 사용하여 MultipartFile 생성
-//            MultipartFile multipartFile = new ByteArrayMultipartFile(imageBytes, "image.jpg", MediaType.IMAGE_JPEG_VALUE);
+////        // 바이트 배열을 사용하여 MultipartFile 생성
+////        MultipartFile multipartFile = new ByteArrayMultipartFile(imageBytes, "image.jpg", MediaType.IMAGE_JPEG_VALUE);
 //
-//            MemberResponseDTO responseDto = authService.signup(requestDto, multipartFile);
+//        MemberResponseDTO responseDto = authService.signup(requestDto, base64Image);
 //
-//            System.out.println("사진: " + multipartFile);
-//            return ResponseEntity.ok(responseDto);
-//        } catch (Exception e) {
-//            // 예외 처리: 예외가 발생하면 에러 응답 반환
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
-//        }
+////            System.out.println("사진: " + multipartFile);
+//        return ResponseEntity.ok(responseDto);
+////        } catch (Exception e) {
+////            // 예외 처리: 예외가 발생하면 에러 응답 반환
+////            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
+////        }
 //    }
-@PostMapping(value = "/signup", consumes = "multipart/form-data")
-public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value = "image", required = false) String base64Image) {
-    try {
-//        System.out.println("사진1: " + base64Image);
 
-        MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
-
-        byte[] imageBytes;
+    @PostMapping(value = "/signup", consumes = "multipart/form-data")
+    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value = "image", required = false) String base64Image) throws Exception {
         try {
-            imageBytes = Base64Utils.decodeFromString(base64Image);
-        } catch (IllegalArgumentException e) {
-            // Base64 디코딩에 실패한 경우, 로그에 오류 메시지 출력 후 null로 처리
-            System.err.println("Base64 디코딩 실패: " + e.getMessage());
-            imageBytes = null;
+            MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
+
+            MemberResponseDTO responseDto = authService.signup(requestDto, base64Image);
+
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
         }
-
-        // 바이트 배열을 사용하여 MultipartFile 생성
-        MultipartFile multipartFile;
-        if (imageBytes != null) {
-            multipartFile = new ByteArrayMultipartFile(imageBytes, "image.jpg", MediaType.IMAGE_JPEG_VALUE);
-        } else {
-            // 이미지 디코딩에 실패한 경우, null로 설정
-            multipartFile = null;
-        }
-
-        MemberResponseDTO responseDto = authService.signup(requestDto, multipartFile);
-
-        System.out.println("사진: " + multipartFile);
-        return ResponseEntity.ok(responseDto);
-    } catch (Exception e) {
-        // 예외 처리: 예외가 발생하면 에러 응답 반환
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
     }
-}
+
 
 
     //직원 목록

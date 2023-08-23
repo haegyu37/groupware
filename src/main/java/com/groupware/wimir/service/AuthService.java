@@ -35,8 +35,28 @@ public class AuthService {
     private final ProfileService profileService;
     private final ProfileRepository profileRepository;
 
-        //signup 회원가입
-    public MemberResponseDTO signup(MemberRequestDTO requestDto, MultipartFile multipartFile) throws Exception {
+    //signup 회원가입
+//    public MemberResponseDTO signup(MemberRequestDTO requestDto, String base64Image) throws Exception {
+//        if (memberRepository.existsByNo(requestDto.getNo())) {
+//            throw new RuntimeException("이미 가입되어 있는 유저입니다");
+//        }
+//
+//        // 직원 등록
+//        Member member = requestDto.toMember(passwordEncoder);
+//        member = memberRepository.save(member);
+//
+//        if (base64Image != null) {
+//            // 이미지 등록
+//            Profile profile = new Profile();
+//            profile.setMember(member);
+//            profileService.saveProfile(profile, base64Image);
+//        }
+//
+//        // MemberResponseDTO로 변환하여 반환
+//        return MemberResponseDTO.of(member);
+//    }
+
+    public MemberResponseDTO signup(MemberRequestDTO requestDto, String base64Image) throws Exception {
         if (memberRepository.existsByNo(requestDto.getNo())) {
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
@@ -45,16 +65,17 @@ public class AuthService {
         Member member = requestDto.toMember(passwordEncoder);
         member = memberRepository.save(member);
 
-        if (multipartFile != null) {
-            // 이미지 등록
+        if (base64Image != null && !base64Image.isEmpty()) {
+            // 이미지 저장
             Profile profile = new Profile();
             profile.setMember(member);
-            profileService.saveProfile(profile, multipartFile);
+            profileService.saveProfile(profile, base64Image);
         }
 
         // MemberResponseDTO로 변환하여 반환
         return MemberResponseDTO.of(member);
     }
+
 
 //    //회원가입 시 사진등록
 //    public MemberResponseDTO signupProfile(MemberRequestDTO requestDto, MultipartFile multipartFile) throws Exception {

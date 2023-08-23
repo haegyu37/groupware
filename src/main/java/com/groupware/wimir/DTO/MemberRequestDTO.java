@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
 
 //Request를 받을 때 쓰이는 dto다. UsernamePasswordAuthenticationToken를 반환하여
@@ -23,8 +24,9 @@ public class MemberRequestDTO {
     private String name;
     private Position position; // 직급 이름
     private Team team; // 팀 이름
-    private ProfileDTO profileDTO;
-    private Long imgId;
+//    private ProfileDTO profileDTO;
+//    private Long imgId;
+//    private MultipartFile image;
 
     public Member toMember(PasswordEncoder passwordEncoder) {
 
