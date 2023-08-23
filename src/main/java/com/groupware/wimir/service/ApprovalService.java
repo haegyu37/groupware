@@ -346,6 +346,7 @@ public class ApprovalService {
                 //내 결재 취소 처리
                 nowApprover.setAppDate(null);
                 nowApprover.setStatus(null);
+                nowApprover.setCurrent("Y");
                 approvalRepository.save(nowApprover);
 
                 if(nextApprover !=null) {
@@ -354,12 +355,12 @@ public class ApprovalService {
                     approvalRepository.save(nextApprover);
                 }
 
-                if (memberIndex != 0){
-                    Approval beforeApprover = approvals.get(memberIndex - 1);
-                    beforeApprover.setCurrent("Y");
-                    approvalRepository.save(beforeApprover);
-
-                }
+//                if (memberIndex != 0){
+//                    Approval beforeApprover = approvals.get(memberIndex - 1);
+//                    beforeApprover.setCurrent("Y");
+//                    approvalRepository.save(beforeApprover);
+//
+//                }
 
 //                if(beforeApprover != null) {
 //                    //이전 결재자의 current Y
