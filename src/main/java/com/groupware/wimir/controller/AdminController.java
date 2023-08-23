@@ -3,6 +3,7 @@ package com.groupware.wimir.controller;
 
 import com.fasterxml.classmate.MemberResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.groupware.wimir.Config.ByteArrayMultipartFile;
 import com.groupware.wimir.DTO.*;
 import com.groupware.wimir.entity.*;
 import com.groupware.wimir.exception.ResourceNotFoundException;
@@ -16,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,16 +53,39 @@ public class AdminController {
 //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
 //        }
 //    }
-    //직원 등록
+//    //직원 등록 되는거
+//    @PostMapping(value = "/signup", consumes = "multipart/form-data")
+//    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value="image",required = false) MultipartFile multipartFile) {
+//        try {
+//            System.out.println("사진1"+multipartFile);
+//
+//            MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
+//            MemberResponseDTO responseDto = authService.signup(requestDto, multipartFile);
+//
+//            System.out.println("사진"+multipartFile);
+//            return ResponseEntity.ok(responseDto);
+//        } catch (Exception e) {
+//            // 예외 처리: 예외가 발생하면 에러 응답 반환
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
+//        }
+//    }
+
     @PostMapping(value = "/signup", consumes = "multipart/form-data")
-    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value="image",required = false) MultipartFile multipartFile) {
+    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value = "image", required = false) String base64Image) {
         try {
-            System.out.println("사진1"+multipartFile);
+            System.out.println("사진1: " + base64Image);
 
             MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
+
+            // base64 이미지를 바이트 배열로 디코딩
+            byte[] imageBytes = Base64Utils.decodeFromString(base64Image);
+
+            // 바이트 배열을 사용하여 MultipartFile 생성
+            MultipartFile multipartFile = new ByteArrayMultipartFile(imageBytes, "image.jpg", MediaType.IMAGE_JPEG_VALUE);
+
             MemberResponseDTO responseDto = authService.signup(requestDto, multipartFile);
 
-            System.out.println("사진"+multipartFile);
+            System.out.println("사진: " + multipartFile);
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             // 예외 처리: 예외가 발생하면 에러 응답 반환

@@ -20,8 +20,8 @@ public class MemberResponseDTO {
     private Position position;
     private Team team;
     private Authority authority;
-    private String imgUrl;
-    private Profile profile;
+//    private String imgUrl;
+//    private Profile profile;
 
     public static MemberResponseDTO of(Member member) {
 
