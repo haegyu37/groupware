@@ -21,21 +21,9 @@ public class MemberResponseDTO {
     private Team team;
     private Authority authority;
     private String imgUrl;
-//    private ProfileDTO profileDTO;
     private Profile profile;
-//    private ProfileRepository profileRepository;
-//    private Profile profile = profileRepository.findByMember()
-//    private String password;
-//    private ProfileDTO profileDTO;
-//    private Long imgId;
-
-
-//    private Long imgId;
-
 
     public static MemberResponseDTO of(Member member) {
-//        ProfileRepository profileRepository = null;
-//        Profile profile = profileRepository.findByMember(member);
 
         return MemberResponseDTO.builder()
                 .id(member.getId())
@@ -44,13 +32,11 @@ public class MemberResponseDTO {
                 .position(member.getPosition())
                 .team(member.getTeam())
                 .authority(member.getAuthority())
-//                .imgUrl(profile.getImgUrl())
-//                .profileDTO(profile.getImgUrl())
-//                .img(member.getImg())
                 .build();
     }
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
-    }
+//    public void setImgUrl(String imgUrl) {
+//        this.imgUrl = imgUrl;
+//    }
 
 }
+

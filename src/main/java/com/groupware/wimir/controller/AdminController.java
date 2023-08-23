@@ -1,6 +1,7 @@
 package com.groupware.wimir.controller;
 
 
+import com.fasterxml.classmate.MemberResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.groupware.wimir.DTO.*;
 import com.groupware.wimir.entity.*;
@@ -51,13 +52,14 @@ public class AdminController {
 //    }
     //직원 등록
     @PostMapping(value = "/signup", consumes = "multipart/form-data")
-    public ResponseEntity<?> signup(@RequestParam("post") String post, @RequestParam("image") MultipartFile multipartFile) {
+    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value="image",required = false) MultipartFile multipartFile) {
         try {
-            // 파일 업로드와 JSON 데이터 처리 로직
-            // post 변수에는 JSON 데이터가 들어옵니다.
-            MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
+            System.out.println("사진1"+multipartFile);
 
+            MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
             MemberResponseDTO responseDto = authService.signup(requestDto, multipartFile);
+
+            System.out.println("사진"+multipartFile);
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             // 예외 처리: 예외가 발생하면 에러 응답 반환
