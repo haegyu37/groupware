@@ -237,7 +237,7 @@ public class ApprovalService {
                 approval.setCurrent("N");
 
                 // 다음 결재자가 있을 경우 current를 Y로 지정
-                if (i + 1 < appNotRefer.size()) {
+                if (i != 2) {
                     Approval nextApproval = appNotRefer.get(i + 1);
                     nextApproval.setCurrent("Y");
                 } else {
