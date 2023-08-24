@@ -236,8 +236,9 @@ public class ApprovalService {
                 approval.setStatus("승인");
                 approval.setCurrent("N");
 
+                System.out.println("결재자" + approval.getMemberId());
                 // 다음 결재자가 있을 경우 current를 Y로 지정
-                if (i != 2) {
+                if (i != appNotRefer.size()) {
                     Approval nextApproval = appNotRefer.get(i + 1);
                     nextApproval.setCurrent("Y");
                 } else {
