@@ -50,7 +50,7 @@ public class AuthService {
             System.out.println("사진1" + requestDto.getImage());
             Profile profile = new Profile();
             profile.setMember(member);
-//            profileService.saveProfile(profile, requestDto.getImage());
+            profileService.saveProfile(profile, requestDto.getImage());
         }
 
         // MemberResponseDTO로 변환하여 반환

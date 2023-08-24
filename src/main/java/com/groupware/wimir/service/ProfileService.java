@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileOutputStream;
+import java.util.Arrays;
 import java.util.Base64;
 
 @Service
@@ -24,8 +25,8 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final FileService fileService;
 
-    public void saveProfile(Profile profile, MultipartFile multipartFile) throws Exception {
-        String  oriName = multipartFile.getOriginalFilename();
+    public void saveProfile(Profile profile, String multipartFile) throws Exception {
+        String  oriName = Arrays.toString(multipartFile.getBytes());
         String imgName = "";
         String imgUrl = "";
 
