@@ -44,11 +44,7 @@ public class LineController {
 
         List<Long> approvers = lineDTO.getApprovers();
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
-//        if (currentMemberId != null) {
-            approvers.add(0, currentMemberId);
-//        } else {
-//            System.out.println("로그인 아이디가 null : " + currentMemberId);
-//        }
+        approvers.add(0, currentMemberId);
 
         int lastIndex = lineDTO.getApprovers().size() - 1; // 배열의 맨 마지막 인덱스
 
@@ -77,23 +73,6 @@ public class LineController {
         return ResponseEntity.ok("결재라인을 저장했습니다.");
     }
 
-
-    //모든 결재라인 -> 저장한거 다 뜨게
-//    @GetMapping("/list")
-//    public Map<Long, List<Approval>> groupApprovalsByLineId() {
-//        List<Approval> allApprovals = approvalRepository.findAll();
-//        return Approval.groupByLineId(allApprovals);
-//    }
-
-    //내 결재라인 -> 토큰값 기준
-//    @GetMapping("/list")
-//    public Map<Long, List<Approval>> getMyLines() {
-//        Long currentMemberId = SecurityUtil.getCurrentMemberId();
-//        //id를 기준으로 Approval을 찾는 메소드
-//        List<Approval> myApproval = approvalRepository.findByWriter(currentMemberId);
-//        return Approval.groupByLineId(myApproval);
-//
-//    }
     //먼가 정리된 내 결재라인 목록 (멤버 정보 뜸)
     @GetMapping("/list")
     public Map<Long, List<Map<String, Object>>> getMemberLineById() {
@@ -145,14 +124,9 @@ public class LineController {
     }
 
 
-
     //결재라인 조회
     @GetMapping("/{id}")
-//    public Map<Long, List<Approval>> getApprovalLineById(@PathVariable Long id) {
-//        return Approval.groupByLineId(lineService.getLineByLineId(id));
-//
-//    }
-       public Map<String, List<Map<String, Object>>> getMemberInfoLineById(@PathVariable Long id) {
+    public Map<String, List<Map<String, Object>>> getMemberInfoLineById(@PathVariable Long id) {
         List<Approval> approvals = lineService.getByLineId(id); //lineId로 결재 찾아
         Map<String, List<Map<String, Object>>> groupedApprovals = new HashMap<>();
         List<Map<String, Object>> lineApprovals = new ArrayList<>();

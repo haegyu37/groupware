@@ -1,4 +1,5 @@
 package com.groupware.wimir.DTO;
+
 import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.*;
 import lombok.AllArgsConstructor;
@@ -24,9 +25,6 @@ public class MemberRequestDTO {
     private String name;
     private Position position; // 직급 이름
     private Team team; // 팀 이름
-//    private ProfileDTO profileDTO;
-//    private Long imgId;
-//    private MultipartFile image;
 
     public Member toMember(PasswordEncoder passwordEncoder) {
 
@@ -36,25 +34,15 @@ public class MemberRequestDTO {
                 .password(passwordEncoder.encode(password))
                 .name(name)
                 .position(position)
-              .authority(Authority.ADMIN)
-//               .authority(Authority.USER)
+//                .authority(Authority.ADMIN)
+                .authority(Authority.USER)
                 .team(team)
                 .build();
     }
+
     public UsernamePasswordAuthenticationToken toAuthentication() {
         return new UsernamePasswordAuthenticationToken(no, password);
     }
-
-//    public static ModelMapper modelMapper = new ModelMapper();
-//
-//    public Member createMember(){
-//        return modelMapper.map(this, Member.class);
-//    }
-//
-//    public static MemberRequestDTO of(Member member){
-//        return modelMapper.map(member, MemberRequestDTO.class);
-//    }
-
 
 
 }

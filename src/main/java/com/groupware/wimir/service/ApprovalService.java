@@ -15,14 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static java.time.LocalDateTime.now;
-import static org.apache.jena.atlas.iterator.Iter.collect;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +28,6 @@ public class ApprovalService {
     private ApprovalRepository approvalRepository;
     @Autowired
     private DocumentRepository documentRepository;
-    @Autowired
-    private DocumentService documentService;
 
     //결재 요청
     public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {
@@ -66,7 +60,6 @@ public class ApprovalService {
 
                 if (i == 0) {
                     approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
-//                    approval.setStatus("대기");
                 } else {
                     approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
                 }
@@ -78,11 +71,7 @@ public class ApprovalService {
 
             List<Long> approvers = documentDTO.getApprovers();
             Long currentMemberId = SecurityUtil.getCurrentMemberId();
-//            if (currentMemberId != null) {
             approvers.add(0, currentMemberId);
-//            } else {
-//                System.out.println("로그인 아이디가  null : " + currentMemberId);
-//            }
 
             int lastIndex = documentDTO.getApprovers().size() - 1; // 배열의 맨 마지막 인덱스
 
@@ -131,7 +120,6 @@ public class ApprovalService {
 
         for (Long docId : docIds) {
             Document document = documentRepository.findByDno(docId);
-//                    .orElse(null); //id로 Document 찾음
             if (document != null) {
                 myAppDocs.add(document); //Document 리스트에 추가
             }
@@ -164,7 +152,6 @@ public class ApprovalService {
 
         for (Long docId : docIds) {
             Document document = documentRepository.findByDno(docId);
-//                    .orElse(null); //id로 Document 찾음
             if (document != null) {
                 myAppDocs.add(document); //Document 리스트에 추가
             }
@@ -243,7 +230,6 @@ public class ApprovalService {
             Approval approval = appNotRefer.get(i);
             if (i == 0) {
                 Optional<Document> documentOptional = documentRepository.findById(documentId);
-//                Document document = documentOptional.orElse(null);
                 doc.setResult("진행중"); //첫번째 결재자가 결재하면 문서 상태를 진행중으로 ..
             }
 
@@ -297,7 +283,6 @@ public class ApprovalService {
                     approval.setReason(approvalDTO.getReason());
 
                     Optional<Document> documentOptional = documentRepository.findById(documentId);
-//                    Document document = documentOptional.orElse(null);
 
                     if (doc != null) {
                         doc.setResult("반려");
@@ -338,7 +323,6 @@ public class ApprovalService {
 
         Approval nowApprover = approvals.get(memberIndex);
         Approval nextApprover = approvals.get(memberIndex + 1);
-//        if (memberIndex != 0){Approval beforeApprover = approvals.get(memberIndex - 1);}
 
         if (nextApprover.getAppDate() == null || nextApprover.getStatus() == null) {
             if (nowApprover != null) {
@@ -349,28 +333,15 @@ public class ApprovalService {
                 nowApprover.setCurrent("Y");
                 approvalRepository.save(nowApprover);
 
-                if(nextApprover !=null) {
+                if (nextApprover != null) {
                     //다음 결재자 currnent N
                     nextApprover.setCurrent("N");
                     approvalRepository.save(nextApprover);
                 }
 
-//                if (memberIndex != 0){
-//                    Approval beforeApprover = approvals.get(memberIndex - 1);
-//                    beforeApprover.setCurrent("Y");
-//                    approvalRepository.save(beforeApprover);
-//
-//                }
-
-//                if(beforeApprover != null) {
-//                    //이전 결재자의 current Y
-//                    beforeApprover.setCurrent("Y");
-//                    approvalRepository.save(beforeApprover);
-//                }
-
             }
 
-            if (memberIndex == 0){
+            if (memberIndex == 0) {
                 document.setResult("결재대기");
             }
             return ResponseEntity.ok("결재가 취소되었습니다.");

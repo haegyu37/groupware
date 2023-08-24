@@ -18,20 +18,21 @@ public class TokenStatus {
         UNAUTHORIZED,
         UNKNOWN
     }
+
     private StatusCode statusCode;
 
-    public static TokenStatus of(StatusCode status){
+    public static TokenStatus of(StatusCode status) {
         return makeTokenStatus(status);
     }
 
     public static TokenStatus makeTokenStatus(StatusCode status) {
-        if (OK.equals(status)){
+        if (OK.equals(status)) {
             return new TokenStatus(OK);
         }
-        if (UNAUTHORIZED.equals(status)){
+        if (UNAUTHORIZED.equals(status)) {
             return new TokenStatus(UNAUTHORIZED);
         }
-        if (EXPIRED.equals(status)){
+        if (EXPIRED.equals(status)) {
             return new TokenStatus(EXPIRED);
         }
         return new TokenStatus(UNKNOWN);

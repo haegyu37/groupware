@@ -45,10 +45,5 @@ public class Approval {
 
     private String refer; //"참조" 참조자
 
-    public static Map<Long, List<Approval>> groupByLineId(List<Approval> approvals) {
-        return approvals.stream()
-                .filter(approval -> approval.getLineId() != null) // lineId가 null이 아닌 경우만 필터링
-                .collect(Collectors.groupingBy(Approval::getLineId));
-    }
 
 }

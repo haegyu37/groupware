@@ -9,9 +9,6 @@ import java.util.List;
 
 public interface DocumentService {
 
-//    Document findDocumentById(Long id);
-
-//    List<Document> findSaveDocumentList();
 
     Document findDocumentById(Long id);
 
@@ -33,16 +30,5 @@ public interface DocumentService {
 
     List<Document> findDocumentListByWriterAndStatusAndResult(Long currentMemberId, int i, String 승인);
 
-
-//    List<Document> getDocumentsByCategory(String category);
-//
-//    List<Document> getDocumentsByTemplate(Template template);
-
-
-//    public Document getDocumentById(Long documentId);
-
-//    Document getDocumentById(Long documentId);
-//
-//    Page<Document> findDocumentListByWriter(Member writer, Pageable pageable);
 
 }

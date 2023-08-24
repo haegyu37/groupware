@@ -31,7 +31,7 @@ public class AttachmentService {
         this.attachmentRepository = attachmentRepository;
         this.documentRepository = documentRepository;
 
-       // 파일 저장 디렉토리 설정
+        // 파일 저장 디렉토리 설정
         String uploadPath = "C:\\uploads";
         this.attachmentStorageLocation = Paths.get(uploadPath);
 
@@ -90,53 +90,11 @@ public class AttachmentService {
         return attachmentOptional.orElseThrow(() -> new RuntimeException("해당 첨부파일을 찾을 수 없습니다."));
     }
 
-//    public ResponseEntity<byte[]> downloadAttachment(Long id, String savedFileName) {
-//        Attachment attachment = getAttachmentById(id);
-//        Path attachmentPath = Paths.get(attachment.getPath(), attachment.getSavedName());
-//        try {
-//            byte[] fileBytes = Files.readAllBytes(attachmentPath);
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-//            // 다운로드 창에 보여줄 파일 이름 설정
-//            headers.setContentDispositionFormData("attachment", savedFileName);
-//
-//            return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
-//        } catch (IOException ex) {
-//            throw new RuntimeException("첨부파일을 다운로드할 수 없습니다.", ex);
-//        }
-//    }
-
-//    public void deleteAttachment(Long attachmentId) {
-//        Attachment attachment = getAttachmentById(attachmentId);
-////        Path attachmentPath = Paths.get(attachment.getPath(), attachment.getSavedName());
-////        try {
-////            Files.delete(attachmentPath);
-////            attachmentRepository.delete(attachment);
-////        } catch (IOException ex) {
-////            throw new RuntimeException("첨부파일을 삭제할 수 없습니다.", ex);
-////        }
-//        attachmentRepository.delete(attachment); // 파일 정보만 DB에서 삭제
-//    }
-
-//    public void saveAttachments(List<Attachment> attachments, Long documentId) {
-//        Document document = new Document();
-//        document.setId(documentId);
-//        for (Attachment attachment : attachments) {
-//            attachment.setDocument(document);
-//        }
-//        attachmentRepository.saveAll(attachments);
-//    }
-//
     private Document findDocumentById(Long documentId) {
         Optional<Document> documentOptional = documentRepository.findById(documentId);
         return documentOptional.orElseThrow(() -> new RuntimeException("해당 문서를 찾을 수 없습니다."));
     }
-//
-//    public List<Attachment> getAttachmentsByDocumentId(Long documentId) {
-//        return attachmentRepository.findByDocumentId(documentId);
-//    }
-//
+
     //문서번호로 첨부파일 삭제
     public void deleteAttachmentByDoc(Long id) {
         List<Attachment> attachments = attachmentRepository.findByDocumentId(id);

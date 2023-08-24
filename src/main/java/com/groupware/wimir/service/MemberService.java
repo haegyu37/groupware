@@ -60,27 +60,6 @@ public class MemberService {
 
     }
 
-
-
-//    //비번 변경
-//    @Transactional
-//    public MemberResponseDTO changeUserPasswordByAdmin(Long memberId, String newPassword) {
-//        Member member = memberRepository.findById(memberId)
-//                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
-//
-//        member.setPassword(passwordEncoder.encode(newPassword));
-//        Member updatedMember = memberRepository.save(member);
-//
-//        // 변경된 사용자 정보로 인증 객체 갱신
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(
-//                updatedMember.getId(), newPassword, SecurityContextHolder.getContext().getAuthentication().getAuthorities()
-//        );
-//
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        return MemberResponseDTO.of(updatedMember);
-//    }
-
     @Transactional
     public MemberResponseDTO changeUserPasswordByAdmin(Long memberId, String newPassword) {
         Member member = memberRepository.findById(memberId)
@@ -141,7 +120,7 @@ public class MemberService {
         memberRepository.save(member);
         return member;
     }
-    
+
     // ID로 회원 조회
     public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
@@ -173,15 +152,4 @@ public class MemberService {
 
     }
 }
-
-
-//    @Transactional
-//    public MemberResponseDTO changeMemberPassword(String exPassword, String newPassword) {
-//        Member member = memberRepository.findById(SecurityUtil.getCurrentMemberId()).orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
-//        if (!passwordEncoder.matches(exPassword, member.getPassword())) {
-//            throw new RuntimeException("비밀번호가 맞지 않습니다");
-//        }
-//        member.setPassword(passwordEncoder.encode((newPassword)));
-//        return MemberResponseDTO.of(memberRepository.save(member));
-//    }
 

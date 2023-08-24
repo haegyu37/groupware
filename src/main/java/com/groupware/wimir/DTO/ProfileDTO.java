@@ -12,10 +12,7 @@ import org.springframework.stereotype.Component;
 public class ProfileDTO {
 
     private Long id;
-
     private String imgName;
-
     private String oriName;
-
     private String imgUrl;
 }

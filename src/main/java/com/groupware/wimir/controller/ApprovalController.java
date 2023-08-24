@@ -162,7 +162,7 @@ public class ApprovalController {
     public ResponseEntity<?> cancleApproval(@RequestBody ApprovalDTO approvalDTO) {
         Long currentId = SecurityUtil.getCurrentMemberId();
         ResponseEntity<?> result = approvalService.cancelApproval(approvalDTO.getDocument(), currentId);
-        if(result == null){
+        if (result == null) {
             return ResponseEntity.ok("다음 결재자가 취소 후 결재 취소가 가능합니다.");
         } else {
             return ResponseEntity.ok("결재가 취소되었습니다.");

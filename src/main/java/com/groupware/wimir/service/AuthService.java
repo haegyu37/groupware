@@ -35,28 +35,8 @@ public class AuthService {
     private final ProfileService profileService;
     private final ProfileRepository profileRepository;
 
-    //signup 회원가입
-//    public MemberResponseDTO signup(MemberRequestDTO requestDto, String base64Image) throws Exception {
-//        if (memberRepository.existsByNo(requestDto.getNo())) {
-//            throw new RuntimeException("이미 가입되어 있는 유저입니다");
-//        }
-//
-//        // 직원 등록
-//        Member member = requestDto.toMember(passwordEncoder);
-//        member = memberRepository.save(member);
-//
-//        if (base64Image != null) {
-//            // 이미지 등록
-//            Profile profile = new Profile();
-//            profile.setMember(member);
-//            profileService.saveProfile(profile, base64Image);
-//        }
-//
-//        // MemberResponseDTO로 변환하여 반환
-//        return MemberResponseDTO.of(member);
-//    }
 
-    public MemberResponseDTO signup(MemberRequestDTO requestDto, String base64Image) throws Exception {
+    public MemberResponseDTO signup(MemberRequestDTO requestDto, MultipartFile multipartFile) throws Exception {
         if (memberRepository.existsByNo(requestDto.getNo())) {
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
@@ -65,54 +45,16 @@ public class AuthService {
         Member member = requestDto.toMember(passwordEncoder);
         member = memberRepository.save(member);
 
-        if (base64Image != null && !base64Image.isEmpty()) {
+        if (multipartFile != null) {
             // 이미지 저장
             Profile profile = new Profile();
             profile.setMember(member);
-            profileService.saveProfile(profile, base64Image);
+            profileService.saveProfile(profile, multipartFile);
         }
 
         // MemberResponseDTO로 변환하여 반환
         return MemberResponseDTO.of(member);
     }
-
-
-//    //회원가입 시 사진등록
-//    public MemberResponseDTO signupProfile(MemberRequestDTO requestDto, MultipartFile multipartFile) throws Exception {
-//
-//        // 직원 등록
-//        Member member = requestDto.toMember(passwordEncoder);
-//
-//        // 이미지 등록
-//        Profile profile = new Profile();
-//        profile.setMember(member);
-//        profileService.saveProfile(profile, multipartFile);
-//
-//        // MemberResponseDTO로 변환하여 반환
-//        return MemberResponseDTO.of(member);
-//    }
-
-//// 직원 등록 및 저장 메소드
-//    public MemberResponseDTO signup(MemberRequestDTO requestDto) throws Exception {
-//        if (memberRepository.existsByNo(requestDto.getNo())) {
-//            throw new RuntimeException("이미 가입되어 있는 유저입니다");
-//        }
-//
-//        // 직원 등록
-//        Member member = requestDto.toMember(passwordEncoder);
-//        member = memberRepository.save(member);
-//
-//        // MemberResponseDTO로 변환하여 반환
-//        return MemberResponseDTO.of(member);
-//    }
-//
-//    // 프로필 이미지 저장 메소드
-//    public void signupProfile(Member member, MultipartFile multipartFile) throws Exception {
-//        // 이미지 등록
-//        Profile profile = new Profile();
-//        profile.setMember(member);
-//        profileService.saveProfile(profile, multipartFile);
-//    }
 
     @Transactional
     public TokenDTO login(MemberRequestDTO requestDto) {
@@ -170,9 +112,6 @@ public class AuthService {
 
 
 }
-//    public void logout() {
-//
-//    }
 
 
 

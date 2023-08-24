@@ -37,34 +37,6 @@ public class DocumentServiceImpl implements DocumentService {
                 .orElse(null);
     }
 
-//    @Override
-//    public Page<Document> findDocumentListByWriter(Member writer, Pageable pageable) {
-////        Page<Document> Documents = documentRepository.findByWriter(writer, pageable);
-//        return documentRepository.findByWriter(writer, pageable);
-//    }
-
-//    @Override
-//    public Document findDocumentByDno(Long dno) {
-//        return documentRepository.findByDno(dno).orElse(new Document());
-//    }
-//
-//    public void deleteDocument(Long dno) {
-//        Document document = documentRepository.findByDno(dno)
-//                .orElseThrow(() -> new RuntimeException("해당 문서를 찾을 수 없습니다."));
-//        // 문서에 속한 첨부파일들을 삭제
-//        List<Attachment> attachments = attachmentService.getAttachmentsByDocumentId(document.getId());
-//        for (Attachment attachment : attachments) {
-//            attachmentService.deleteAttachment(attachment.getId());
-//        }
-//        // 문서 삭제
-//        documentRepository.deleteByDno(dno);
-//    }
-
-//    @Override
-//    public List<Document> findSaveDocumentList() {
-//        return documentRepository.findByStatus(0); // 임시저장 상태인 문서 조회
-//    }
-
     @Override
     public Document saveDocument(Document document) {
         if (document.getStatus() == 1) {
@@ -83,39 +55,6 @@ public class DocumentServiceImpl implements DocumentService {
     public void deleteDocument(Long id) {
         documentRepository.deleteById(id);
     }
-//    public Document findDocumentBySno(Long Sno) { return documentRepository.findBySno(Sno); }
-
-//    public void deleteEditDocument(Long sno) {
-//        Document document = documentRepository.findBySno(sno);
-//        if (document != null) {
-//            // 문서에 속한 첨부파일들을 삭제
-//            List<Attachment> attachments = attachmentService.getAttachmentsByDocumentId(document.getId());
-//            for (Attachment attachment : attachments) {
-//                attachmentService.deleteAttachment(attachment.getId());
-//            }
-//            // 문서 삭제
-//            documentRepository.deleteBySno(sno);
-//        } else {
-//            throw new RuntimeException("해당 문서를 찾을 수 없습니다.");
-//        }
-//    }
-
-//    @Override
-//    public Document getDocumentById(Long id) {
-//        Optional<Document> documentOptional = documentRepository.findById(id);
-//        return documentOptional.orElseThrow(() -> new RuntimeException("해당 문서를 찾을 수 없습니다."));
-//    }
-//
-//    @Override
-//    public Document findDocumentById(Long id) {
-//        return documentRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("해당 문서를 찾을 수 없습니다."));
-//    }
-//
-////    @Override
-//    public void deleteAttachment(Long id) {
-//        attachmentService.deleteAttachment(id);
-//    }
 
     @Override
     public List<Document> findDocumentListByStatusNot(int status) {
@@ -157,27 +96,14 @@ public class DocumentServiceImpl implements DocumentService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public List<Document> findDocumentListByWriterAndStatusAndResult(Long id, int status, String result) {
-        return documentRepository.findByWriterIdAndStatusAndResult (id, status, result);
+        return documentRepository.findByWriterIdAndStatusAndResult(id, status, result);
     }
-
-
-//    public Document getDocumentById(Long documentId) {
-//        // findById 메서드는 Optional<Document>를 반환한다고 가정합니다.
-//        Document document = documentRepository.findById(documentId);
-//        return document;
-//
-////        // 문서가 찾아지지 않은 경우를 처리할 수 있습니다.
-////        // 여기에서는 orElseThrow를 사용하여 문서를 찾지 못한 경우 예외를 던집니다.
-////        return optionalDocument.orElseThrow(() -> new RuntimeException("ID " + documentId + "에 해당하는 문서를 찾을 수 없습니다."));
-//    }
 
     public Document getDocumentById(Long documentId) {
         return documentRepository.findDocumentWithTemplateById(documentId);
     }
-
 
 
 }

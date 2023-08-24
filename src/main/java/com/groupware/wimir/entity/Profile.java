@@ -27,7 +27,7 @@ public class Profile {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public void updateProfile (String oriName, String imgName, String imgUrl){
+    public void updateProfile(String oriName, String imgName, String imgUrl) {
         this.oriName = oriName;
         this.imgName = imgName;
         this.imgUrl = imgUrl;

@@ -20,29 +20,16 @@ import java.util.UUID;
 @Log
 public class FileService {
 
-    public String uploadFile(String uploadPath, String oriName, byte[] fileData) throws Exception {
+    public String uploadFile(String uploadPath, String oriName, byte[] fileData) throws IOException {
         UUID uuid = UUID.randomUUID();
         String extension = oriName.substring(oriName.lastIndexOf("."));
-        String savedFileName = uuid.toString() + extension;
-        String fileUploadFullUrl = uploadPath + "/" + savedFileName;
-
-        // 폴더 생성 코드 추가
-        File uploadFolder = new File(uploadPath);
-        if (!uploadFolder.exists()) {
-            boolean folderCreated = uploadFolder.mkdirs();
-            if (folderCreated) {
-                System.out.println("폴더 생성 성공: " + uploadPath);
-            } else {
-                System.err.println("폴더 생성 실패: " + uploadPath);
-            }
-        } else {
-            System.out.println("폴더 이미 존재함: " + uploadPath);
-        }
-
-        FileOutputStream fos = new FileOutputStream(fileUploadFullUrl);
+        String savedName = uuid.toString() + extension;
+        String fileUploadUrl = uploadPath + "/" + savedName;
+        FileOutputStream fos = new FileOutputStream(fileUploadUrl);
         fos.write(fileData);
         fos.close();
-        return savedFileName;
+        return savedName;
+
     }
 
     public void deleteFile(String filePath) throws Exception {

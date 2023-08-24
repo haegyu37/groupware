@@ -43,7 +43,6 @@ public class AuthController {
     private final DocumentService documentService;
 
 
-
     //로그인
     @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody MemberRequestDTO requestDto) {
@@ -79,29 +78,6 @@ public class AuthController {
     public ResponseEntity<TokenDTO> refresh(@RequestBody TokenRequestDTO tokenRequestDTO) {
         return ResponseEntity.ok(authService.refresh(tokenRequestDTO));
     }
-
-
-
-
-
-//    //결재완료된 모든 문서 목록
-//    @GetMapping("/listdone")
-//    public List<Document> approvedDocs() {
-//        List<Document> approvedDocs = documentService.getApprovedDocuments();
-//        return approvedDocs;
-//    }
-//
-// 토큰상태 검증 api
-//    @RequestMapping(value = "/error", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-//    public ResponseEntity<String> authorizeError(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
-//        if (httpServletResponse.getHeader("STATUS").equals(TokenStatus.StatusCode.UNAUTHORIZED.name())) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNAUTHORIZED");
-//        }
-//        if (httpServletResponse.getHeader("STATUS").equals(TokenStatus.StatusCode.EXPIRED.name())) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("EXPIRED");
-//        }
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNKNOWN");
-//    }
 
 
 }

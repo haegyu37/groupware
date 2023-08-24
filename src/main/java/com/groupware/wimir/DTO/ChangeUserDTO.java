@@ -19,5 +19,4 @@ public class ChangeUserDTO {
     private Team team;
     private String img;
     private String name;
-//    private Long id;
 }

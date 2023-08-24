@@ -42,71 +42,18 @@ public class AdminController {
     private final ProfileRepository profileRepository;
 
     //직원 등록
-//    @PostMapping("/signup")
-//    public ResponseEntity<?> signup( @RequestPart(value="post", required = true) MemberRequestDTO requestDto,  @RequestPart(value="image", required = true) MultipartFile multipartFile) {
-//        try {
-//            authService.signup(requestDto, multipartFile);
-//            return ResponseEntity.ok(authService.signup(requestDto, multipartFile));
-//
-//        } catch (Exception e) {
-//            // 예외 처리: 예외가 발생하면 에러 응답 반환
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
-//        }
-//    }
-//    //직원 등록 되는거
-//    @PostMapping(value = "/signup", consumes = "multipart/form-data")
-//    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value="image",required = false) MultipartFile multipartFile) {
-//        try {
-//            System.out.println("사진1"+multipartFile);
-//
-//            MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
-//            MemberResponseDTO responseDto = authService.signup(requestDto, multipartFile);
-//
-//            System.out.println("사진"+multipartFile);
-//            return ResponseEntity.ok(responseDto);
-//        } catch (Exception e) {
-//            // 예외 처리: 예외가 발생하면 에러 응답 반환
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
-//        }
-//    }
-////직원등록 바이트 배열로 디코딩이 안됨
-//    @PostMapping(value = "/signup", consumes = "multipart/form-data")
-//    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value = "image", required = false) String base64Image) throws Exception {
-////        try {
-////            System.out.println("사진1: " + base64Image);
-//
-//        MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
-//
-//        // base64 이미지를 바이트 배열로 디코딩
-//        byte[] imageBytes = Base64Utils.decodeFromString(base64Image);
-//        System.out.println("사진" + imageBytes);
-//
-////        // 바이트 배열을 사용하여 MultipartFile 생성
-////        MultipartFile multipartFile = new ByteArrayMultipartFile(imageBytes, "image.jpg", MediaType.IMAGE_JPEG_VALUE);
-//
-//        MemberResponseDTO responseDto = authService.signup(requestDto, base64Image);
-//
-////            System.out.println("사진: " + multipartFile);
-//        return ResponseEntity.ok(responseDto);
-////        } catch (Exception e) {
-////            // 예외 처리: 예외가 발생하면 에러 응답 반환
-////            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
-////        }
-//    }
-
     @PostMapping(value = "/signup", consumes = "multipart/form-data")
-    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value = "image", required = false) String base64Image) throws Exception {
+    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value = "image", required = false) MultipartFile multipartFile) throws Exception {
         try {
             MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
 
-            MemberResponseDTO responseDto = authService.signup(requestDto, base64Image);
+            MemberResponseDTO responseDto = authService.signup(requestDto, multipartFile);
 
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
         }
     }
-
 
 
     //직원 목록
@@ -139,47 +86,8 @@ public class AdminController {
         MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
         Profile profile = profileRepository.findByMember(member);
         System.out.println("프로필" + profile);
-//        new UrlResource("img:" + profile.getImgUrl());
         return memberResponseDTO;
     }
-
-//    @GetMapping("/members/{id}")
-//    public MemberResponseDTO getMemberWithProfileById(@PathVariable Long id) throws MalformedURLException{
-//        Member member = memberService.getMemberById(id);
-//        MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
-//
-//        Profile profile = profileRepository.findByMember(member);
-//        memberResponseDTO.setImgUrl(profile.getImgUrl());
-//
-//            return new UrlResource("file:" + file.getFullPath(filename));
-////        if (member == null) {
-////            return ResponseEntity.notFound().build();
-////        }
-//
-//
-////        if (profile == null) {
-////            return ResponseEntity.notFound().build();
-////        }
-//
-////        MemberResponseDTO responseDTO = new MemberResponseDTO();
-////        responseDTO.setId(member.getId());
-////        responseDTO.setName(member.getName());
-////        responseDTO.setEmail(member.getEmail());
-////        responseDTO.setImgUrl(profile.getImgUrl());
-//
-//        return memberResponseDTO;
-//    }
-
-
-    //직원 조회
-//    @GetMapping("/profile/{id}")
-//    public Profile getprofileById(@PathVariable Long id) {
-////        Profile profile = profileRepository.findByMember(id);
-////        System.out.println("프로필" + profile);
-////        new UrlResource("img:" + file.getFullPath(filename));
-//        return profile;
-//    }
-
 
     //직원 정보 수정
     @PostMapping("/members/edit/{id}")

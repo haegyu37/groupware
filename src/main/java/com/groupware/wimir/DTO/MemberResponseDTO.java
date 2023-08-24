@@ -1,11 +1,11 @@
 package com.groupware.wimir.DTO;
+
 import com.groupware.wimir.entity.*;
 import com.groupware.wimir.repository.ProfileRepository;
 import lombok.*;
 
 import java.util.List;
 import java.util.Map;
-
 
 
 //Response를 보낼때 쓰이는 dto다.
@@ -20,8 +20,6 @@ public class MemberResponseDTO {
     private Position position;
     private Team team;
     private Authority authority;
-//    private String imgUrl;
-//    private Profile profile;
 
     public static MemberResponseDTO of(Member member) {
 
@@ -34,9 +32,6 @@ public class MemberResponseDTO {
                 .authority(member.getAuthority())
                 .build();
     }
-//    public void setImgUrl(String imgUrl) {
-//        this.imgUrl = imgUrl;
-//    }
 
 }
 
