@@ -158,12 +158,16 @@ public class LineService {
                 break; // 루프를 종료합니다.
             }
         }
+        Map<String, Object> appInfoForCancel = new HashMap<>();
 
         Approval currentApprover = approvals.get(memberIndex);
-        Approval nextApprover = approvals.get(memberIndex + 1);
+        if(memberIndex != memberIds.size() - 1) {
+            Approval nextApprover = approvals.get(memberIndex + 1);
+            appInfoForCancel.put("nextStauts", nextApprover.getStatus());
+        }
 
-        Map<String, Object> appInfoForCancel = new HashMap<>();
-        appInfoForCancel.put("nextStauts", nextApprover.getStatus());
+//        Map<String, Object> appInfoForCancel = new HashMap<>();
+//        appInfoForCancel.put("nextStauts", nextApprover.getStatus());
         appInfoForCancel.put("myCurrent", currentApprover.getCurrent());
         appInfoForCancel.put("myStatus", currentApprover.getStatus());
 
