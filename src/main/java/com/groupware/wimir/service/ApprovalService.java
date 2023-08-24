@@ -29,77 +29,73 @@ public class ApprovalService {
     @Autowired
     private DocumentRepository documentRepository;
 
-    //결재 요청
+    // 결재 요청
     public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {
-        Approval savedApproval = null;
-
-        Long maxDocId = documentRepository.findMaxDno(); // DB에서 문서아이디의 최대값을 가져옴 -> 중간에 문서가 삭제될 시, 잘못 번호가 매겨짐
+        Long maxDocId = documentRepository.findMaxDno();
         if (maxDocId == null) {
             maxDocId = 1L;
         } else {
             maxDocId = maxDocId + 1;
         }
 
+        List<Approval> savedApprovals = new ArrayList<>(); // 변경된 부분: 저장된 approvals를 모두 저장할 리스트
+
         if (documentDTO.getLineId() != null) {
             List<Approval> approvals = approvalRepository.findByLineId(documentDTO.getLineId());
 
-            List<Long> memberIds = approvals.stream().map(Approval::getMemberId).collect(Collectors.toList());
-            List<Long> writers = approvals.stream().map(Approval::getWriter).collect(Collectors.toList());
-            List<String> names = approvals.stream().map(Approval::getName).collect(Collectors.toList());
-            List<String> refers = approvals.stream().map(Approval::getRefer).collect(Collectors.toList());
-            // 다른 필드들에 대해서도 필요한 경우에 리스트로 추출
-
-            // 리스트로 만들어진 각 칼럼들의 값들을 approval 엔티티에 삽입
             for (int i = 0; i < approvals.size(); i++) {
-                Approval approval = new Approval();
-                approval.setMemberId(memberIds.get(i));
-                approval.setWriter(writers.get(i));
-                approval.setName(names.get(i));
-                approval.setRefer(refers.get(i));
+                Approval approval = approvals.get(i);
                 approval.setDocument(maxDocId);
 
                 if (i == 0) {
-                    approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
+                    approval.setCurrent("Y");
                 } else {
-                    approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
+                    approval.setCurrent("N");
                 }
 
-                savedApproval = approvalRepository.save(approval);
+                savedApprovals.add(approval); // 변경된 부분: 수정된 approval을 저장
             }
-            return ResponseEntity.ok(savedApproval);
-        } else { //결재자 각각 지정해서 삽입
-
+        } else {
             List<Long> approvers = documentDTO.getApprovers();
             Long currentMemberId = SecurityUtil.getCurrentMemberId();
-            approvers.add(0, currentMemberId);
 
-            int lastIndex = documentDTO.getApprovers().size() - 1; // 배열의 맨 마지막 인덱스
+            approvers.add(0, currentMemberId);
 
             for (int i = 0; i < approvers.size(); i++) {
                 Long approverId = approvers.get(i);
-                Approval approval = new Approval();
-                approval.setDocument(maxDocId);
-                approval.setMemberId(approverId);
-                approval.setRefer("결재");
-                
-                if (lastIndex == 2) {
-                    // 맨 마지막 인덱스인 경우 refer를 "참조"로 설정
-                    if (i == lastIndex) {
-                        approval.setRefer("참조");
+                if (approverId != null) {
+                    Approval approval = new Approval();
+                    approval.setDocument(maxDocId);
+                    approval.setMemberId(approverId);
+                    approval.setRefer("결재");
+
+                    if(approvers.size() == 4) {
+                        if (i == approvers.size() - 1) {
+                            approval.setRefer("참조");
+                        }
                     }
-                }
 
-                if (i == 0) {
-                    approval.setCurrent("Y"); // 첫 번째 결재자인 경우 current를 'Y'로 설정
-                } else {
-                    approval.setCurrent("N"); // 그 외의 결재자는 current를 'N'으로 설정
-                }
+                    if (i == 0) {
+                        approval.setCurrent("Y");
+                    } else {
+                        approval.setCurrent("N");
+                    }
 
-                savedApproval = approvalRepository.save(approval);
+                    savedApprovals.add(approval); // 변경된 부분: 새로운 approval을 저장
+                }
             }
-
         }
-        return ResponseEntity.ok(savedApproval);
+
+        // 변경된 부분: 모든 approvals를 저장
+        savedApprovals = approvalRepository.saveAll(savedApprovals);
+
+        // 저장된 마지막 approval을 반환
+        if (!savedApprovals.isEmpty()) {
+            Approval lastSavedApproval = savedApprovals.get(savedApprovals.size() - 1);
+            return ResponseEntity.ok(lastSavedApproval);
+        } else {
+            return ResponseEntity.badRequest().build(); // 저장된 approval이 없는 경우에 대한 처리
+        }
     }
 
     //내가 결재라인인 문서 리스트 all
@@ -231,7 +227,6 @@ public class ApprovalService {
         for (int i = 0; i < appNotRefer.size(); i++) {
             Approval approval = appNotRefer.get(i);
             if (i == 0) {
-                Optional<Document> documentOptional = documentRepository.findById(documentId);
                 doc.setResult("진행중"); //첫번째 결재자가 결재하면 문서 상태를 진행중으로 ..
             }
 
@@ -248,8 +243,7 @@ public class ApprovalService {
                 } else {
                     // 다음 결재자가 없는 경우, 즉 리스트의 마지막 결재자인 경우
                     // document의 result=승인
-                    Optional<Document> documentOptional = documentRepository.findById(documentId);
-                    Document document = documentOptional.orElse(null);
+                    Document document = documentRepository.findByDno(documentId);
 
                     if (document != null) {
                         document.setResult("승인");

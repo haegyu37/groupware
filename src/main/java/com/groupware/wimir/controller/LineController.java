@@ -44,9 +44,8 @@ public class LineController {
 
         List<Long> approvers = lineDTO.getApprovers();
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        approvers.add(0, currentMemberId);
 
-        int lastIndex = lineDTO.getApprovers().size() - 1; // 배열의 맨 마지막 인덱스
+        approvers.add(0, currentMemberId);
 
         for (int i = 0; i < lineDTO.getApprovers().size(); i++) {
             Long approverId = lineDTO.getApprovers().get(i);
@@ -59,9 +58,9 @@ public class LineController {
                 approval.setLineId(maxLineId);
                 approval.setRefer("결재");
 
-                if (lastIndex == 2) {
+                if (approvers.size() == 4) {
                     // 맨 마지막 인덱스인 경우 refer를 "참조"로 설정
-                    if (i == lastIndex) {
+                    if (i == approvers.size() - 1) {
                         approval.setRefer("참조");
                     }
                 }
