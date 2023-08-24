@@ -47,9 +47,9 @@ public class LineController {
 
         approvers.add(0, currentMemberId);
 
-        for (int i = 0; i < lineDTO.getApprovers().size(); i++) {
-            Long approverId = lineDTO.getApprovers().get(i);
-//            if (approverId != null) {
+        for (int i = 0; i < approvers.size(); i++) {
+            Long approverId = approvers.get(i);
+            if (approverId != null) {
                 Approval approval = new Approval();
                 approval.setMemberId(approverId);
                 approval.setName(lineDTO.getName());
@@ -59,14 +59,14 @@ public class LineController {
                 approval.setRefer("결재");
 
                 if (approvers.size() == 4) {
-                    // 맨 마지막 인덱스인 경우 refer를 "참조"로 설정
                     if (i == approvers.size() - 1) {
                         approval.setRefer("참조");
                     }
                 }
 
                 approvalRepository.save(approval);
-//            } else {
+            }
+//            else {
 //                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("직원을 찾을 수 없습니다. " + approverId);
 //            }
         }
