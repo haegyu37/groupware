@@ -81,10 +81,12 @@ public class ApprovalService {
                 approval.setDocument(maxDocId);
                 approval.setMemberId(approverId);
                 approval.setRefer("결재");
-
-                // 맨 마지막 인덱스인 경우 refer를 "참조"로 설정
-                if (i == lastIndex) {
-                    approval.setRefer("참조");
+                
+                if (lastIndex == 2) {
+                    // 맨 마지막 인덱스인 경우 refer를 "참조"로 설정
+                    if (i == lastIndex) {
+                        approval.setRefer("참조");
+                    }
                 }
 
                 if (i == 0) {
