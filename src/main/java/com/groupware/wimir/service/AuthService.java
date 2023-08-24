@@ -46,10 +46,11 @@ public class AuthService {
         member = memberRepository.save(member);
 
         // 이미지 저장 (이미지가 제공된 경우에만 처리)
-        if (requestDto.getImage() != null) {
+        if (!requestDto.getImage().equals("")) {
+            System.out.println("사진1" + requestDto.getImage());
             Profile profile = new Profile();
             profile.setMember(member);
-            profileService.saveProfile(profile, requestDto.getImage());
+//            profileService.saveProfile(profile, requestDto.getImage());
         }
 
         // MemberResponseDTO로 변환하여 반환
