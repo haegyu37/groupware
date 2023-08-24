@@ -164,10 +164,10 @@ public class LineService {
         if(memberIndex != memberIds.size() - 1) {
             Approval nextApprover = approvals.get(memberIndex + 1);
             appInfoForCancel.put("nextStauts", nextApprover.getStatus());
+        } else {
+            appInfoForCancel.put("nextStatus", null);
         }
 
-//        Map<String, Object> appInfoForCancel = new HashMap<>();
-//        appInfoForCancel.put("nextStauts", nextApprover.getStatus());
         appInfoForCancel.put("myCurrent", currentApprover.getCurrent());
         appInfoForCancel.put("myStatus", currentApprover.getStatus());
 
