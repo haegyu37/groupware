@@ -41,20 +41,31 @@ public class AdminController {
     private final TemplateRepository templateRepository;
     private final ProfileRepository profileRepository;
 
-    //직원 등록
-    @PostMapping(value = "/signup", consumes = "multipart/form-data")
-    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value = "image", required = false) MultipartFile multipartFile) throws Exception {
-        try {
-            MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
+//    //직원 등록
+//    @PostMapping(value = "/signup", consumes = "multipart/form-data")
+//    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value = "image", required = false) MultipartFile multipartFile) throws Exception {
+//        try {
+//            MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
+//
+//            MemberResponseDTO responseDto = authService.signup(requestDto, multipartFile);
+//
+//            return ResponseEntity.ok(responseDto);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
+//        }
+//    }
 
-            MemberResponseDTO responseDto = authService.signup(requestDto, multipartFile);
+    @PostMapping(value = "/signup", consumes = "application/json")
+    public ResponseEntity<?> signup(@RequestBody MemberRequestDTO requestDto) throws Exception {
+        try {
+            System.out.println("사진" + requestDto.getImage());
+            MemberResponseDTO responseDto = authService.signup(requestDto);
 
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
         }
     }
-
 
     //직원 목록
     @GetMapping("/members")
