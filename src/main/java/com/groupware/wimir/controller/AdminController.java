@@ -172,12 +172,12 @@ public class AdminController {
     }
 
     // 템플릿 수정 -> 관리자
-    @PutMapping(value = "/templates/update/{id}")
+    @PutMapping(value = "/templates/edit/{id}")
     public Template updateTemplate(@PathVariable Long id, @RequestBody TemplateDTO templateDTO) {
         Template updateTemplate = templateRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id));
         updateTemplate.setCategory(templateDTO.getCategory());
-        updateTemplate.setCategory(templateDTO.getContent());
+        updateTemplate.setContent(templateDTO.getContent());
 
         return templateRepository.save(updateTemplate);
     }

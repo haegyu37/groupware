@@ -33,7 +33,7 @@ public class ProfileService {
         // 파일 업로드
         if (!StringUtils.isEmpty(oriName)) {
             imgName = fileService.uploadFile(profileLocation, oriName, multipartFile.getBytes());
-            imgUrl = "/image/profile" + imgName;
+            imgUrl = "/image/profile/" + imgName;
         }
 
         // 상품 이미지 정보 저장
