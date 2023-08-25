@@ -1,0 +1,21 @@
+.container {
+    min-width: 700px;
+    width: 35%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    font-weight: bold;
+    color: #4429f2;
+    background: rgba(125, 121, 242, 0.05);
+    border: solid 1px rgba(68, 41, 242, 0.4);
+    border-radius: 20px;
+}
+
+.contents {
+    height: 60%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}

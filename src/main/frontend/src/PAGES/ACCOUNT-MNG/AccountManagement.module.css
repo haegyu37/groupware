@@ -1,0 +1,97 @@
+.wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    min-width: 700px;
+    width: 35%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    font-weight: bold;
+    color: #fa3e0c;
+    background: rgba(250, 62, 12, 0.05);
+    border: 1px solid rgba(250, 62, 12, 0.4);
+    border-radius: 20px;
+}
+
+.upper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 40px;
+}
+
+.contents {
+    height: 60%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+/* 프로필 */
+.profile {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 50px;
+}
+
+.profileImgLabel {
+    width: 150px;
+    height: 37px;
+    font-weight: normal;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background: #fa3e0c;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.profile img {
+    width: 150px;
+    height: 190px;
+    margin-bottom: 20px;
+    border: 3px solid rgba(250, 62, 12, 0.4);
+}
+.profile Button {
+    width: 150px;
+}
+
+/* 인풋 영역 */
+.table tr {
+    text-align: left;
+}
+
+.table th {
+    width: 100px;
+    height: 50px;
+}
+
+.table td {
+    width: 250px;
+    font-weight: normal;
+    color: #000000;
+    text-align: left;
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.modify {
+    display: flex;
+    justify-content: center;
+}
+

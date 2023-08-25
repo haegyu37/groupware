@@ -1,0 +1,52 @@
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
+.mainMenu {
+    padding: 20px;
+    margin: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    border: solid 1px rgba(68, 41, 242, 0.6);
+    width: 165px;
+    height: 280px;
+    border-radius: 20px;
+}
+
+.mainMenu:first-child {
+    margin-left: 30px;
+}
+
+.icon{
+    width: 80px;
+    height: 80px;
+    padding: 15px 15px;
+    margin-left: 25px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    text-align: center;
+}
+
+.divisionLine{
+    border-top: 1px solid #9b9b9d;
+    margin: 20px auto;
+    width: 100px;
+}
+
+.mainLink {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.mainLink a {
+    text-decoration: none;
+    padding-bottom: 10px;
+    color: #4429f2;
+}
+
+

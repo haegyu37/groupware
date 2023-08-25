@@ -1,0 +1,27 @@
+.App {
+    height: 100vh;
+    width: 100vw;
+    min-width: 1280px;
+    font-size: 16px;
+}
+
+.button {
+    --bs-btn-bg: none;
+    --bs-btn-color:#4429f2;
+    --bs-btn-border-color: #4429f2;
+    --bs-btn-hover-bg: #7d79f2;
+    --bs-btn-hover-border-color: #7d79f2;
+    --bs-btn-active-bg: #4429f2;
+    --bs-btn-active-border-color: #4429f2;
+}
+
+.buttonAdmin {
+    --bs-btn-bg: none;
+    --bs-btn-color: #fa3e0c;
+    --bs-btn-border-color: #fa3e0c;
+    --bs-btn-hover-bg:#fb5a2d;
+    --bs-btn-hover-border-color:#fb5a2d;
+    --bs-btn-active-bg:#fa3e0c;
+    --bs-btn-active-border-color:#fa3e0c;
+}
+

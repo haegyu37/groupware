@@ -1,0 +1,93 @@
+.wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.search {
+    width: 250px;
+    height: 100px;
+    position: relative;
+    left: calc(100% - 410px);
+    bottom: calc(100% - 770px);
+}
+
+.searchButton {
+    --bs-btn-bg:#4429f2;
+    --bs-btn-border-color:#4429f2;
+    --bs-btn-hover-bg: rgba(68, 41, 242, 0.7);
+    --bs-btn-hover-border-color: none;
+    --bs-btn-active-bg:#4429f2;
+    --bs-btn-active-border-color:#4429f2;
+}
+
+.cardContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    min-width: 800px;
+    width: 45%;
+    height: 130px;
+    border: 1px solid #afb0b1;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 25px;
+}
+
+.contents {
+    display: flex;
+    flex-direction: column;
+    width: 85%;
+}
+
+.upperState {
+    font-size: 15px;
+    font-weight: bold;
+    border-top-left-radius: 15px;
+    padding: 3px 20px;
+}
+
+.cardTitle {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.documentInfo {
+    height: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.cardUpper {
+    display: flex;
+    flex-direction: column;
+/*height: 200px;*/
+}
+
+
+.cardLower {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    color: grey;
+}
+
+.divisionLine{
+    border-right: 1px solid #afb0b1;
+    height: 129px;
+}
+
+.approvalButton {
+    width: 15%;
+    margin: auto;
+    text-align: center;
+    /*cursor: pointer;*/
+}

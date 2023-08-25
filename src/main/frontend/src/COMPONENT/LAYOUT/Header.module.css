@@ -1,0 +1,30 @@
+.header {
+    height: 95px;
+}
+
+.headerTitle {
+    padding: 5px 20px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.headerTitle a {
+    text-decoration: none;
+    color: #4429f2;
+}
+
+.headerLine {
+    background-color: #4429f2;
+    color: white;
+    font-weight: bold;
+    height: 40px;
+}
+
+.headerLine p {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 8px 40px;
+}
+
+

@@ -1,0 +1,60 @@
+.wrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 100px;
+}
+
+/* 검색창 */
+.search {
+    width: 300px;
+    float: right;
+    margin-bottom: 20px;
+}
+.searchButton {
+    --bs-btn-bg: none;
+    --bs-btn-color: #fa3e0c;
+    --bs-btn-border-color: #fa3e0c;
+    --bs-btn-hover-bg:#fb5a2d;
+    --bs-btn-hover-border-color:#fb5a2d;
+    --bs-btn-active-bg:#fa3e0c;
+    --bs-btn-active-border-color:#fa3e0c;
+}
+
+/* 테이블 영역 */
+
+.table {
+    width: 65%;
+    min-width: 800px;
+    margin: 0;
+}
+
+.tableHead th {
+    color: #fb5a2d;
+    font-weight: bold;
+    font-size: 23px;
+    background: rgba(250, 62, 12, 0.15);
+    text-align: center;
+}
+
+.tableBody td{
+    cursor: pointer;
+    text-align: center;
+}
+
+.stateButton {
+    min-width: 70px;
+    border-radius: 20px;
+    text-align: center;
+    padding: 4px 8px;
+}

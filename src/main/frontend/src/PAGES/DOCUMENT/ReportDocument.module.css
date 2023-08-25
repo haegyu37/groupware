@@ -1,0 +1,72 @@
+.wrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.buttonContainer {
+    height: 15%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.divisionLine {
+    border-bottom: 1px solid lightgray;
+    width: 600px;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: center;
+}
+
+.buttonGroup label {
+    border: none;
+    border-radius: 0;
+    background: rgba(68, 41, 242, 0.11);
+    color: #4429f2;
+    font-size: 20px;
+}
+
+.button {
+    --bs-btn-bg: rgba(68, 41, 242, 0.7);
+    --bs-btn-active-bg:#4429f2;
+    border-bottom: 1px solid #4429f2;
+}
+
+/* 검색창 */
+.search {
+    width: 300px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    float: right;
+}
+
+.searchButton {
+    --bs-btn-bg: none;
+    --bs-btn-color:#4429f2;
+    --bs-btn-border-color: #4429f2;
+    --bs-btn-hover-bg: #7d79f2;
+    --bs-btn-hover-border-color: #7d79f2;
+    --bs-btn-active-bg: #4429f2;
+    --bs-btn-active-border-color: #4429f2;
+}
+
+/* 테이블 영역 */
+.tableContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.table {
+    width: 65%;
+    min-width: 800px;
+}
+
+

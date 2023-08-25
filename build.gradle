@@ -12,6 +12,7 @@ plugins {
 	id 'java'
 	// QueryDSL 플러그인 추가
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+//	id "com.moowork.node" version "${mooworkNodeVersion}"
 }
 
 querydsl {
@@ -127,6 +128,30 @@ configurations {
 compileQuerydsl {
 	options.annotationProcessorPath = configurations.querydsl
 }
+
+//apply plugin: 'java'
+//apply plugin:'application'
+//
+//mainClassName = 'kr.pe.theeye.MyApp'
+//sourceCompatibility = 1.7
+//version = '1.0'
+//
+//jar {
+//	manifest {
+//		attributes  'Title': 'My Application', 'Version': version, 'Main-Class': mainClassName
+//	}
+//	archiveName 'MyApp.jar'
+////	dependsOn configurations.runtime
+//	from {
+//		configurations.compile.collect {it.isDirectory()? it: zipTree(it)}
+//	}
+//}
+//
+////task wrapper(type: Wrapper) {
+////	gradleVersion = '1.10'
+////}
+
+
 
 
 
