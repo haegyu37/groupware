@@ -22,6 +22,7 @@ public class MemberRequestDTO {
     private String name;
     private Position position; // 직급 이름
     private Team team; // 팀 이름
+    private String img; //이미지 추가
 
     public Member toMember(PasswordEncoder passwordEncoder) {
 
@@ -31,9 +32,10 @@ public class MemberRequestDTO {
                 .password(passwordEncoder.encode(password))
                 .name(name)
                 .position(position)
-              .authority(Authority.ROLE_ADMIN)
-//               .authority(Authority.ROLE_USER)
+              .authority(Authority.ADMIN)
+//               .authority(Authority.USER)
                 .team(team)
+                .img(img)
                 .build();
     }
     public UsernamePasswordAuthenticationToken toAuthentication() {

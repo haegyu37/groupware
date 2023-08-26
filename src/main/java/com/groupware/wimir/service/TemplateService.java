@@ -46,6 +46,7 @@ public class TemplateService {
 //        templateRepository.save(template);
 //    }
 
+<<<<<<< HEAD
     public List<Template> getTemplatesList() {
         return templateRepository.findAll();
     }
@@ -54,3 +55,19 @@ public class TemplateService {
         this.templatesList = templatesList;
     }
 }
+=======
+//    public void deleteTemplate(Long id) {
+//        templateRepository.deleteById(id);
+//    }
+//
+//    public List<Template> getTemplatesList() {
+//        return templateRepository.findAll();
+//    }
+//
+//    public void setTemplatesList(List<Template> templatesList) {
+//        this.templatesList = templatesList;
+//    }
+//}
+
+}
+>>>>>>> main

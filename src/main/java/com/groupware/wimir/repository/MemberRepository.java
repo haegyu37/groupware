@@ -24,6 +24,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     List<Member> findByPosition(Position position);
 
+//    Member findById(Long id);
+
 }
 
 

@@ -4,6 +4,7 @@ import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.ApprovalDTO;
 import com.groupware.wimir.entity.*;
 import com.groupware.wimir.repository.ApprovalRepository;
+import com.groupware.wimir.repository.DocumentRepository;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.MemberService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -29,6 +31,8 @@ public class ApprovalController {
     ApprovalService approvalService;
     @Autowired
     ApprovalRepository approvalRepository;
+    @Autowired
+    DocumentRepository documentRepository;
 
     //팀 모두 출력
     @GetMapping("/team")
@@ -55,8 +59,15 @@ public class ApprovalController {
     //팀원 출력
     @GetMapping("/team/{team}")
     public List<Member> getTeamMembers(@PathVariable("team") Team team) {
+        List<Member> members = memberRepository.findByTeam(team);
 
-        return memberRepository.findByTeam(team);
+
+        //block 계정 출력 안됨
+        List<Member> filteredMembers = members.stream()
+                .filter(member -> !member.getAuthority().equals(Authority.BLOCK))
+                .collect(Collectors.toList());
+
+        return filteredMembers;
     }
 
     //직급원 출력
@@ -106,8 +117,15 @@ public class ApprovalController {
         return myAppDocs;
     }
 
+    //내가 참조인 문서 리스트
+    @GetMapping("/listrefer")
+    public List<Document> referDocs() {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        return approvalService.getReferencedDocuments(currentMemberId);
+    }
+
     //내가 승인 앤나 반려한 리스트 just 내가 승인/반려 한 문서 리스트
-    @GetMapping("/listdone")
+    @GetMapping("/list/approve")
     public List<Document> getMyApproved() {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         //id를 기준으로 Approval을 찾는 메소드
@@ -115,13 +133,22 @@ public class ApprovalController {
         return myAppDocs;
     }
 
-    //    결재 승인 앤나 반려
+    @GetMapping("/list/reject")
+    public List<Document> getMyRejected() {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        //id를 기준으로 Approval을 찾는 메소드
+        List<Document> myAppDocs = approvalService.getRejected(currentMemberId);
+        return myAppDocs;
+    }
+
+
+    //결재 승인 앤나 반려
     @PostMapping("/approve")
     public ResponseEntity<String> approveDocument(@RequestBody ApprovalDTO approvalDTO) {
-        if (approvalDTO.getStatus() == 1) {
+        if (approvalDTO.getStatus().equals("승인")) {
             approvalService.approveDocument(approvalDTO.getDocument());
             return ResponseEntity.ok("결재가 승인되었습니다.");
-        } else if (approvalDTO.getStatus() == 2) {
+        } else if (approvalDTO.getStatus().equals("반려")) {
             approvalService.rejectDocument(approvalDTO, approvalDTO.getDocument());
             return ResponseEntity.ok("결재가 반려되었습니다.");
         } else {
@@ -129,15 +156,22 @@ public class ApprovalController {
         }
     }
 
+    //결재 취소
+    @PostMapping("/cancel")
+    public void cancleApproval(@RequestBody ApprovalDTO approvalDTO) {
+        approvalService.cancelApproval(approvalDTO.getDocument());
+    }
 
     //결재 회수
     @PostMapping("/back")
     public ResponseEntity<String> backApproval(@RequestBody ApprovalDTO approvalDTO) {
-        List<Approval> approvals = approvalRepository.findByDocument(approvalDTO.getDocument());
+        Document document = documentRepository.findById(approvalDTO.getDocument()).orElse(null);
+        Long dno = document.getDno();
+        List<Approval> approvals = approvalRepository.findByDocument(dno);
         Approval secondApprover = approvals.get(1);
 
-        //두번째 결재자가 이미 결재 했으면 결제 취소 먼저 요청해야됨
-        if (!secondApprover.getStatus().equals("대기") && secondApprover.getAppDate() != null) {
+        //두번째 결재자가 이미 결재 했으면 결재 취소 먼저 요청해야됨
+        if (secondApprover.getStatus() != null || secondApprover.getAppDate() != null) {
             return ResponseEntity.ok("이미 결재가 진행된 건을 회수할 수 없습니다.");
         }
         approvalService.backApproval(approvalDTO.getDocument());

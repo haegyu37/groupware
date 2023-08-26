@@ -136,6 +136,7 @@ public class LineService {
                     approvalInfo.put("name", memberInfo.getName()); //직원 이름
                     approvalInfo.put("team", memberInfo.getTeam()); //직원 부서
                     approvalInfo.put("position", memberInfo.getPosition()); //직원 직급
+                    approvalInfo.put("lineId", approval.getLineId()); //즐찾라인 아이디
                     approvalInfo.put("lineName", approval.getName()); //즐찾라인 이름
                     approvalInfo.put("status", approval.getStatus()); //결재 결과
                     approvalInfo.put("appDate", approval.getAppDate()); //결재일
@@ -150,13 +151,10 @@ public class LineService {
         return groupedApprovals;
     }
 
+    //dno로 결재 불러오기
     public List<Approval> getByDocument(Long id) {
         List<Approval> approvals = approvalRepository.findByDocument(id); //document로 approval 리스트 만듦
         return approvals;
     }
 
-//    public List<Approval> getBySno(Long sno) {
-//        List<Approval> lines = approvalRepository.findBySno(sno);
-//        return lines;
-//    }
 }
