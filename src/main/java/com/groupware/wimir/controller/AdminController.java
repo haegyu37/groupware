@@ -96,9 +96,9 @@ public class AdminController {
 //    }
     //직원 삭제
     @PostMapping("/delete/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        memberService.deleteMember(id);
-        return ResponseEntity.ok("사용자가 삭제됨.");
+    public Member deleteUser(@PathVariable Long id) {
+        Member member = memberService.deleteMember(id);
+        return member;
     }
 
 
