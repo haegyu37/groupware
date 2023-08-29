@@ -97,8 +97,7 @@ public class AdminController {
     //직원 삭제
     @PostMapping("/delete/{id}")
     public Member deleteUser(@PathVariable Long id) {
-        Member member = memberService.deleteMember(id);
-        return member;
+        return memberService.deleteMember(id);
     }
 
 
@@ -159,7 +158,6 @@ public class AdminController {
 
     //접속차단 앤나 접속차단 해제
     @PostMapping("/members/block")
-    @Transactional
     public ResponseEntity<String> blockUser(@RequestBody MemberBlockDTO memberBlockDTO) {
         try {
             if (memberBlockDTO.getAuthority().equals(Authority.BLOCK)) {

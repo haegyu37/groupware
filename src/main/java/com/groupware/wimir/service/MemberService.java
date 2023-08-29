@@ -110,7 +110,7 @@ public class MemberService {
         return MemberResponseDTO.of(updatedMember);
     }
 
-
+    @Transactional
     // 사용자의 권한을 ROLE_BLOCK으로 업데이트하는 메서드 추가
     public Member updateUserAuthorityToBlock(Long userId) {
         Member member = memberRepository.findById(userId)
@@ -121,6 +121,7 @@ public class MemberService {
         return member;
     }
 
+    @Transactional
     //직원 삭제
     public Member deleteMember(Long userId) {
         Member member = memberRepository.findById(userId)
