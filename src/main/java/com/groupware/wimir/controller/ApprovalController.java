@@ -64,7 +64,7 @@ public class ApprovalController {
 
         //block 계정 출력 안됨
         List<Member> filteredMembers = members.stream()
-                .filter(member -> !member.getAuthority().equals(Authority.BLOCK))
+                .filter(member -> !member.getAuthority().equals(Authority.BLOCK) && !member.getAuthority().equals(Authority.DELETE))
                 .collect(Collectors.toList());
 
         return filteredMembers;

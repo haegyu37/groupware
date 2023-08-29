@@ -27,6 +27,7 @@ import javax.transaction.Transactional;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin")
@@ -71,24 +72,35 @@ public class AdminController {
     @GetMapping("/members")
     public ResponseEntity<List<MemberResponseDTO>> getAllMembers() {
         List<MemberResponseDTO> members = memberService.getAllMembers();
-        return ResponseEntity.ok(members);
+        List<MemberResponseDTO> filteredMembers = members.stream()
+                .filter(member -> !member.getAuthority().equals(Authority.DELETE))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(filteredMembers);
     }
 
     //직원 삭제
-    @DeleteMapping("/delete/{memberId}")
-    public ResponseEntity<String> deleteMemberById(@PathVariable Long memberId) {
-        try {
-            Optional<Member> memberOptional = memberRepository.findById(memberId);
-            if (memberOptional.isPresent()) {
-                memberRepository.delete(memberOptional.get());
-                return ResponseEntity.ok("회원 정보가 삭제되었습니다.");
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+//    @DeleteMapping("/delete/{memberId}")
+//    public ResponseEntity<String> deleteMemberById(@PathVariable Long memberId) {
+//        try {
+//            Optional<Member> memberOptional = memberRepository.findById(memberId);
+//            if (memberOptional.isPresent()) {
+//                memberRepository.delete(memberOptional.get());
+//                return ResponseEntity.ok("회원 정보가 삭제되었습니다.");
+//            } else {
+//                return ResponseEntity.notFound().build();
+//            }
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
+    //직원 삭제
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        memberService.deleteMember(id);
+        return ResponseEntity.ok("사용자가 삭제됨.");
     }
+
 
     //직원 조회
     @GetMapping("/members/{id}")

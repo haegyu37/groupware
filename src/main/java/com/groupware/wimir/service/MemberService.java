@@ -121,6 +121,17 @@ public class MemberService {
         return member;
     }
 
+    //직원 삭제
+    public Member deleteMember(Long userId) {
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        member.setAuthority(Authority.DELETE);
+        memberRepository.save(member);
+        return member;
+    }
+
+
     // ID로 회원 조회
     public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
