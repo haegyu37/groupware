@@ -9,7 +9,7 @@ import java.util.Map;
 
 
 //Response를 보낼때 쓰이는 dto다.
-@Getter
+@Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -20,6 +20,7 @@ public class MemberResponseDTO {
     private Position position;
     private Team team;
     private Authority authority;
+//    private Profile profile;
 
     public static MemberResponseDTO of(Member member) {
 

@@ -14,6 +14,8 @@ import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.Base64;
 
+import static com.mysql.cj.util.StringUtils.getBytes;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -25,15 +27,15 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final FileService fileService;
 
-    public void saveProfile(Profile profile, String multipartFile) throws Exception {
-        String  oriName = Arrays.toString(multipartFile.getBytes());
+    public void saveProfile(Profile profile, MultipartFile multipartFile) throws Exception {
+        String oriName = multipartFile.getOriginalFilename(); // 파일 이름을 가져옴
         String imgName = "";
         String imgUrl = "";
 
         // 파일 업로드
         if (!StringUtils.isEmpty(oriName)) {
             imgName = fileService.uploadFile(profileLocation, oriName, multipartFile.getBytes());
-            imgUrl = "/image/profile/" + imgName;
+            imgUrl = "/images/profile/" + imgName;
         }
 
         // 상품 이미지 정보 저장

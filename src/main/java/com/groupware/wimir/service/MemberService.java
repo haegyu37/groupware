@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -163,5 +165,10 @@ public class MemberService {
         return member;
 
     }
+
+//    public Member getMemberWithProfileById(Long id) {
+//        return memberRepository.findById(id)
+//                .orElseThrow(() -> new EntityNotFoundException("Member not found with id: " + id));
+//    }
 }
 

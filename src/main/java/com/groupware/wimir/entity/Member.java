@@ -34,6 +34,10 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Authority authority; //직원 권한
 
+//    @OneToOne(mappedBy = "member", fetch = FetchType.EAGER)
+//    private Profile profile;
+
+
     public void setPassword(String password) {
         this.password = password;
     }

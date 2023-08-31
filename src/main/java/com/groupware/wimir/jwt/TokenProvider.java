@@ -113,7 +113,8 @@ public class TokenProvider {
             log.info("잘못된 JWT 서명입니다");
             return TokenStatus.StatusCode.UNAUTHORIZED;
         } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
+            log.info("JWT 토큰이 잘못됨!!");
+            log.info("토큰" + token);
             return TokenStatus.StatusCode.UNKNOWN;
         }
     }

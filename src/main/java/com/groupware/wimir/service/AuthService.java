@@ -36,7 +36,7 @@ public class AuthService {
     private final ProfileRepository profileRepository;
 
 
-    public MemberResponseDTO signup(MemberRequestDTO requestDto) throws Exception {
+    public MemberResponseDTO signup(MemberRequestDTO requestDto, MultipartFile multipartFile) throws Exception {
         if (memberRepository.existsByNo(requestDto.getNo())) {
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
@@ -46,11 +46,11 @@ public class AuthService {
         member = memberRepository.save(member);
 
         // 이미지 저장 (이미지가 제공된 경우에만 처리)
-        if (!requestDto.getImage().equals("")) {
-            System.out.println("사진1" + requestDto.getImage());
+        if (multipartFile != null) {
+            System.out.println("사진1" + multipartFile);
             Profile profile = new Profile();
             profile.setMember(member);
-            profileService.saveProfile(profile, requestDto.getImage());
+            profileService.saveProfile(profile, multipartFile);
         }
 
         // MemberResponseDTO로 변환하여 반환

@@ -1,23 +1,13 @@
 // 스프링 2.6.0 이상에 dsl 사용시 버전 확인 (5.0.0)
 buildscript {
-	ext {
-		queryDslVersion = "5.0.0"
-	}
+    ext {
+        queryDslVersion = "5.0.0"
+    }
 }
-
-
 plugins {
-	id 'org.springframework.boot' version '2.7.12'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-	id 'java'
-	// QueryDSL 플러그인 추가
-	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
-//	id "com.moowork.node" version "${mooworkNodeVersion}"
-}
-
-querydsl {
-	jpa = true
-	querydslSourcesDir = projectDir.path + "/src/main/generated"
+    id 'org.springframework.boot' version '2.7.15'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
 }
 
 group = 'com.groupware'
@@ -25,171 +15,132 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
-repositories {
-	mavenCentral()
+
+tasks.withType(Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+repositories {
+    mavenCentral()
+}
+
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.projectlombok:lombok:1.18.26'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.projectlombok:lombok:1.18.26'
 
-	// 엑셀 파일
-	implementation group: 'org.apache.poi', name: 'poi', version: '5.2.2'
-	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.2'
-	// pdf 파일
-	implementation 'com.itextpdf:itextpdf:5.5.13.3'
-	implementation 'com.itextpdf.tool:xmlworker:5.5.13.3'
-	implementation 'com.itextpdf:pdfa:7.2.3'
-	// 웹 변환
-	implementation group: 'org.xhtmlrenderer', name: 'flying-saucer-pdf-openpdf', version: '9.1.22'
-	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
-	// odf toolkit
-	implementation 'org.odftoolkit:simple-odf:0.9.0'
-	// summernote
-	implementation 'org.webjars.npm:summernote:0.8.20'
-	//model mapper
-	implementation 'org.modelmapper:modelmapper:2.3.9'
-	//dsl
-	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+    // 엑셀 파일
+    implementation group: 'org.apache.poi', name: 'poi', version: '5.2.2'
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.2'
+    // pdf 파일
+    implementation 'com.itextpdf:itextpdf:5.5.13.3'
+    implementation 'com.itextpdf.tool:xmlworker:5.5.13.3'
+    implementation 'com.itextpdf:pdfa:7.2.3'
+    // 웹 변환
+    implementation group: 'org.xhtmlrenderer', name: 'flying-saucer-pdf-openpdf', version: '9.1.22'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+    // odf toolkit
+    implementation 'org.odftoolkit:simple-odf:0.9.0'
+    // summernote
+    implementation 'org.webjars.npm:summernote:0.8.20'
+    //model mapper
+    implementation 'org.modelmapper:modelmapper:2.3.9'
+    //dsl
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.12'
-	testImplementation 'org.springframework:spring-test:5.3.27'
-
-
-
-	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.27'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	annotationProcessor 'org.projectlombok:lombok'
-//	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.12'
+    testImplementation 'org.springframework:spring-test:5.3.27'
 
 
-	annotationProcessor(
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.27'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
 
-			"javax.persistence:javax.persistence-api",
-			"javax.annotation:javax.annotation-api",
-			"com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
 
-	// Spring Security 추가
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.security:spring-security-test'
+    annotationProcessor(
 
-	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
-	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
-	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+            "javax.persistence:javax.persistence-api",
+            "javax.annotation:javax.annotation-api",
+            "com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
 
-	// SLF4J API
-	implementation 'org.slf4j:slf4j-api:1.7.32'
-	// SLF4J 로그 바인딩 (예: Logback)
-	implementation 'ch.qos.logback:logback-classic:1.2.6'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
-	implementation 'commons-io:commons-io:2.11.0' // commons-io 라이브러리 추가
+    // SLF4J API
+    implementation 'org.slf4j:slf4j-api:1.7.32'
+    // SLF4J 로그 바인딩 (예: Logback)
+    implementation 'ch.qos.logback:logback-classic:1.2.6'
+
+    implementation 'commons-io:commons-io:2.11.0' // commons-io 라이브러리 추가
 }
 //새로 넣은거
-def webappDir = "$projectDir/src/main/[frontend]"
+def webappDir = "$projectDir/src/main/frontend"
+
 
 sourceSets {
-	main {
-		resources {
-			srcDirs = ["$webappDir/build", "$projectDir/src/main/resources"]
-		}
-	}
+    main {
+        resources {
+            srcDirs = ["$webappDir/build", "/src/main/resources"]
+        }
+    }
 }
 
-processResources {
-	dependsOn "buildReact"
-}
 
-task buildReact(type: Exec) {
-	dependsOn "installReact"
-	workingDir "$webappDir"
-	inputs.dir "$webappDir"
-	group = BasePlugin.BUILD_GROUP
-	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-		commandLine "npm.cmd", "run-script", "build"
-	} else {
-		commandLine "npm", "run-script", "build"
-	}
-}
+//processResources {
+//    dependsOn "buildReact"
+//}
+//
+//task buildReact(type: Exec) {
+//    dependsOn "installReact"
+//    workingDir "$webappDir"
+//    inputs.dir "$webappDir"
+//    group = BasePlugin.BUILD_GROUP
+//    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+//        commandLine "npm.cmd", "run-script", "build"
+//    } else {
+//        commandLine "npm", "run-script", "build"
+//    }
+//}
 
 task installReact(type: Exec) {
-	workingDir "$webappDir"
-	inputs.dir "$webappDir"
-	group = BasePlugin.BUILD_GROUP
-	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-		commandLine "npm.cmd", "audit", "fix"
-		commandLine 'npm.cmd', 'install'
-	} else {
-		commandLine "npm", "audit", "fix"
-		commandLine 'npm', 'install'
-	}
-}//여기까지 새로 추가한 애들
+    workingDir "$webappDir"
+    inputs.dir "$webappDir"
+    group = BasePlugin.BUILD_GROUP
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine "npm.cmd", "audit", "fix"
+        commandLine 'npm.cmd', 'install'
+    } else {
+        commandLine "npm", "audit", "fix"
+        commandLine 'npm', 'install'
+    }
+}
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 tasks.withType(JavaCompile) {
-	options.compilerArgs << "-Xlint:deprecation"
+    options.compilerArgs << "-Xlint:deprecation"
 }
-
-//sourceSets {
-//	main {
-//		java {
-//			srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
-//		}
-//	}
-//}
-
-// script for querydsl
-def querydslDir = "$buildDir/generated/querydsl"
-querydsl {
-	jpa = true
-	querydslSourcesDir = querydslDir
-}
+def querydslDir = "/generated/querydsl"
 sourceSets {
-	main.java.srcDir querydslDir
+    main.java.srcDir querydslDir
 }
-configurations {
-	querydsl.extendsFrom compileClasspath
-}
-compileQuerydsl {
-	options.annotationProcessorPath = configurations.querydsl
+// Querydsl 추가, 자동 생성된 Q 클래스 gradle clean 으로 제거
+clean {
+    delete file('/src/main/generated')
 }
 
-//apply plugin: 'java'
-//apply plugin:'application'
-//
-//mainClassName = 'kr.pe.theeye.MyApp'
-//sourceCompatibility = 1.7
-//version = '1.0'
-//
-//jar {
-//	manifest {
-//		attributes  'Title': 'My Application', 'Version': version, 'Main-Class': mainClassName
-//	}
-//	archiveName 'MyApp.jar'
-////	dependsOn configurations.runtime
-//	from {
-//		configurations.compile.collect {it.isDirectory()? it: zipTree(it)}
-//	}
-//}
-//
-////task wrapper(type: Wrapper) {
-////	gradleVersion = '1.10'
-////}
-
-
-
-
-
+tasks.named('test') {
+    useJUnitPlatform()
+}

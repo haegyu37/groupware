@@ -15,7 +15,11 @@ import com.groupware.wimir.service.DocumentService;
 import com.groupware.wimir.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +29,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,32 +51,35 @@ public class AdminController {
     private final DocumentService documentService;
     private final TemplateRepository templateRepository;
     private final ProfileRepository profileRepository;
+    @Value("${ProfileLocation}")
+    private String profileLocation;
 
-//    //직원 등록
-//    @PostMapping(value = "/signup", consumes = "multipart/form-data")
-//    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value = "image", required = false) MultipartFile multipartFile) throws Exception {
-//        try {
-//            MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
-//
-//            MemberResponseDTO responseDto = authService.signup(requestDto, multipartFile);
-//
-//            return ResponseEntity.ok(responseDto);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
-//        }
-//    }
-
-    @PostMapping(value = "/signup", consumes = "application/json")
-    public ResponseEntity<?> signup(@RequestBody MemberRequestDTO requestDto) throws Exception {
+    //직원 등록
+    @PostMapping(value = "/signup", consumes = "multipart/form-data")
+    public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value = "image", required = false) MultipartFile multipartFile) throws Exception {
         try {
-            System.out.println("사진" + requestDto.getImage());
-            MemberResponseDTO responseDto = authService.signup(requestDto);
+            MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
+            System.out.println("사진" + multipartFile);
+
+            MemberResponseDTO responseDto = authService.signup(requestDto, multipartFile);
 
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
         }
     }
+
+//    @PostMapping(value = "/signup", consumes = "application/json")
+//    public ResponseEntity<?> signup(@RequestBody MemberRequestDTO requestDto) throws Exception {
+//        try {
+//            System.out.println("사진" + requestDto.getImage());
+//            MemberResponseDTO responseDto = authService.signup(requestDto);
+//
+//            return ResponseEntity.ok(responseDto);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
+//        }
+//    }
 
     //직원 목록
     @GetMapping("/members")
@@ -103,13 +116,38 @@ public class AdminController {
 
     //직원 조회
     @GetMapping("/members/{id}")
-    public MemberResponseDTO getMemberById(@PathVariable Long id) throws MalformedURLException {
-        Member member = memberService.getMemberById(id);
-        MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
+    public Map<String, Object> getMemberById(@PathVariable Long id) throws MalformedURLException {
+        Member member = memberService.findMemberById(id);
         Profile profile = profileRepository.findByMember(member);
-        System.out.println("프로필" + profile);
-        return memberResponseDTO;
+        Path imagePath = Paths.get(profile.getImgUrl());
+
+        MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
+//        memberResponseDTO.setProfile(profile);
+
+        // Map에 데이터 추가
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("memberResponseDTO", memberResponseDTO);
+        responseMap.put("imagePath", imagePath.toString());
+
+
+        return responseMap;
+
+
     }
+
+//    @GetMapping("/{imageName}")
+//    public ResponseEntity<byte[]> getProfileImage(@PathVariable String imageName) throws IOException {
+//        Path imagePath = Paths.get(profileImageDir, imageName);
+//        if (Files.exists(imagePath)) {
+//            byte[] imageBytes = Files.readAllBytes(imagePath);
+//            return ResponseEntity.ok()
+//                    .contentType(MediaType.IMAGE_JPEG) // 이미지 타입에 따라 수정
+//                    .body(imageBytes);
+//        } else {
+//            // 이미지가 존재하지 않을 경우 404 응답
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
     //직원 정보 수정
     @PostMapping("/members/edit/{id}")
