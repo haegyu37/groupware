@@ -95,7 +95,13 @@ public class AdminController {
     public Map<String, Object> getMemberById(@PathVariable Long id) throws MalformedURLException {
         Member member = memberService.findMemberById(id);
         Profile profile = profileService.getMaxProfile(member);
-        Path imagePath = Paths.get(profile.getImgUrl());
+        
+        Path imagePath = null;
+        if (profile != null) {
+            imagePath = Paths.get(profile.getImgUrl());
+        } else {
+            imagePath = Paths.get("");
+        }
 
         MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
 
