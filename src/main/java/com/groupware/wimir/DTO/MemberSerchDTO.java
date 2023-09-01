@@ -8,4 +8,5 @@ import lombok.Setter;
 public class MemberSerchDTO {
     private String searchQuery="";
     private Team team;
+    private String searchBy;
 }

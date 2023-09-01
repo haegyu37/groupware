@@ -14,10 +14,12 @@ import com.groupware.wimir.service.AuthService;
 import com.groupware.wimir.service.DocumentService;
 import com.groupware.wimir.service.MemberService;
 import com.groupware.wimir.service.ProfileService;
+import jdk.swing.interop.SwingInterOpUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -29,7 +31,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -61,7 +67,6 @@ public class AdminController {
     public ResponseEntity<?> signup(@RequestPart("post") String post, @RequestPart(value = "image", required = false) MultipartFile multipartFile) throws Exception {
         try {
             MemberRequestDTO requestDto = new ObjectMapper().readValue(post, MemberRequestDTO.class);
-            System.out.println("사진" + multipartFile);
 
             MemberResponseDTO responseDto = authService.signup(requestDto, multipartFile);
 
@@ -92,19 +97,17 @@ public class AdminController {
 
     //직원 조회
     @GetMapping("/members/{id}")
-    public MemberResponseDTO getMemberById(@PathVariable Long id) throws MalformedURLException {
+    public  MemberResponseDTO getMemberById(@PathVariable Long id) throws IOException {
         Member member = memberService.findMemberById(id);
         Profile profile = profileService.getMaxProfile(member);
-
-        Path imagePath = null;
-        if (profile != null) {
-            imagePath = Paths.get(profile.getImgUrl());
-        } else {
-            imagePath = Paths.get("");
-        }
-
         MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
-        memberResponseDTO.setImagePath(imagePath.toString());
+
+        if (profile != null) {
+            String imagePath = profileLocation + profile.getImgName();
+            Path filePath = Paths.get(imagePath);
+            Resource imageResource = new UrlResource(filePath.toUri());
+            memberResponseDTO.setImage(imageResource);
+        }
 
         return memberResponseDTO;
     }

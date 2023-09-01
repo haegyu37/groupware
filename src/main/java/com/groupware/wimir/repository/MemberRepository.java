@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.List;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Long>{
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom{
 
     Optional<Member> findByNo(String no);
 

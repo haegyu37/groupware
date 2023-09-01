@@ -4,10 +4,7 @@ package com.groupware.wimir.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.groupware.wimir.Config.SecurityUtil;
-import com.groupware.wimir.DTO.ChangePasswordRequestDTO;
-import com.groupware.wimir.DTO.ChangeUserDTO;
-import com.groupware.wimir.DTO.MemberRequestDTO;
-import com.groupware.wimir.DTO.MemberResponseDTO;
+import com.groupware.wimir.DTO.*;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Profile;
 import com.groupware.wimir.exception.ResourceNotFoundException;
@@ -18,15 +15,21 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -44,23 +47,23 @@ public class MemberController {
     private MemberRepository memberRepository;
     @Autowired
     private ProfileService profileService;
+    @Value("${ProfileLocation}")
+    private String profileLocation;
 
     //마이페이지
     @GetMapping("/me")
-    public MemberResponseDTO getMyMemberInfo() {
+    public MemberResponseDTO getMyMemberInfo() throws IOException {
         Long currentId = SecurityUtil.getCurrentMemberId();
         Member member = memberService.findMemberById(currentId);
         Profile profile = profileService.getMaxProfile(member);
-
-        Path imagePath = null;
-        if (profile != null) {
-            imagePath = Paths.get(profile.getImgUrl());
-        } else {
-            imagePath = Paths.get("");
-        }
-
         MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
-        memberResponseDTO.setImagePath(imagePath.toString());
+
+        if (profile != null) {
+            String imagePath = profileLocation + profile.getImgName();
+            Path filePath = Paths.get(imagePath);
+            Resource imageResource = new UrlResource(filePath.toUri());
+            memberResponseDTO.setImage(imageResource);
+        }
 
         return memberResponseDTO;
     }
@@ -86,6 +89,12 @@ public class MemberController {
         }
 
         return newMember;
+    }
+
+    @GetMapping("/search")
+    public List<Member> searchMembers(@RequestBody MemberSerchDTO memberSerchDTO) {
+        List<Member> members = memberRepository.getMembers(memberSerchDTO);
+        return members;
     }
 
 }

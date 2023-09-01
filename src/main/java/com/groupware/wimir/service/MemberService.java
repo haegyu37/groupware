@@ -3,6 +3,7 @@ package com.groupware.wimir.service;
 import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.ChangeUserDTO;
 import com.groupware.wimir.DTO.MemberResponseDTO;
+import com.groupware.wimir.DTO.MemberSerchDTO;
 import com.groupware.wimir.entity.Authority;
 import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.entity.Position;
@@ -166,9 +167,9 @@ public class MemberService {
 
     }
 
-//    public Member getMemberWithProfileById(Long id) {
-//        return memberRepository.findById(id)
-//                .orElseThrow(() -> new EntityNotFoundException("Member not found with id: " + id));
-//    }
+    @Transactional(readOnly = true)
+    public List<Member> getMembers(MemberSerchDTO memberSerchDTO){
+        return memberRepository.getMembers(memberSerchDTO);
+    }
 }
 
