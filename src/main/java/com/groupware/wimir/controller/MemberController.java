@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -61,9 +64,14 @@ public class MemberController {
         if (profile != null) {
             String imagePath = profileLocation + profile.getImgName();
             Path filePath = Paths.get(imagePath);
-//            System.out.println("사진" + filePath);
-//            Resource imageResource = new UrlResource(filePath.toUri());
-            memberResponseDTO.setImage(filePath);
+
+            byte[] imageBytes = Files.readAllBytes(filePath);
+            System.out.println("바이트" + imageBytes);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG); // 이미지 타입에 맞게 설정
+
+            memberResponseDTO.setImage(imageBytes);
         }
 
         return memberResponseDTO;

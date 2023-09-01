@@ -107,7 +107,7 @@ public class AdminController {
             Path filePath = Paths.get(imagePath);
 //            System.out.println("사진" + filePath);
 //            Resource imageResource = new UrlResource(filePath.toUri());
-            memberResponseDTO.setImage(filePath);
+//            memberResponseDTO.setImage(filePath);
         }
 
         return memberResponseDTO;
