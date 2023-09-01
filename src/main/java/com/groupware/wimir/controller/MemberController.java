@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -77,6 +78,15 @@ public class MemberController {
 
         return memberResponseDTO;
     }
+
+    @CrossOrigin
+    @GetMapping("/image")
+    public ResponseEntity<?> returnImage(@RequestParam String imageName){
+        String path = profileLocation;
+        Resource resource = new FileSystemResource(path + imageName);
+        return new ResponseEntity<>(resource, HttpStatus.OK);
+    }
+
 
 
     //내 정보 수정 -> 비밀번호 변경, 이미지 수정
