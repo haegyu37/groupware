@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ProfileRepository extends JpaRepository<Profile, Long> {
-    Profile findByMember(Member member);
+    List<Profile> findByMember(Member member);
 }

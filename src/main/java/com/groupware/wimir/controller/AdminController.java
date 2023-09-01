@@ -13,6 +13,7 @@ import com.groupware.wimir.repository.TemplateRepository;
 import com.groupware.wimir.service.AuthService;
 import com.groupware.wimir.service.DocumentService;
 import com.groupware.wimir.service.MemberService;
+import com.groupware.wimir.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,6 +52,7 @@ public class AdminController {
     private final DocumentService documentService;
     private final TemplateRepository templateRepository;
     private final ProfileRepository profileRepository;
+    private final ProfileService profileService;
     @Value("${ProfileLocation}")
     private String profileLocation;
 
@@ -69,17 +71,6 @@ public class AdminController {
         }
     }
 
-//    @PostMapping(value = "/signup", consumes = "application/json")
-//    public ResponseEntity<?> signup(@RequestBody MemberRequestDTO requestDto) throws Exception {
-//        try {
-//            System.out.println("사진" + requestDto.getImage());
-//            MemberResponseDTO responseDto = authService.signup(requestDto);
-//
-//            return ResponseEntity.ok(responseDto);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 가입 중 오류 발생: " + e.getMessage());
-//        }
-//    }
 
     //직원 목록
     @GetMapping("/members")
@@ -93,21 +84,6 @@ public class AdminController {
     }
 
     //직원 삭제
-//    @DeleteMapping("/delete/{memberId}")
-//    public ResponseEntity<String> deleteMemberById(@PathVariable Long memberId) {
-//        try {
-//            Optional<Member> memberOptional = memberRepository.findById(memberId);
-//            if (memberOptional.isPresent()) {
-//                memberRepository.delete(memberOptional.get());
-//                return ResponseEntity.ok("회원 정보가 삭제되었습니다.");
-//            } else {
-//                return ResponseEntity.notFound().build();
-//            }
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
-    //직원 삭제
     @PostMapping("/delete/{id}")
     public Member deleteUser(@PathVariable Long id) {
         return memberService.deleteMember(id);
@@ -118,11 +94,10 @@ public class AdminController {
     @GetMapping("/members/{id}")
     public Map<String, Object> getMemberById(@PathVariable Long id) throws MalformedURLException {
         Member member = memberService.findMemberById(id);
-        Profile profile = profileRepository.findByMember(member);
+        Profile profile = profileService.getMaxProfile(member);
         Path imagePath = Paths.get(profile.getImgUrl());
 
         MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
-//        memberResponseDTO.setProfile(profile);
 
         // Map에 데이터 추가
         Map<String, Object> responseMap = new HashMap<>();
@@ -135,31 +110,17 @@ public class AdminController {
 
     }
 
-//    @GetMapping("/{imageName}")
-//    public ResponseEntity<byte[]> getProfileImage(@PathVariable String imageName) throws IOException {
-//        Path imagePath = Paths.get(profileImageDir, imageName);
-//        if (Files.exists(imagePath)) {
-//            byte[] imageBytes = Files.readAllBytes(imagePath);
-//            return ResponseEntity.ok()
-//                    .contentType(MediaType.IMAGE_JPEG) // 이미지 타입에 따라 수정
-//                    .body(imageBytes);
-//        } else {
-//            // 이미지가 존재하지 않을 경우 404 응답
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
-
     //직원 정보 수정
-    @PostMapping("/members/edit/{id}")
-    public Member editMember(@PathVariable Long id, @RequestBody ChangeUserDTO changeUserDTO) {
+    @PostMapping(value = "/members/edit/{id}", consumes = "multipart/form-data")
+    public Member editMember(@PathVariable Long id, @RequestPart("post") String post, @RequestPart(value = "image", required = false) MultipartFile multipartFile) throws Exception {
         Member member = memberRepository.findById(id).orElse(null);
+        ChangeUserDTO changeUserDTO = new ObjectMapper().readValue(post, ChangeUserDTO.class);
         String newPassword = changeUserDTO.getNewPassword();
-        String newImg = changeUserDTO.getImg();
         Team newTeam = changeUserDTO.getTeam();
         Position newPosition = changeUserDTO.getPosition();
         String newName = changeUserDTO.getName();
 
-        if (newPassword == null && newImg == null && newTeam == null && newPosition == null && newName == null) {
+        if (newPassword == null && multipartFile == null && newTeam == null && newPosition == null && newName == null) {
             throw new IllegalArgumentException("수정값 없음");
         }
 
@@ -167,11 +128,6 @@ public class AdminController {
         if (newPassword != null) {
             memberService.changeUserPasswordByAdmin(id, newPassword);
         }
-
-//        // 사진 변경
-//        if (newImg != null) {
-//            member.setImg(newImg);
-//        }
 
         // 팀 변경
         if (newTeam != null) {
@@ -187,6 +143,14 @@ public class AdminController {
         if (newName != null) {
             member.setName(newName);
         }
+
+        // 프로필 업데이트
+        Profile profile = new Profile();
+        profile.setMember(member);
+        if (multipartFile != null) {
+            profileService.saveProfile(profile, multipartFile);
+        }
+
 
         memberRepository.save(member);
         Member newMember = memberRepository.findById(id).orElse(null);
