@@ -20,7 +20,10 @@ public class MemberResponseDTO {
     private Position position;
     private Team team;
     private Authority authority;
+    private String imagePath;
 //    private Profile profile;
+
+//    private ProfileRepository profileRepository;
 
     public static MemberResponseDTO of(Member member) {
 
@@ -31,6 +34,7 @@ public class MemberResponseDTO {
                 .position(member.getPosition())
                 .team(member.getTeam())
                 .authority(member.getAuthority())
+//                .imagePath()
                 .build();
     }
 

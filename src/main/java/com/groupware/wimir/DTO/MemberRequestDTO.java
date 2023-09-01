@@ -25,6 +25,7 @@ public class MemberRequestDTO {
     private String name;
     private Position position; // 직급 이름
     private Team team; // 팀 이름
+//    private String imageUrl;
 //    private MultipartFile image;
 
     public Member toMember(PasswordEncoder passwordEncoder) {

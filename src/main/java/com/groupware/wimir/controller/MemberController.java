@@ -47,7 +47,7 @@ public class MemberController {
 
     //마이페이지
     @GetMapping("/me")
-    public Map<String, Object> getMyMemberInfo() {
+    public MemberResponseDTO getMyMemberInfo() {
         Long currentId = SecurityUtil.getCurrentMemberId();
         Member member = memberService.findMemberById(currentId);
         Profile profile = profileService.getMaxProfile(member);
@@ -60,13 +60,14 @@ public class MemberController {
         }
 
         MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
+        memberResponseDTO.setImagePath(imagePath.toString());
 
         // Map에 데이터 추가
-        Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("memberResponseDTO", memberResponseDTO);
-        responseMap.put("imagePath", imagePath.toString());
+//        Map<String, Object> responseMap = new HashMap<>();
+//        responseMap.put("memberResponseDTO", memberResponseDTO);
+//        responseMap.put("imagePath", imagePath.toString());
 
-        return responseMap;
+        return memberResponseDTO;
     }
 
 
