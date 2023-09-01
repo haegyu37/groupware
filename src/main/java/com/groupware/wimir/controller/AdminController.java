@@ -92,10 +92,10 @@ public class AdminController {
 
     //직원 조회
     @GetMapping("/members/{id}")
-    public Map<String, Object> getMemberById(@PathVariable Long id) throws MalformedURLException {
+    public MemberResponseDTO getMemberById(@PathVariable Long id) throws MalformedURLException {
         Member member = memberService.findMemberById(id);
         Profile profile = profileService.getMaxProfile(member);
-        
+
         Path imagePath = null;
         if (profile != null) {
             imagePath = Paths.get(profile.getImgUrl());
@@ -104,16 +104,9 @@ public class AdminController {
         }
 
         MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
+        memberResponseDTO.setImagePath(imagePath.toString());
 
-        // Map에 데이터 추가
-        Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("memberResponseDTO", memberResponseDTO);
-        responseMap.put("imagePath", imagePath.toString());
-
-
-        return responseMap;
-
-
+        return memberResponseDTO;
     }
 
     //직원 정보 수정

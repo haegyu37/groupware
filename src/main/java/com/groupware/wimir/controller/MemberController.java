@@ -62,11 +62,6 @@ public class MemberController {
         MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
         memberResponseDTO.setImagePath(imagePath.toString());
 
-        // Map에 데이터 추가
-//        Map<String, Object> responseMap = new HashMap<>();
-//        responseMap.put("memberResponseDTO", memberResponseDTO);
-//        responseMap.put("imagePath", imagePath.toString());
-
         return memberResponseDTO;
     }
 
