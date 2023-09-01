@@ -50,20 +50,31 @@ public class MemberController {
     public Map<String, Object> getMyMemberInfo() {
         Long currentId = SecurityUtil.getCurrentMemberId();
         Member member = memberService.findMemberById(currentId);
+        MemberResponseDTO myInfoBySecurity = memberService.getMyInfoBySecurity();
+
         Profile profile = profileService.getMaxProfile(member);
         Path imagePath = Paths.get(profile.getImgUrl());
 
-        MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
+//        MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
 
         // Map에 데이터 추가
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("memberResponseDTO", memberResponseDTO);
+        responseMap.put("memberResponseDTO", myInfoBySecurity);
         responseMap.put("imagePath", imagePath.toString());
 
 
         return responseMap;
 
     }
+
+//    //마이페이지
+//    @GetMapping("/me")
+//    public ResponseEntity<MemberResponseDTO> getMyMemberInfo() {
+//        MemberResponseDTO myInfoBySecurity = memberService.getMyInfoBySecurity();
+//        System.out.println(myInfoBySecurity.getName());
+//        return ResponseEntity.ok((myInfoBySecurity));
+//    }
+
 
     //내 정보 수정 -> 비밀번호 변경, 이미지 수정
     @PostMapping("/edit")
