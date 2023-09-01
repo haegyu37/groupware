@@ -65,8 +65,8 @@ public class MemberController {
             String imagePath = profileLocation + profile.getImgName();
             Path filePath = Paths.get(imagePath);
 
-            byte[] imageBytes = Files.readAllBytes(filePath);
-            System.out.println("바이트" + imageBytes);
+            File imageBytes = new File(imagePath);
+//            System.out.println("바이트" + imageBytes);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_JPEG); // 이미지 타입에 맞게 설정
