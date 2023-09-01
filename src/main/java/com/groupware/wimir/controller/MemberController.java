@@ -74,14 +74,11 @@ public class MemberController {
         Long currentId = SecurityUtil.getCurrentMemberId();
         String newPassword = changeUserDTO.getNewPassword();
 
-        if (newPassword == null || newPassword.isEmpty()) {
-            throw new IllegalArgumentException("새 비밀번호를 입력해주세요");
+        if (newPassword != null) {
+            memberService.changeUserPasswordByAdmin(currentId, newPassword);
         }
 
-        memberService.changeUserPasswordByAdmin(currentId, newPassword);
         Member newMember = memberRepository.findById(currentId).orElse(null);
-
-        // 프로필 업데이트
         Profile profile = new Profile();
         profile.setMember(newMember);
         if (multipartFile != null) {

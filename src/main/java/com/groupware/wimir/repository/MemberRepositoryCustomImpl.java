@@ -16,7 +16,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom{
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-//    private BooleanExpression ser
+//    private BooleanExpression serchSellStatusEq
 
     @Override
     public List<Member> getMembers(MemberSerchDTO memberSerchDTO) {
