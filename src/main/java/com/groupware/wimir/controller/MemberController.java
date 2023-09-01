@@ -50,21 +50,25 @@ public class MemberController {
     public Map<String, Object> getMyMemberInfo() {
         Long currentId = SecurityUtil.getCurrentMemberId();
         Member member = memberService.findMemberById(currentId);
-        MemberResponseDTO myInfoBySecurity = memberService.getMyInfoBySecurity();
+//        MemberResponseDTO myInfoBySecurity = memberService.getMyInfoBySecurity();
 
         Profile profile = profileService.getMaxProfile(member);
-        Path imagePath = Paths.get(profile.getImgUrl());
+        Path imagePath = null;
 
-//        MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
+        if (profile != null) {
+            imagePath = Paths.get(profile.getImgUrl());
+        } else {
+            imagePath = Paths.get("");
+        }
+
+        MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
 
         // Map에 데이터 추가
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("memberResponseDTO", myInfoBySecurity);
+        responseMap.put("memberResponseDTO", memberResponseDTO);
         responseMap.put("imagePath", imagePath.toString());
 
-
         return responseMap;
-
     }
 
 //    //마이페이지
