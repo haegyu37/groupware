@@ -62,17 +62,17 @@ public class MemberController {
         MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
 
         if (profile != null) {
-            String imagePath = profileLocation + profile.getImgName();
-            Path filePath = Paths.get(imagePath);
+//            String imagePath = profileLocation + profile.getImgName();
+//            Path filePath = Paths.get(imagePath);
 
-            byte[] imageBytes = Files.readAllBytes(filePath);
+//            byte[] imageBytes = Files.readAllBytes(filePath);
 //            for(byte b : imageBytes)
 //                System.out.print(b);
 
 //            HttpHeaders headers = new HttpHeaders();
 //            headers.setContentType(MediaType.IMAGE_JPEG); // 이미지 타입에 맞게 설정
 
-            memberResponseDTO.setImage(imageBytes);
+            memberResponseDTO.setImage(profile.getImgName());
         }
 
         return memberResponseDTO;

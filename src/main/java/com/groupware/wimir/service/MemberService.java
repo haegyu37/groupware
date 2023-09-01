@@ -4,11 +4,10 @@ import com.groupware.wimir.Config.SecurityUtil;
 import com.groupware.wimir.DTO.ChangeUserDTO;
 import com.groupware.wimir.DTO.MemberResponseDTO;
 import com.groupware.wimir.DTO.MemberSerchDTO;
-import com.groupware.wimir.entity.Authority;
-import com.groupware.wimir.entity.Member;
-import com.groupware.wimir.entity.Position;
-import com.groupware.wimir.entity.Team;
+import com.groupware.wimir.DTO.ProfileDTO;
+import com.groupware.wimir.entity.*;
 import com.groupware.wimir.repository.MemberRepository;
+import com.groupware.wimir.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,7 +31,8 @@ import java.util.stream.Collectors;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final ProfileService profileService;
+    private final MemberService memberService;
 
     //getMyInfoBySecurity는 헤더에 있는 token값을 토대로 Member의 data를 건내주는 메소드
     public MemberResponseDTO getMyInfoBySecurity() {
@@ -167,9 +167,20 @@ public class MemberService {
 
     }
 
+    //검색
     @Transactional(readOnly = true)
     public List<Member> getMembers(MemberSerchDTO memberSerchDTO){
         return memberRepository.getMembers(memberSerchDTO);
     }
+
+    //
+//    @Transactional(readOnly = true)
+//    public MemberResponseDTO getMemberDtl(Long id){
+//        Member member = memberService.findMemberById(id);
+//        Profile profile = profileService.getMaxProfile(member);
+//
+//        ProfileDTO profileDTO =
+//    }
+//
 }
 

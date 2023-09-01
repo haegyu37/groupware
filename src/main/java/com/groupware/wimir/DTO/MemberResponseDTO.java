@@ -19,7 +19,7 @@ public class MemberResponseDTO {
     private Position position;
     private Team team;
     private Authority authority;
-    private byte[] image;
+    private String image;
 
     public static MemberResponseDTO of(Member member) {
 
