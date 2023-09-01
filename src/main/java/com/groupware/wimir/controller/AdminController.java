@@ -105,8 +105,9 @@ public class AdminController {
         if (profile != null) {
             String imagePath = profileLocation + profile.getImgName();
             Path filePath = Paths.get(imagePath);
-            Resource imageResource = new UrlResource(filePath.toUri());
-            memberResponseDTO.setImage(imageResource);
+//            System.out.println("사진" + filePath);
+//            Resource imageResource = new UrlResource(filePath.toUri());
+            memberResponseDTO.setImage(filePath);
         }
 
         return memberResponseDTO;

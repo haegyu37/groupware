@@ -7,6 +7,7 @@ import lombok.*;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public class MemberResponseDTO {
     private Position position;
     private Team team;
     private Authority authority;
-    private Resource image;
+    private Path image;
 
     public static MemberResponseDTO of(Member member) {
 
