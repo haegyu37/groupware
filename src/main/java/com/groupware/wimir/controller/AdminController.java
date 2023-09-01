@@ -97,17 +97,13 @@ public class AdminController {
 
     //직원 조회
     @GetMapping("/members/{id}")
-    public  MemberResponseDTO getMemberById(@PathVariable Long id) throws IOException {
+    public MemberResponseDTO getMemberById(@PathVariable Long id) throws IOException {
         Member member = memberService.findMemberById(id);
         Profile profile = profileService.getMaxProfile(member);
         MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
 
         if (profile != null) {
-            String imagePath = profileLocation + profile.getImgName();
-            Path filePath = Paths.get(imagePath);
-//            System.out.println("사진" + filePath);
-//            Resource imageResource = new UrlResource(filePath.toUri());
-//            memberResponseDTO.setImage(filePath);
+            memberResponseDTO.setImage(profile.getImgName());
         }
 
         return memberResponseDTO;

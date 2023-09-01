@@ -63,16 +63,6 @@ public class MemberController {
         MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
 
         if (profile != null) {
-//            String imagePath = profileLocation + profile.getImgName();
-//            Path filePath = Paths.get(imagePath);
-
-//            byte[] imageBytes = Files.readAllBytes(filePath);
-//            for(byte b : imageBytes)
-//                System.out.print(b);
-
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.IMAGE_JPEG); // 이미지 타입에 맞게 설정
-
             memberResponseDTO.setImage(profile.getImgName());
         }
 
@@ -81,13 +71,11 @@ public class MemberController {
 
     @CrossOrigin
     @GetMapping("/image")
-    public ResponseEntity<?> returnImage(@RequestParam String imageName){
+    public ResponseEntity<?> returnImage(@RequestParam String imageName) {
         String path = profileLocation;
         Resource resource = new FileSystemResource(path + imageName);
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
-
-
 
     //내 정보 수정 -> 비밀번호 변경, 이미지 수정
     @PostMapping("/edit")

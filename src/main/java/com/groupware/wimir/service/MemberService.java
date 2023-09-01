@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ProfileService profileService;
-    private final MemberService memberService;
+//    private final ProfileService profileService;
+//    private final MemberService memberService;
 
     //getMyInfoBySecurity는 헤더에 있는 token값을 토대로 Member의 data를 건내주는 메소드
     public MemberResponseDTO getMyInfoBySecurity() {
