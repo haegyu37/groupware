@@ -40,10 +40,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -79,13 +76,21 @@ public class AdminController {
 
     //직원 목록
     @GetMapping("/members")
-    public ResponseEntity<List<MemberResponseDTO>> getAllMembers() {
-        List<MemberResponseDTO> members = memberService.getAllMembers();
-        List<MemberResponseDTO> filteredMembers = members.stream()
-                .filter(member -> !member.getAuthority().equals(Authority.DELETE))
-                .collect(Collectors.toList());
+    public List<MemberResponseDTO> getAllMembers() {
+        List<Member> memberList = memberRepository.findAll();
+        List<MemberResponseDTO> memberResponseDTOList = new ArrayList<>(); // 결과를 담을 리스트
 
-        return ResponseEntity.ok(filteredMembers);
+        for (Member member : memberList) {
+            Profile profile = profileService.getMaxProfile(member);
+            MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
+
+            if (profile != null) {
+                memberResponseDTO.setImage(profile.getImgName());
+            }
+
+            memberResponseDTOList.add(memberResponseDTO); // 리스트에 추가
+        }
+        return memberResponseDTOList;
     }
 
     //직원 삭제

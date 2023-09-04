@@ -136,11 +136,11 @@ public class MemberService {
     }
 
 
-    // ID로 회원 조회
-    public Member getMemberById(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("해당 직원을 찾을 수 없습니다."));
-    }
+//    // ID로 회원 조회
+//    public Member getMemberById(Long memberId) {
+//        return memberRepository.findById(memberId)
+//                .orElseThrow(() -> new RuntimeException("해당 직원을 찾을 수 없습니다."));
+//    }
 
     public List<Member> getAllMembersByTeam() {
         List<Member> members = memberRepository.findAll();
