@@ -49,7 +49,6 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .fetchResults();
 
         List<Member> content = results.getResults();
-//        long total = results.getTotal();
         return content;
     }
 }

@@ -1,5 +1,7 @@
 package com.groupware.wimir.Config;
 
+import com.groupware.wimir.entity.Authority;
+import com.groupware.wimir.entity.Member;
 import com.groupware.wimir.jwt.JwtAccessDeniedHandler;
 import com.groupware.wimir.jwt.JwtAuthenticationEntryPoint;
 import com.groupware.wimir.jwt.TokenProvider;
@@ -7,8 +9,11 @@ import com.groupware.wimir.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +23,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.Arrays;
 
@@ -43,33 +49,32 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-
+                .cors()
+                .configurationSource(corsConfigurationSource())
+                .and()
                 .httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //세션 없이 REST API를 통해 토큰을 주고받기위해
-
+                .and()
+                .apply(new JwtSecurityConfig(tokenProvider))
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
-//
 //                .and()
 //                .headers()
 //                .frameOptions()
 //                .sameOrigin()
-
                 .and()
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers("/auth/**", "/member/**", "/admin/**").permitAll()
+//                .antMatchers("/auth/login").permitAll()
+//                .antMatchers("/").permitAll()
+//                .antMatchers("/favicon.ico").permitAll() // favicon.ico 허용
+//                .antMatchers("/auth/**", "/member/**", "/admin/**").permitAll()
                 .antMatchers("/admin/**").hasAuthority("ADMIN") //ROLE_ADMIN 계정만 admin에 접근 가능함
-                .anyRequest().authenticated()
+                .anyRequest().permitAll();
 
-                .and()
-                .apply(new JwtSecurityConfig(tokenProvider))
-                .and()
-                .cors()
-                .configurationSource(corsConfigurationSource());
 
         return http.build();
     }
@@ -78,9 +83,10 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.addAllowedOrigin("*"); // 모든 도메인허용
+        config.addAllowedOrigin("http://localhost:3000"); // 모든 도메인허용
         config.addAllowedMethod("*"); // 모든 메소드 허용.
         config.addAllowedHeader("*");
+        config.setAllowCredentials(true);
 
         //config.setAllowCredentials(true);
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // 허용할 헤더 추가
@@ -88,4 +94,31 @@ public class WebSecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+////        http
+////                .authorizeRequests()
+////                .mvcMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Preflight Request 허용해주기
+////                .antMatchers("/**").permitAll();
+//        web.ignoring().antMatchers(
+//
+//                "http://localhost:8080",// "원하는 url",
+//
+////                "swagger-ui.html",   // swgger 사용시
+//
+//                "/index.html",   // front-end 에서 build한 static file
+//
+//                "/favicon.ico",   // 여기서 설정 안 해주면 index.html이 읽을 수 없음
+//
+//                "/css/**",   // 여기서 설정 안 해주면 index.html이 읽을 수 없음
+//
+//                "/fonts/**",   // 여기서 설정 안 해주면 index.html이 읽을 수 없음
+//
+//                "/img/**",   // 여기서 설정 안 해주면 index.html이 읽을 수 없음
+//
+//                "/js/**"   // 여기서 설정 안 해주면 index.html이 읽을 수 없음
+//
+//        );
+//    }
 }

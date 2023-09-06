@@ -25,11 +25,17 @@ public class FileService {
         String extension = oriName.substring(oriName.lastIndexOf("."));
         String savedName = uuid.toString() + extension;
         String fileUploadUrl = uploadPath + "/" + savedName;
+
+        // 업로드 폴더가 없는 경우 폴더 생성
+        File uploadFolder = new File(uploadPath);
+        if (!uploadFolder.exists()) {
+            uploadFolder.mkdirs(); // 폴더를 생성합니다.
+        }
+
         FileOutputStream fos = new FileOutputStream(fileUploadUrl);
         fos.write(fileData);
         fos.close();
         return savedName;
-
     }
 
     public void deleteFile(String filePath) throws Exception {

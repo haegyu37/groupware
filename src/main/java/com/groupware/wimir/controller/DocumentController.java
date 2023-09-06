@@ -147,25 +147,30 @@ public class DocumentController {
         }
 
         Long dno = document.getDno();
-        List<Approval> approvals = lineService.getByDocument(dno);
-        Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
+        if(dno != null) {
+            List<Approval> approvals = lineService.getByDocument(dno);
+            Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
 
-        Long currentId = SecurityUtil.getCurrentMemberId();
-        Map<String, Object> appInfoForCancel = lineService.appInfoForCancel(approvals, currentId);
+            Long currentId = SecurityUtil.getCurrentMemberId();
+            Map<String, Object> appInfoForCancel = lineService.appInfoForCancel(approvals, currentId);
 
-        return new DocumentResponseDTO(document, groupedApprovals, appInfoForCancel);
+            return new DocumentResponseDTO(document, groupedApprovals, appInfoForCancel);
+        } else {
+            return new DocumentResponseDTO(document, null, null) ;
+        }
+
     }
 
     //문서 조회 - 임시저장
-    @GetMapping(value = "/save/{id}")
-    public Optional<Document> readSaveDocument(@PathVariable("id") Long id) {
-        Optional<Document> document = documentRepository.findById(id);
-        if (document == null) {
-            throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
-        }
-
-        return document;
-    }
+//    @GetMapping(value = "/save/{id}")
+//    public Optional<Document> readSaveDocument(@PathVariable("id") Long id) {
+//        Optional<Document> document = documentRepository.findById(id);
+//        if (document == null) {
+//            throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
+//        }
+//
+//        return document;
+//    }
 
     // 문서 수정
     @PutMapping(value = "/update/{id}")

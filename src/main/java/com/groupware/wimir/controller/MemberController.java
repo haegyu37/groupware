@@ -65,7 +65,7 @@ public class MemberController {
         if (profile != null) {
             memberResponseDTO.setImage(profile.getImgName());
         }
-
+        System.out.println("내사진" + memberResponseDTO.getImage());
         return memberResponseDTO;
     }
 
@@ -95,7 +95,6 @@ public class MemberController {
         if (multipartFile != null) {
             profileService.saveProfile(profile, multipartFile);
         }
-
         return newMember;
     }
 

@@ -15,10 +15,13 @@ public class GroupwareApplication {
 
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
+		System.out.println("어플리케이션 cors 들어옴 ");
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("http://front-server.com");
+				registry.addMapping("/**")
+						.allowedOrigins("http://localhost:3000")
+						.allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE");
 			}
 		};
 	}

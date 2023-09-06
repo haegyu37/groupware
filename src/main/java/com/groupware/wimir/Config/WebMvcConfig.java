@@ -18,11 +18,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/images/profile/**")
                 .addResourceLocations(uploadPath);
 
-//        registry.addResourceHandler("/**")
-//                .addResourceLocations("classpath:/static/") // React 빌드 결과물의 위치
-//                .setCachePeriod(3600)
-//                .resourceChain(true)
-//                .addResolver(new PathResourceResolver());
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/static/") // React 빌드 결과물의 위치
+                .setCachePeriod(3600)
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver());
 
     }
 
