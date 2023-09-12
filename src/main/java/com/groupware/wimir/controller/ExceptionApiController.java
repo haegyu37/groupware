@@ -32,6 +32,6 @@ public class ExceptionApiController implements ErrorController {
             System.out.println("handleNoHandleFoundException/equals/body = " + body);
             return new ResponseEntity<Object>(body, headers, HttpStatus.NOT_FOUND);
         }else
-        return new ResponseEntity<Object>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Object>(headers, HttpStatus.NOT_FOUND);
     }
 }

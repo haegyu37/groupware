@@ -69,7 +69,7 @@ public class ApprovalService {
                     approval.setMemberId(approverId);
                     approval.setRefer("결재");
 
-                    if(approvers.size() == 4) {
+                    if (approvers.size() == 4) {
                         if (i == approvers.size() - 1) {
                             approval.setRefer("참조");
                         }
@@ -101,28 +101,22 @@ public class ApprovalService {
     //내가 결재라인인 문서 리스트 all
     public List<Document> getApprovals(Long id) {
         List<Approval> approvals = approvalRepository.findByMemberId(id); //memberId를 기준으로 Approval 리스트 찾음
-        System.out.println("내결재" + approvals);
         List<Long> docIds = new ArrayList<>();
 
         for (Approval approval : approvals) {
-            Long docId = approval.getDocument(); //Approval에서 document만 찾음
-            if (docId != null) {
-                docIds.add(docId); //docIds 리스트에 추가
-            } else {
-                continue; //null이면 건너뜀
+            Long docId = approval.getDocument();
+            if (docId != null && !docIds.contains(docId)) {
+                docIds.add(docId);
             }
-            System.out.println("내결재" + docId);
         }
 
-        List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
-
+        List<Document> myAppDocs = new ArrayList<>();
         for (Long docId : docIds) {
             Document document = documentRepository.findByDno(docId);
             if (document != null) {
-                myAppDocs.add(document); //Document 리스트에 추가
+                myAppDocs.add(document);
             }
         }
-        System.out.println("내결재" + myAppDocs);
 
         return myAppDocs; // 리스트 반환
     }
@@ -136,25 +130,19 @@ public class ApprovalService {
 
         List<Long> docIds = new ArrayList<>();
         for (Approval approval : currentApprovals) {
-            Long docId = approval.getDocument(); //Approval에서 document만 찾음
-            if (docId != null) {
-                docIds.add(docId); //docIds 리스트에 추가
-            } else {
-                continue; //null이면 건너뜀
+            Long docId = approval.getDocument();
+            if (docId != null && !docIds.contains(docId)) {
+                docIds.add(docId);
             }
-
         }
 
-
-        List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
-
+        List<Document> myAppDocs = new ArrayList<>();
         for (Long docId : docIds) {
             Document document = documentRepository.findByDno(docId);
             if (document != null) {
-                myAppDocs.add(document); //Document 리스트에 추가
+                myAppDocs.add(document);
             }
         }
-
 
         return myAppDocs; // 리스트 반환
     }
@@ -237,7 +225,7 @@ public class ApprovalService {
                 approval.setCurrent("N");
 
                 // 다음 결재자가 있을 경우 current를 Y로 지정
-                if (i != appNotRefer.size() -1) {
+                if (i != appNotRefer.size() - 1) {
                     Approval nextApproval = appNotRefer.get(i + 1);
                     nextApproval.setCurrent("Y");
                 } else {

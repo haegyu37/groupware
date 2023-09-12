@@ -11,7 +11,7 @@ plugins {
 }
 
 group = 'com.groupware'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.4-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
