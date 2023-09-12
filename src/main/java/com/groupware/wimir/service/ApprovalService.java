@@ -123,6 +123,7 @@ public class ApprovalService {
 
     //내 결재 리스트 근데 이제 내가 결재할 차례인 .. 그것들 리스트
     public List<Document> getApprovalsNow(Long id) {
+        System.out.println("listnow 서비스 들어옴");
         List<Approval> approvals = approvalRepository.findByMemberId(id);
         List<Approval> currentApprovals = approvals.stream()
                 .filter(approval -> approval != null && approval.getCurrent() != null && approval.getCurrent().equals("Y"))
@@ -143,7 +144,7 @@ public class ApprovalService {
                 myAppDocs.add(document);
             }
         }
-
+        System.out.println("listnow 서비스 나감" + myAppDocs);
         return myAppDocs; // 리스트 반환
     }
 

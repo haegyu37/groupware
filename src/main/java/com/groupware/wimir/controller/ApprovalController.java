@@ -111,9 +111,11 @@ public class ApprovalController {
     //내가 결재라인인 문서 목록 근데 이제 내 차례인 ..
     @GetMapping("/listnow")
     public List<Document> getMyApprovalsNow() {
+        System.out.println("listnow 컨트롤러 들어옴");
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         //id를 기준으로 Approval을 찾는 메소드
         List<Document> myAppDocs = approvalService.getApprovalsNow(currentMemberId);
+        System.out.println("listnow 컨트롤러 나감" + myAppDocs);
         return myAppDocs;
     }
 

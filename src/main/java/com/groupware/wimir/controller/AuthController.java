@@ -55,7 +55,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else if(member.getAuthority() == Authority.DELETE){
             log.info("삭제된 계정입니다.");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.GONE).build();
         }
 
         return ResponseEntity.ok(authService.login(requestDto));
