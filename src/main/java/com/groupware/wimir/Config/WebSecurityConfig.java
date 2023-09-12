@@ -95,30 +95,4 @@ public class WebSecurityConfig {
         return source;
     }
 
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-////        http
-////                .authorizeRequests()
-////                .mvcMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Preflight Request 허용해주기
-////                .antMatchers("/**").permitAll();
-//        web.ignoring().antMatchers(
-//
-//                "http://localhost:8080",// "원하는 url",
-//
-////                "swagger-ui.html",   // swgger 사용시
-//
-//                "/index.html",   // front-end 에서 build한 static file
-//
-//                "/favicon.ico",   // 여기서 설정 안 해주면 index.html이 읽을 수 없음
-//
-//                "/css/**",   // 여기서 설정 안 해주면 index.html이 읽을 수 없음
-//
-//                "/fonts/**",   // 여기서 설정 안 해주면 index.html이 읽을 수 없음
-//
-//                "/img/**",   // 여기서 설정 안 해주면 index.html이 읽을 수 없음
-//
-//                "/js/**"   // 여기서 설정 안 해주면 index.html이 읽을 수 없음
-//
-//        );
-//    }
 }

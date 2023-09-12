@@ -81,14 +81,16 @@ public class AdminController {
         List<MemberResponseDTO> memberResponseDTOList = new ArrayList<>(); // 결과를 담을 리스트
 
         for (Member member : memberList) {
-            Profile profile = profileService.getMaxProfile(member);
-            MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
+            if (member.getAuthority() != Authority.DELETE) {
+                Profile profile = profileService.getMaxProfile(member);
+                MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
 
-            if (profile != null) {
-                memberResponseDTO.setImage(profile.getImgName());
+                if (profile != null) {
+                    memberResponseDTO.setImage(profile.getImgName());
+                }
+
+                memberResponseDTOList.add(memberResponseDTO); // 리스트에 추가
             }
-
-            memberResponseDTOList.add(memberResponseDTO); // 리스트에 추가
         }
         return memberResponseDTOList;
     }
