@@ -44,6 +44,7 @@ public class MemberService {
                 .collect(Collectors.toList());
     }
 
+    //비밀번호 변경
     @Transactional
     public MemberResponseDTO changeMemberPassword(String newPassword) {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
@@ -57,6 +58,7 @@ public class MemberService {
 
     }
 
+    //관리자가 비밀번호 변경
     @Transactional
     public MemberResponseDTO changeUserPasswordByAdmin(Long memberId, String newPassword) {
         Member member = memberRepository.findById(memberId)
@@ -130,24 +132,5 @@ public class MemberService {
                 .orElseThrow(() -> new EntityNotFoundException("Member not found with ID: " + memberId));
     }
 
-
-
-
-
-
-
-
-
 }
-
-
-//    @Transactional
-//    public MemberResponseDTO changeMemberPassword(String exPassword, String newPassword) {
-//        Member member = memberRepository.findById(SecurityUtil.getCurrentMemberId()).orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
-//        if (!passwordEncoder.matches(exPassword, member.getPassword())) {
-//            throw new RuntimeException("비밀번호가 맞지 않습니다");
-//        }
-//        member.setPassword(passwordEncoder.encode((newPassword)));
-//        return MemberResponseDTO.of(memberRepository.save(member));
-//    }
 
