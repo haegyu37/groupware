@@ -11,5 +11,4 @@ import lombok.*;
 public class MemberBlockDTO {
     private Long id;
     private Authority authority;
-
 }

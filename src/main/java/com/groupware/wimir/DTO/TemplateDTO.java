@@ -14,6 +14,5 @@ import java.util.Map;
 public class TemplateDTO {
     private String category;
     private String content;
-
 }
 

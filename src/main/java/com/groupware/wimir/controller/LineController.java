@@ -54,7 +54,6 @@ public class LineController {
                 approval.setMemberId(approverId);
                 approval.setName(lineDTO.getName());
                 approval.setWriter(SecurityUtil.getCurrentMemberId());
-                approval.setCategory(lineDTO.getCategory());
                 approval.setLineId(maxLineId);
                 approval.setRefer("결재");
 
@@ -66,9 +65,9 @@ public class LineController {
 
                 approvalRepository.save(approval);
             }
-//            else {
-//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("직원을 찾을 수 없습니다. " + approverId);
-//            }
+            else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("직원을 찾을 수 없습니다. " + approverId);
+            }
         }
 
         return ResponseEntity.ok("결재라인을 저장했습니다.");

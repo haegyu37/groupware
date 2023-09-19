@@ -7,6 +7,7 @@ import com.groupware.wimir.jwt.JwtAuthenticationEntryPoint;
 import com.groupware.wimir.jwt.TokenProvider;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -49,31 +50,26 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors()
-                .configurationSource(corsConfigurationSource())
-                .and()
                 .httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //세션 없이 REST API를 통해 토큰을 주고받기위해
+
                 .and()
                 .apply(new JwtSecurityConfig(tokenProvider))
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
-//                .and()
-//                .headers()
-//                .frameOptions()
-//                .sameOrigin()
+
                 .and()
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-//                .antMatchers("/auth/login").permitAll()
-//                .antMatchers("/").permitAll()
-//                .antMatchers("/favicon.ico").permitAll() // favicon.ico 허용
-//                .antMatchers("/auth/**", "/member/**", "/admin/**").permitAll()
                 .antMatchers("/admin/**").hasAuthority("ADMIN") //ROLE_ADMIN 계정만 admin에 접근 가능함
-                .anyRequest().permitAll();
+                .anyRequest().permitAll()
+
+                .and()
+                .cors()
+                .configurationSource(corsConfigurationSource());
 
 
         return http.build();
@@ -83,7 +79,8 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.addAllowedOrigin("http://211.252.85.109:3000"); // 모든 도메인허용
+//        config.addAllowedOrigin("*"); // 모든 도메인허용
+        config.addAllowedOrigin("http://localhost:3000/"); // 모든 도메인허용
         config.addAllowedMethod("*"); // 모든 메소드 허용.
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);

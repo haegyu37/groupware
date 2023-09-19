@@ -25,12 +25,6 @@ public class DocumentServiceImpl implements DocumentService {
     @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private AttachmentService attachmentService;
-
-    @Autowired
-    private TemplateRepository templateRepository;
-
     @Override
     public Document findDocumentById(Long id) {
         return documentRepository.findById(id)

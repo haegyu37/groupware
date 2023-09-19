@@ -28,5 +28,4 @@ public class DocumentDTO {
     private Long template; //양식 아이디
     private List<Long> approvers; //결재라인 아이디
     private Long lineId; //즐겨찾기 결재라인 아이디
-
 }

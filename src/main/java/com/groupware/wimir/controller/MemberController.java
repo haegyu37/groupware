@@ -56,8 +56,10 @@ public class MemberController {
 
     //마이페이지
     @GetMapping("/me")
-    public MemberResponseDTO getMyMemberInfo() throws IOException {
+    public MemberResponseDTO getMyMemberInfo(@RequestHeader Map<String, String> headers) throws IOException {
+        System.out.println(headers.get("Authorization"));
         Long currentId = SecurityUtil.getCurrentMemberId();
+        System.out.println("이름1" + currentId);
         Member member = memberService.findMemberById(currentId);
         Profile profile = profileService.getMaxProfile(member);
         MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);

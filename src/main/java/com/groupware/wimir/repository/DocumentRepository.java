@@ -15,14 +15,11 @@ import java.util.Optional;
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
-
     @Query("SELECT MAX(sno) FROM Document")
     Long findMaxSno();
 
     @Query("SELECT MAX(dno) FROM Document")
     Long findMaxDno();
-
-    List<Document> findByWriter(Member writer);
 
     List<Document> findByStatusNot(int status);
 
@@ -32,24 +29,15 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
     List<Document> findByWriterAndTemplateIdAndStatus(Long memberId, Long id, int status);
 
-    @Query("SELECT MAX(id) FROM Document")
-    Long findMaxDocId();
-
     Optional<Document> findById(Long id);
 
     @Query("SELECT d FROM Document d JOIN FETCH d.template WHERE d.id = :documentId")
     Document findDocumentWithTemplateById(@Param("documentId") Long documentId);
 
-
     @Query("SELECT COALESCE(MAX(d.tempNo), 0) FROM Document d WHERE d.template = :template")
     Long findMaxTempNoByTemplate(@Param("template") Template template);
 
-    @Query("SELECT COUNT(d) FROM Document d WHERE d.status = 1 AND d.template = :template AND d.id >= :id")
-    Long countByTempNo(@Param("template") Template template, @Param("id") Long id);
-
     Document findByDno(Long dno);
-
-    Document findBySno(Long sno);
 
     List<Document> findByWriterIdAndStatusAndResult(Long id, int status, String result);
 }

@@ -53,7 +53,7 @@ public class AuthController {
         if (member.getAuthority() == Authority.BLOCK) {
             log.info("접속이 차단된 계정입니다.");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } else if(member.getAuthority() == Authority.DELETE){
+        } else if (member.getAuthority() == Authority.DELETE) {
             log.info("삭제된 계정입니다.");
             return ResponseEntity.status(HttpStatus.GONE).build();
         }

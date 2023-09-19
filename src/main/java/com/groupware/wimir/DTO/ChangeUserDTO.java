@@ -13,10 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @Builder
 public class ChangeUserDTO {
-//    private MultipartFile image;
     private String newPassword;
     private Position position;
     private Team team;
-//    private MultipartFile img;
     private String name;
 }

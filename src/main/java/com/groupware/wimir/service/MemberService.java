@@ -31,8 +31,6 @@ import java.util.stream.Collectors;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-//    private final ProfileService profileService;
-//    private final MemberService memberService;
 
     //getMyInfoBySecurity는 헤더에 있는 token값을 토대로 Member의 data를 건내주는 메소드
     public MemberResponseDTO getMyInfoBySecurity() {
@@ -135,13 +133,6 @@ public class MemberService {
         return member;
     }
 
-
-//    // ID로 회원 조회
-//    public Member getMemberById(Long memberId) {
-//        return memberRepository.findById(memberId)
-//                .orElseThrow(() -> new RuntimeException("해당 직원을 찾을 수 없습니다."));
-//    }
-
     public List<Member> getAllMembersByTeam() {
         List<Member> members = memberRepository.findAll();
         members.sort(Comparator.comparing((Member member) -> member.getTeam() == null ? 0 : 1)
@@ -173,14 +164,5 @@ public class MemberService {
         return memberRepository.getMembers(memberSerchDTO);
     }
 
-    //
-//    @Transactional(readOnly = true)
-//    public MemberResponseDTO getMemberDtl(Long id){
-//        Member member = memberService.findMemberById(id);
-//        Profile profile = profileService.getMaxProfile(member);
-//
-//        ProfileDTO profileDTO =
-//    }
-//
 }
 

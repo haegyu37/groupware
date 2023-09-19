@@ -9,12 +9,15 @@ import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.service.ApprovalService;
 import com.groupware.wimir.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.jena.base.Sys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -111,11 +114,9 @@ public class ApprovalController {
     //내가 결재라인인 문서 목록 근데 이제 내 차례인 ..
     @GetMapping("/listnow")
     public List<Document> getMyApprovalsNow() {
-        System.out.println("listnow 컨트롤러 들어옴");
-        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+        Long currentId = SecurityUtil.getCurrentMemberId();
         //id를 기준으로 Approval을 찾는 메소드
-        List<Document> myAppDocs = approvalService.getApprovalsNow(currentMemberId);
-        System.out.println("listnow 컨트롤러 나감" + myAppDocs);
+        List<Document> myAppDocs = approvalService.getApprovalsNow(currentId);
         return myAppDocs;
     }
 

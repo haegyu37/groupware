@@ -17,7 +17,7 @@ import java.util.Objects;
 @Controller
 public class ExceptionApiController implements ErrorController {
     @GetMapping({"/", "error"})
-    public String index(){
+    public String index() {
         return "index.html";
     }
 
@@ -28,10 +28,10 @@ public class ExceptionApiController implements ErrorController {
         System.out.println("status = " + status); // 오류상태
         System.out.println("request.getRequestURI() = " + request.getRequestURI()); // 요청주소
         if (Objects.equals(request.getContentType(), MediaType.APPLICATION_JSON_VALUE)) {
-            Map<String, Object> body = Map.of("error", "Not Found","timestamp", System.currentTimeMillis());
+            Map<String, Object> body = Map.of("error", "Not Found", "timestamp", System.currentTimeMillis());
             System.out.println("handleNoHandleFoundException/equals/body = " + body);
             return new ResponseEntity<Object>(body, headers, HttpStatus.NOT_FOUND);
-        }else
+        } else
             return new ResponseEntity<Object>(headers, HttpStatus.NOT_FOUND);
     }
 }

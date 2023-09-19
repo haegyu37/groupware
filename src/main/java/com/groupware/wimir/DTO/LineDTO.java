@@ -15,5 +15,4 @@ public class LineDTO {
     private String name;
     private Long writer;
     private String category;
-
 }

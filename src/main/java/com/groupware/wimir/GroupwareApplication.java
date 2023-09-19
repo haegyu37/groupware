@@ -13,17 +13,4 @@ public class GroupwareApplication {
 		SpringApplication.run(GroupwareApplication.class, args);
 	}
 
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		System.out.println("어플리케이션 cors 들어옴 ");
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**")
-						.allowedOrigins("http://211.252.85.109:3000")
-						.allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE");
-			}
-		};
-	}
-
 }

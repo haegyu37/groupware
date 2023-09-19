@@ -16,6 +16,4 @@ public class TokenDTO {
     private String accessToken;
     private String refreshToken;
     private Long tokenExpiresIn;    //토큰만료시간
-
-
 }

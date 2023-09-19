@@ -19,10 +19,6 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     private JPAQueryFactory queryFactory;
 
-    public MemberRepositoryCustomImpl(EntityManager em) {
-        this.queryFactory = new JPAQueryFactory(em);
-    }
-
     private BooleanExpression searchSellStatusEq(Team team) {
         return team == null ? null : QMember.member.team.eq(team);
     }

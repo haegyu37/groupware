@@ -33,7 +33,6 @@ public class DocumentController {
     private final ApprovalService approvalService;
     private final TemplateRepository templateRepository;
     private final LineService lineService;
-    private final AttachmentService attachmentService;
     private final ApprovalRepository approvalRepository;
 
     // 문서 목록(정상 저장 전체 다 보도록)
@@ -145,7 +144,7 @@ public class DocumentController {
         }
 
         Long dno = document.getDno();
-        if(dno != null) {
+        if (dno != null) {
             List<Approval> approvals = lineService.getByDocument(dno);
             Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
 
@@ -154,21 +153,10 @@ public class DocumentController {
 
             return new DocumentResponseDTO(document, groupedApprovals, appInfoForCancel);
         } else {
-            return new DocumentResponseDTO(document, null, null) ;
+            return new DocumentResponseDTO(document, null, null);
         }
 
     }
-
-    //문서 조회 - 임시저장
-//    @GetMapping(value = "/save/{id}")
-//    public Optional<Document> readSaveDocument(@PathVariable("id") Long id) {
-//        Optional<Document> document = documentRepository.findById(id);
-//        if (document == null) {
-//            throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
-//        }
-//
-//        return document;
-//    }
 
     // 문서 수정
     @PutMapping(value = "/update/{id}")
@@ -232,8 +220,6 @@ public class DocumentController {
             throw new UnsupportedOperationException("결재 중인 문서는 수정할 수 없습니다.");
         }
 
-        //문서에 해당 첨부파일 삭제
-        attachmentService.deleteAttachmentByDoc(id);
         //문서 해당 결재 삭제
         Long dno = document.getDno();
         approvalService.deleteAppByDocument(dno);

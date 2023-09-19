@@ -12,8 +12,5 @@ import org.springframework.stereotype.Component;
 public class ApprovalDTO {
 
     private String status; //결재자별 결재상태 승인/반려
-    private String reason;
     private Long document;
-
-
 }

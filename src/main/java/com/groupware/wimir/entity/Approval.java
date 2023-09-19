@@ -25,8 +25,6 @@ public class Approval {
 
     private Long document; //문서 아이디
 
-    private String reason; //반려사유
-
     private LocalDate appDate; //결재완료일
 
     private Long memberId; //결재자
@@ -36,8 +34,6 @@ public class Approval {
     private Long writer; //결재라인 작성자
 
     private Long lineId; //결재라인 아이디
-
-    private String category; //결재라인 카테고리
 
     private String status; //결재자별 결재상태 : 대기/승인/반려
 

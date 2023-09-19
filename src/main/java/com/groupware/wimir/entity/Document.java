@@ -33,7 +33,7 @@ public class Document {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tem_id")
-    private Template template; // 양식명
+    private Template template; // 양식
 
     private int status; // 1: 작성 상태, 0: 임시저장 상태
 
