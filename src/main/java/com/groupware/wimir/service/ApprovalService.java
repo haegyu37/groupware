@@ -98,6 +98,97 @@ public class ApprovalService {
         }
     }
 
+    //결재 수정
+    public List<Approval> updateApproval(Document document, DocumentDTO documentDTO) {
+        Long dno = document.getDno();
+        List<Approval> approvals = approvalRepository.findByDocument(dno);
+
+        //저장된 결재라인
+        if (documentDTO.getLineId() != null) {
+            List<Approval> line = approvalRepository.findByLineId(documentDTO.getLineId());
+
+            if(approvals.size() > line.size()){
+                Approval referApp = approvals.get(3);
+                approvalRepository.delete(referApp); // 엔티티를 삭제
+                approvals.remove(referApp); // 목록에서 엔티티 제거
+            }
+
+            for (int i = 0; i < line.size(); i++) {
+
+                Approval approval = line.get(i);
+                approval.setDocument(dno);
+
+                if (i == 0) {
+                    approval.setCurrent("Y");
+                } else {
+                    approval.setCurrent("N");
+                }
+
+                approvals.set(i, approval);
+            }
+        } else { //결재라인 지정
+            List<Long> approvers = documentDTO.getApprovers();
+            Long currentMemberId = SecurityUtil.getCurrentMemberId();
+
+            if(approvals.size() > approvers.size()){
+                Approval referApp = approvals.get(3);
+                approvalRepository.delete(referApp); // 엔티티를 삭제
+                approvals.remove(referApp); // 목록에서 엔티티 제거
+            }
+
+            approvers.add(0, currentMemberId);
+
+
+            for (int i = 0; i < approvers.size(); i++) {
+                Long approverId = approvers.get(i);
+                if (approverId != null) {
+                    if (i < approvals.size()) { //Approval 수정
+                        Approval approval = approvals.get(i);
+                        approval.setDocument(dno);
+                        approval.setMemberId(approverId);
+                        approval.setRefer("결재");
+
+                        if (approvers.size() == 4) {
+                            if (i == approvers.size() - 1) {
+                                approval.setRefer("참조");
+                            }
+                        }
+
+                        if (i == 0) {
+                            approval.setCurrent("Y");
+                        } else {
+                            approval.setCurrent("N");
+                        }
+                    } else { // 존재하지 않는 Approval 추가
+                        Approval approval = new Approval();
+                        approval.setDocument(dno);
+                        approval.setMemberId(approverId);
+                        approval.setRefer("결재");
+
+                        if (approvers.size() == 4) {
+                            if (i == approvers.size() - 1) {
+                                approval.setRefer("참조");
+                            }
+                        }
+
+                        if (i == 0) {
+                            approval.setCurrent("Y");
+                        } else {
+                            approval.setCurrent("N");
+                        }
+                        approvals.add(approval);
+                    }
+
+                }
+            }
+
+        }
+
+        approvals = approvalRepository.saveAll(approvals);
+        return approvals;
+    }
+
+
     //내가 결재라인인 문서 리스트 all
     public List<Document> getApprovals(Long id) {
         List<Approval> approvals = approvalRepository.findByMemberId(id); //memberId를 기준으로 Approval 리스트 찾음

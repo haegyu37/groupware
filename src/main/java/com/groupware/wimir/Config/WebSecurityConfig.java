@@ -80,7 +80,7 @@ public class WebSecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
 //        config.addAllowedOrigin("*"); // 모든 도메인허용
-        config.addAllowedOrigin("http://localhost:3000/"); // 모든 도메인허용
+        config.addAllowedOrigin("http://localhost:3000"); // 모든 도메인허용
         config.addAllowedMethod("*"); // 모든 메소드 허용.
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);

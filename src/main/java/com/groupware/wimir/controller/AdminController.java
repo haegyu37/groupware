@@ -78,7 +78,7 @@ public class AdminController {
     @GetMapping("/members")
     public List<MemberResponseDTO> getAllMembers() {
         List<Member> memberList = memberRepository.findAll();
-        List<MemberResponseDTO> memberResponseDTOList = new ArrayList<>(); // 결과를 담을 리스트
+        List<MemberResponseDTO> memberResponseDTOList = new ArrayList<>(); // 결과 리스트
 
         for (Member member : memberList) {
             if (member.getAuthority() != Authority.DELETE) {

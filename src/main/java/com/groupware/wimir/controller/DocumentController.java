@@ -181,7 +181,7 @@ public class DocumentController {
         if (documentDTO.getStatus() == 0) {
             // status가 0인 경우 임시저장이므로 그냥 저장
         } else {
-            approvalService.setApproval(documentDTO);
+            approvalService.updateApproval(updateDocument, documentDTO);
 
             // status가 1인 경우 작성인 경우
             Long maxDno = documentRepository.findMaxDno();

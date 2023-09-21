@@ -144,14 +144,14 @@ function EditPage() {
                         />
                     </DocumentTitle>
 
-                    {<CKEditor
+                    <CKEditor
                         editor={ClassicEditor}
                         data={content}
                         onChange={(event, editor) => {
                             const data = editor.getData();
                             setContent(data)
                         }}
-                    />}
+                    />
                 </EditorContainer>
             </LowerContainer>
 
