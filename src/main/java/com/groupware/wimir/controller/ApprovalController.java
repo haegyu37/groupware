@@ -176,8 +176,8 @@ public class ApprovalController {
     @PostMapping("/back")
     public ResponseEntity<String> backApproval(@RequestBody ApprovalDTO approvalDTO) {
         Document document = documentRepository.findById(approvalDTO.getDocument()).orElse(null);
-        Long id = document.getId();
-        List<Approval> approvals = approvalRepository.findByDocument(id);
+//        Long id = document.getId();
+        List<Approval> approvals = approvalRepository.findByDocument(document);
         Approval secondApprover = approvals.get(1);
 
         //두번째 결재자가 이미 결재 했으면 결재 취소 먼저 요청해야됨

@@ -23,7 +23,8 @@ public class Approval {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long document; //문서 아이디
+    @ManyToOne
+    private Document document; //문서 아이디
 
     private LocalDate appDate; //결재완료일
 

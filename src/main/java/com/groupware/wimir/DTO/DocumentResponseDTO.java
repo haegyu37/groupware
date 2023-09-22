@@ -1,5 +1,6 @@
 package com.groupware.wimir.DTO;
 
+import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
 import lombok.*;
 
@@ -13,6 +14,8 @@ import java.util.Map;
 @Setter
 public class DocumentResponseDTO {
     private Document document;
-    private Map<Long, List<Map<String, Object>>> groupedApprovals;
+//    private List<Approval> approval;
+    List<Map<String, Object>> groupedApprovals;
+//    private Map<Object, List<Map<String, Object>>> groupedApprovals;
     private Map<String, Object> appInfoForCancel;
 }

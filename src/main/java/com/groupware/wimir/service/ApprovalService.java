@@ -32,7 +32,7 @@ public class ApprovalService {
     private DocumentService documentService;
 
     //결재 요청
-    public ResponseEntity<Approval> setCommonApproval(DocumentDTO documentDTO, int tempStatus) {
+    public ResponseEntity<Approval> setCommonApproval(Document document, DocumentDTO documentDTO, int tempStatus) {
 
         //document의 id값 부여
         Long maxDocId = documentRepository.findMaxId();
@@ -50,7 +50,7 @@ public class ApprovalService {
 
             for (int i = 0; i < approvals.size(); i++) {
                 Approval approval = approvals.get(i);
-                approval.setDocument(maxDocId);
+                approval.setDocument(document);
                 approval.setName(approval.getName());
                 //순서값 설정
                 if (i == 0) {
@@ -78,7 +78,7 @@ public class ApprovalService {
                 Long approverId = approvers.get(i);
                 if (approverId != null) {
                     Approval approval = new Approval();
-                    approval.setDocument(maxDocId);
+                    approval.setDocument(document);
                     approval.setMemberId(approverId);
                     approval.setRefer("결재");
 
@@ -116,31 +116,31 @@ public class ApprovalService {
     }
 
     // 결재 저장
-    public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {
-        return setCommonApproval(documentDTO, 1); // 1은 결재 요청 상태를 나타냅니다.
+    public ResponseEntity<Approval> setApproval(Document document, DocumentDTO documentDTO) {
+        return setCommonApproval(document, documentDTO, 1); // 1은 결재 요청 상태를 나타냅니다.
     }
 
     // 결재 임시저장
-    public ResponseEntity<Approval> setTempApproval(DocumentDTO documentDTO) {
-        return setCommonApproval(documentDTO, 0); // 0은 결재 임시저장 상태를 나타냅니다.
+    public ResponseEntity<Approval> setTempApproval(Document document, DocumentDTO documentDTO) {
+        return setCommonApproval(document, documentDTO, 0); // 0은 결재 임시저장 상태를 나타냅니다.
     }
 
     //결재 수정 -> 저장
     public List<Approval> updateApproval(Document document, DocumentDTO documentDTO) {
-        Long id = document.getId();
-        List<Approval> approvals = approvalRepository.findByDocument(id);
-        return updateCommonApproval(id, approvals, documentDTO, 1);
+//        Long id = document.getId();
+        List<Approval> approvals = approvalRepository.findByDocument(document);
+        return updateCommonApproval(document, approvals, documentDTO, 1);
     }
 
     //결재 수정 -> 임시저장
     public List<Approval> updateTempApproval(Document document, DocumentDTO documentDTO) {
-        Long id = document.getId();
-        List<Approval> approvals = approvalRepository.findByDocument(id);
-        return updateCommonApproval(id, approvals, documentDTO, 0);
+//        Long id = document.getId();
+        List<Approval> approvals = approvalRepository.findByDocument(document);
+        return updateCommonApproval(document, approvals, documentDTO, 0);
     }
 
     //결재 수정
-    private List<Approval> updateCommonApproval(Long id, List<Approval> approvals, DocumentDTO documentDTO, int tempStatus) {
+    private List<Approval> updateCommonApproval(Document document, List<Approval> approvals, DocumentDTO documentDTO, int tempStatus) {
         if (documentDTO.getLineId() != null) {
             List<Approval> line = approvalRepository.findByLineId(documentDTO.getLineId());
 
@@ -152,7 +152,7 @@ public class ApprovalService {
 
             for (int i = 0; i < line.size(); i++) {
                 Approval approval = line.get(i);
-                approval.setDocument(id);
+                approval.setDocument(document);
 
                 if (i == 0) {
                     approval.setCurrent("Y");
@@ -187,7 +187,7 @@ public class ApprovalService {
                 if (approverId != null) {
                     if (i < approvals.size()) { // Approval 수정
                         Approval approval = approvals.get(i);
-                        approval.setDocument(id);
+                        approval.setDocument(document);
                         approval.setMemberId(approverId);
                         approval.setRefer("결재");
 
@@ -212,7 +212,7 @@ public class ApprovalService {
 
                     } else { // 참조 없 -> 참조 있 Approval 추가
                         Approval approval = new Approval();
-                        approval.setDocument(id);
+                        approval.setDocument(document);
                         approval.setMemberId(approverId);
                         approval.setRefer("결재");
                         //결재라인 임시저장
@@ -247,22 +247,12 @@ public class ApprovalService {
     //내가 결재라인인 문서 리스트 all
     public List<Document> getApprovals(Long id) {
         List<Approval> approvals = approvalRepository.findByMemberId(id); //memberId를 기준으로 Approval 리스트 찾음
-        List<Long> docIds = new ArrayList<>();
+        List<Document> myAppDocs = new ArrayList<>();
 
         for (Approval approval : approvals) {
             if (approval.getTemp() != 0) {
-                Long docId = approval.getDocument();
-                if (docId != null && !docIds.contains(docId)) {
-                    docIds.add(docId);
-                }
-            }
-        }
-
-        List<Document> myAppDocs = new ArrayList<>();
-        for (Long docId : docIds) {
-            Document document = documentService.findDocumentById(docId);
-            if (document != null) {
-                myAppDocs.add(document);
+                Document doc = approval.getDocument();
+                myAppDocs.add(doc);
             }
         }
 
@@ -276,45 +266,28 @@ public class ApprovalService {
                 .filter(approval -> approval != null && approval.getCurrent() != null && approval.getCurrent().equals("Y") && approval.getTemp() != 0)
                 .collect(Collectors.toList());
 
-        List<Long> docIds = new ArrayList<>();
-        for (Approval approval : currentApprovals) {
-            Long docId = approval.getDocument();
-            if (docId != null && !docIds.contains(docId)) {
-                docIds.add(docId);
+        List<Document> myAppDocs = new ArrayList<>();
+        for (Approval approval : approvals) {
+            if (approval.getTemp() != 0) {
+                Document doc = approval.getDocument();
+                myAppDocs.add(doc);
             }
         }
 
-        List<Document> myAppDocs = new ArrayList<>();
-        for (Long docId : docIds) {
-            Document document = documentService.findDocumentById(docId);
-            if (document != null) {
-                myAppDocs.add(document);
-            }
-        }
         return myAppDocs; // 리스트 반환
     }
 
     //내가 승인한 리스트
     public List<Document> getApproved(Long id) {
         List<Approval> approvals = approvalRepository.findByMemberId(id); //memberId를 기준으로 Approval 리스트 찾음
-        List<Long> docIds = new ArrayList<>();
+        List<Document> myAppDocs = new ArrayList<>();
 
         for (Approval approval : approvals) {
             if (approval.getStatus() != null && !approval.getStatus().equals("반려") && approval.getAppDate() != null) {
-                Long docId = approval.getDocument(); //Approval에서 document만 찾음
-                if (docId != null) {
-                    docIds.add(docId); //docIds 리스트에 추가
+                Document doc = approval.getDocument(); //Approval에서 document만 찾음
+                if (doc != null) {
+                    myAppDocs.add(doc); //docIds 리스트에 추가
                 }
-            }
-        }
-
-        List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
-
-        for (Long docId : docIds) {
-            Document document = documentRepository.findById(docId)
-                    .orElse(null); //id로 Document 찾음
-            if (document != null) {
-                myAppDocs.add(document); //Document 리스트에 추가
             }
         }
 
@@ -324,37 +297,26 @@ public class ApprovalService {
     //내가 반려한 리스트
     public List<Document> getRejected(Long id) {
         List<Approval> approvals = approvalRepository.findByMemberId(id); //memberId를 기준으로 Approval 리스트 찾음
-        List<Long> docIds = new ArrayList<>();
+        List<Document> myAppDocs = new ArrayList<>();
 
         for (Approval approval : approvals) {
             if (approval.getStatus() != null && !approval.getStatus().equals("승인") && approval.getAppDate() != null) {
-                Long docId = approval.getDocument(); //Approval에서 document만 찾음
-                if (docId != null) {
-                    docIds.add(docId); //docIds 리스트에 추가
+                Document doc = approval.getDocument(); //Approval에서 document만 찾음
+                if (doc != null) {
+                    myAppDocs.add(doc); //docIds 리스트에 추가
                 }
-            }
-        }
-
-        List<Document> myAppDocs = new ArrayList<>(); // myAppDocs 리스트를 초기화
-
-        for (Long docId : docIds) {
-            Document document = documentRepository.findById(docId)
-                    .orElse(null); //id로 Document 찾음
-            if (document != null) {
-                myAppDocs.add(document); //Document 리스트에 추가
             }
         }
 
         return myAppDocs; // 리스트 반환
     }
 
-
     //결재 승인
     public void approveDocument(Long docId, Long memberId) {
         //문서 찾아서
         Document doc = documentRepository.findById(docId).orElse(null);
-        Long documentId = doc.getId();
-        List<Approval> approvals = approvalRepository.findByDocument(documentId);
+//        Long documentId = doc.getId();
+        List<Approval> approvals = approvalRepository.findByDocument(doc);
         List<Approval> appNotRefer = approvals.stream()
                 .filter(approval -> !approval.getRefer().equals("참조"))
                 .collect(Collectors.toList());
@@ -395,7 +357,7 @@ public class ApprovalService {
     //결재 반려
     public void rejectDocument(ApprovalDTO approvalDTO, Long id) {
         Document doc = documentRepository.findById(id).orElse(null);
-        List<Approval> approvals = approvalRepository.findByDocument(id);
+        List<Approval> approvals = approvalRepository.findByDocument(doc);
         List<Approval> appNotRefer = approvals.stream()
                 .filter(approval -> !approval.getRefer().equals("참조"))
                 .collect(Collectors.toList());
@@ -431,7 +393,7 @@ public class ApprovalService {
         Document document = documentRepository.findById(docId).orElse(null);
 
         //해당 문서의 결재 리스트
-        List<Approval> approvals = approvalRepository.findByDocument(docId);
+        List<Approval> approvals = approvalRepository.findByDocument(document);
 
         //해당 문서의 결재자 리스트
         List<Long> memberIds = approvals.stream()
@@ -486,7 +448,7 @@ public class ApprovalService {
             document.setResult(null);
 
             // 관련 결재정보 삭제
-            List<Approval> approvals = approvalRepository.findByDocument(id);
+            List<Approval> approvals = approvalRepository.findByDocument(document);
             for(Approval approval : approvals){
                 approval.setTemp(0);
             }
@@ -511,10 +473,10 @@ public class ApprovalService {
         List<Approval> myAppsRefer = myApps.stream()
                 .filter(approval -> "참조".equals(approval.getRefer()) && approval.getTemp() != 0)
                 .collect(Collectors.toList());
-        List<Long> docIds = new ArrayList<>();
+        List<Document> docIds = new ArrayList<>();
 
         for (Approval approval : myAppsRefer) {
-            Long docId = approval.getDocument(); //Approval에서 document만 찾음
+            Document docId = approval.getDocument(); //Approval에서 document만 찾음
             if (docId != null) {
                 docIds.add(docId); //docIds 리스트에 추가
             } else {
@@ -522,21 +484,21 @@ public class ApprovalService {
             }
         }
 
-        List<Document> myAppDocsRefer = new ArrayList<>(); // myAppDocs 리스트를 초기화
-
-        for (Long docId : docIds) {
-            Document document = documentService.findDocumentById(docId);
-            if (document != null) {
-                myAppDocsRefer.add(document); //Document 리스트에 추가
-            }
-        }
-        return myAppDocsRefer; // 리스트 반환
+//        List<Document> myAppDocsRefer = new ArrayList<>(); // myAppDocs 리스트를 초기화
+//
+//        for (Document docId : docIds) {
+//            Document document = documentService.findDocumentById(docId);
+//            if (document != null) {
+//                myAppDocsRefer.add(document); //Document 리스트에 추가
+//            }
+//        }
+        return docIds; // 리스트 반환
     }
 
     //결재 삭제
-    public void deleteAppByDocument(Long id) {
-        List<Approval> approvals = approvalRepository.findByDocument(id);
-        approvalRepository.deleteByDocument(id);
+    public void deleteAppByDocument(Document document) {
+        List<Approval> approvals = approvalRepository.findByDocument(document);
+        approvalRepository.deleteByDocument(document);
     }
 
 

@@ -114,7 +114,7 @@ public class DocumentController {
         if (document.getStatus() == 0) {
             // 임시저장인 경우
             if (documentDTO.getApprovers() != null || documentDTO.getLineId() != null) {
-                approvalService.setTempApproval(documentDTO); //결재요청
+//                approvalService.setTempApproval(document, documentDTO); //결재요청
             }
             Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장 번호의 최대값을 가져옴
             if (maxSno == null) {
@@ -123,7 +123,7 @@ public class DocumentController {
             document.setSno(maxSno + 1); // 임시저장 번호 생성
         } else {
             // 작성인 경우
-            approvalService.setApproval(documentDTO); //결재요청
+//            approvalService.setApproval(document, documentDTO); //결재요청
             document.setResult("결재대기");
             Long maxDno = documentRepository.findMaxDno(); // DB에서 문서 번호의 최대값을 가져옴
             if (maxDno == null) {
@@ -136,6 +136,12 @@ public class DocumentController {
         // 문서를 저장하고 저장된 문서를 반환
         document = documentService.saveDocument(document);
 
+        if(document.getStatus() == 0){
+            approvalService.setTempApproval(document, documentDTO);
+        }else {
+            approvalService.setApproval(document, documentDTO);
+        }
+
         return ResponseEntity.ok(document);
     }
 
@@ -147,10 +153,9 @@ public class DocumentController {
             throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
         }
 
-        Long docId = document.getId();
-        if (docId != null) {
-            List<Approval> approvals = lineService.getByDocument(docId);
-            Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
+        if (document != null) {
+            List<Approval> approvals = approvalRepository.findByDocument(document);
+            List<Map<String, Object>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
 
             Long currentId = SecurityUtil.getCurrentMemberId();
             Map<String, Object> appInfoForCancel = lineService.appInfoForCancel(approvals, currentId);
@@ -230,7 +235,7 @@ public class DocumentController {
 
         //문서 해당 결재 삭제
 //        Long dno = document.getDno();
-        approvalService.deleteAppByDocument(id);
+        approvalService.deleteAppByDocument(document);
         documentService.deleteDocument(id);
 
     }

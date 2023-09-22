@@ -1,6 +1,7 @@
 package com.groupware.wimir.repository;
 
 import com.groupware.wimir.entity.Approval;
+import com.groupware.wimir.entity.Document;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -20,9 +21,9 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 
     List<Approval> findByMemberId(Long id);
 
-    List<Approval> findByDocument(Long document);
+    List<Approval> findByDocument(Document document);
 
     void deleteByLineId(Long id);
 
-    void deleteByDocument(Long id);
+    void deleteByDocument(Document document);
 }
