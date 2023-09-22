@@ -41,5 +41,7 @@ public class Approval {
 
     private String refer; //"참조" 참조자
 
+    private int temp; //0이 임시저장
+
 
 }

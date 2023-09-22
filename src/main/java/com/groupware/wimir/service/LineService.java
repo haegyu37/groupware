@@ -136,7 +136,7 @@ public class LineService {
         return groupedApprovals;
     }
 
-    //dno로 결재 불러오기
+    //id로 결재 불러오기
     public List<Approval> getByDocument(Long id) {
         List<Approval> approvals = approvalRepository.findByDocument(id); //document로 approval 리스트 만듦
         return approvals;

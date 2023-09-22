@@ -31,7 +31,7 @@ public class LineController {
     @Autowired
     private MemberRepository memberRepository;
 
-    //마이페이지에서 결재라인 저장하기
+    // 마이페이지에서 결재라인 저장하기
     @PostMapping("/create")
     public ResponseEntity<String> saveApprovalLine(@RequestBody LineDTO lineDTO) {
 
@@ -64,9 +64,6 @@ public class LineController {
                 }
 
                 approvalRepository.save(approval);
-            }
-            else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("직원을 찾을 수 없습니다. " + approverId);
             }
         }
 

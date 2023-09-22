@@ -24,5 +24,5 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 
     void deleteByLineId(Long id);
 
-    void deleteByDocument(Long dno);
+    void deleteByDocument(Long id);
 }

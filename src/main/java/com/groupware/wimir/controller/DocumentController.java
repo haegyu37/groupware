@@ -113,6 +113,9 @@ public class DocumentController {
         //임시저장 관련
         if (document.getStatus() == 0) {
             // 임시저장인 경우
+            if (documentDTO.getApprovers() != null || documentDTO.getLineId() != null) {
+                approvalService.setTempApproval(documentDTO); //결재요청
+            }
             Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장 번호의 최대값을 가져옴
             if (maxSno == null) {
                 maxSno = 0L;
@@ -129,6 +132,7 @@ public class DocumentController {
             document.setDno(maxDno + 1); // 작성 번호 생성
         }
 
+
         // 문서를 저장하고 저장된 문서를 반환
         document = documentService.saveDocument(document);
 
@@ -143,9 +147,9 @@ public class DocumentController {
             throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
         }
 
-        Long dno = document.getDno();
-        if (dno != null) {
-            List<Approval> approvals = lineService.getByDocument(dno);
+        Long docId = document.getId();
+        if (docId != null) {
+            List<Approval> approvals = lineService.getByDocument(docId);
             Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
 
             Long currentId = SecurityUtil.getCurrentMemberId();
@@ -179,7 +183,11 @@ public class DocumentController {
 
 
         if (documentDTO.getStatus() == 0) {
+            approvalService.updateTempApproval(updateDocument, documentDTO);
             // status가 0인 경우 임시저장이므로 그냥 저장
+            if (documentDTO.getLineId() != null || documentDTO.getApprovers() != null) {
+                approvalService.updateTempApproval(updateDocument, documentDTO);
+            }
         } else {
             approvalService.updateApproval(updateDocument, documentDTO);
 
@@ -221,8 +229,8 @@ public class DocumentController {
         }
 
         //문서 해당 결재 삭제
-        Long dno = document.getDno();
-        approvalService.deleteAppByDocument(dno);
+//        Long dno = document.getDno();
+        approvalService.deleteAppByDocument(id);
         documentService.deleteDocument(id);
 
     }

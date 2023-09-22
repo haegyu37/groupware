@@ -10,10 +10,7 @@ import com.groupware.wimir.exception.ResourceNotFoundException;
 import com.groupware.wimir.repository.MemberRepository;
 import com.groupware.wimir.repository.ProfileRepository;
 import com.groupware.wimir.repository.TemplateRepository;
-import com.groupware.wimir.service.AuthService;
-import com.groupware.wimir.service.DocumentService;
-import com.groupware.wimir.service.MemberService;
-import com.groupware.wimir.service.ProfileService;
+import com.groupware.wimir.service.*;
 import jdk.swing.interop.SwingInterOpUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +53,7 @@ public class AdminController {
     private final TemplateRepository templateRepository;
     private final ProfileRepository profileRepository;
     private final ProfileService profileService;
+    private final TemplateService templateService;
     @Value("${ProfileLocation}")
     private String profileLocation;
 
@@ -186,6 +184,7 @@ public class AdminController {
         Template template = new Template();
         template.setCategory(templateDTO.getCategory());
         template.setContent(templateDTO.getContent());
+        template.setStatus("active");
         return templateRepository.save(template);
     }
 
@@ -203,7 +202,9 @@ public class AdminController {
     // 템플릿 삭제 -> 관리자
     @DeleteMapping(value = "/templates/delete/{id}")
     public void deleteTemplate(@PathVariable Long id) {
-        templateRepository.deleteById(id);
+        Template template = templateService.getTemplateById(id);
+        template.setStatus("delete");
+        templateRepository.save(template);
     }
 
     //결재완료된 모든 문서 목록

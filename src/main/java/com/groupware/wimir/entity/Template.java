@@ -22,6 +22,8 @@ public class Template {
     @Column(columnDefinition = "TEXT")
     private String content; //양식 내용
 
+    private String status; //삭제 여부
+
     @Builder
     public Template(Long id, String category, String content) {
         this.id = id;

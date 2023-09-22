@@ -37,8 +37,11 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     @Query("SELECT COALESCE(MAX(d.tempNo), 0) FROM Document d WHERE d.template = :template")
     Long findMaxTempNoByTemplate(@Param("template") Template template);
 
-    Document findByDno(Long dno);
+//    Document findByDno(Long dno);
 
     List<Document> findByWriterIdAndStatusAndResult(Long id, int status, String result);
+
+    @Query("SELECT MAX(id) FROM Document")
+    Long findMaxId();
 }
 

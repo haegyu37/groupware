@@ -1,6 +1,7 @@
 package com.groupware.wimir.controller;
 
 import com.groupware.wimir.DTO.TemplateDTO;
+import com.groupware.wimir.entity.Approval;
 import com.groupware.wimir.entity.Document;
 import com.groupware.wimir.exception.ResourceNotFoundException;
 import com.groupware.wimir.repository.TemplateRepository;
@@ -11,6 +12,7 @@ import com.groupware.wimir.entity.Template;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/templates")
@@ -27,11 +29,17 @@ public class TemplateController {
         return template;
     }
 
-    // 템플릿 목록
+    //템플릿 목록
     @GetMapping(value = "/list")
     public List<Template> getTemplatesList() {
-        List<Template> templates = templateRepository.findAll();
-        return templates;
+        List<Template> allTemplates = templateRepository.findAll();
+        System.out.println("양식 다" + allTemplates);
+
+        List<Template> temNotDelete = allTemplates.stream()
+                .filter(template -> template.getStatus() != null && !template.getStatus().equals("delete"))
+                .collect(Collectors.toList());
+
+        return temNotDelete;
     }
 
 }
