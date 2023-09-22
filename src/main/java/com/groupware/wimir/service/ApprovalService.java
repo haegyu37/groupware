@@ -111,37 +111,17 @@ public class ApprovalService {
         savedApprovals = approvalRepository.saveAll(savedApprovals);
 
         // 저장된 마지막 approval을 반환
-//        if (!savedApprovals.isEmpty()) {
         Approval lastSavedApproval = savedApprovals.get(savedApprovals.size() - 1);
         return ResponseEntity.ok(lastSavedApproval);
-//        } else {
-//            return ResponseEntity.badRequest().build(); // 저장된 approval이 없는 경우에 대한 처리
-//        }
     }
 
     // 결재 저장
     public ResponseEntity<Approval> setApproval(DocumentDTO documentDTO) {
-//        Long maxDocId = documentRepository.findMaxId();
-////        Long maxDocId = documentRepository.findMaxDno();
-//        if (maxDocId == null) {
-//            maxDocId = 1L;
-//        } else {
-//            maxDocId = maxDocId + 1;
-//        }
-//
         return setCommonApproval(documentDTO, 1); // 1은 결재 요청 상태를 나타냅니다.
     }
 
     // 결재 임시저장
     public ResponseEntity<Approval> setTempApproval(DocumentDTO documentDTO) {
-//        Long maxSnoId = documentRepository.findMaxId();
-////        Long maxSnoId = documentRepository.findMaxSno();
-//        if (maxSnoId == null) {
-//            maxSnoId = 1L;
-//        } else {
-//            maxSnoId = maxSnoId + 1;
-//        }
-//
         return setCommonApproval(documentDTO, 0); // 0은 결재 임시저장 상태를 나타냅니다.
     }
 
@@ -210,9 +190,6 @@ public class ApprovalService {
                         approval.setDocument(id);
                         approval.setMemberId(approverId);
                         approval.setRefer("결재");
-//                        if (!documentDTO.getName().equals(null)) {
-//                            approval.setName(documentDTO.getName());
-//                        }
 
                         if (approvers.size() == 4) {
                             if (i == approvers.size() - 1) {
@@ -418,7 +395,6 @@ public class ApprovalService {
     //결재 반려
     public void rejectDocument(ApprovalDTO approvalDTO, Long id) {
         Document doc = documentRepository.findById(id).orElse(null);
-//        Long documentId = doc.getId();
         List<Approval> approvals = approvalRepository.findByDocument(id);
         List<Approval> appNotRefer = approvals.stream()
                 .filter(approval -> !approval.getRefer().equals("참조"))
@@ -451,9 +427,8 @@ public class ApprovalService {
     //결재 취소
     public ResponseEntity<?> cancelApproval(Long docId, Long id) {
 
-//        //id로 문서 찾아서 dno 가져오기
+        //id로 문서 찾아서 dno 가져오기
         Document document = documentRepository.findById(docId).orElse(null);
-//        Long dno = document.getId();
 
         //해당 문서의 결재 리스트
         List<Approval> approvals = approvalRepository.findByDocument(docId);
@@ -468,11 +443,10 @@ public class ApprovalService {
         // 결재자 리스트 중에서 현재 결재자 아이디 가져오기
         for (int i = 0; i < memberIds.size(); i++) {
             if (memberIds.get(i) == id) {
-                memberIndex = i; // 일치하는 값이 발견되면 memberIndex를 설정하고
-                break; // 루프를 종료합니다.
+                memberIndex = i;
+                break;
             }
         }
-//        System.out.println("인덱스" + memberIndex);
 
         Approval nowApprover = approvals.get(memberIndex);
         Approval nextApprover = approvals.get(memberIndex + 1);
@@ -513,26 +487,9 @@ public class ApprovalService {
 
             // 관련 결재정보 삭제
             List<Approval> approvals = approvalRepository.findByDocument(id);
-            List<Long> appIds = new ArrayList<>();
-            String appNames = new String();
-
-//            if(approvals.getName().equals(null))
-            for (Approval approval1 : approvals) {
-                appIds.add(approval1.getMemberId());
-                if (!approval1.getName().equals(null)) {
-                    appNames = approval1.getName();
-                }
+            for(Approval approval : approvals){
+                approval.setTemp(0);
             }
-
-            DocumentDTO documentDTO = new DocumentDTO();
-            documentDTO.setApprovers(appIds);
-            documentDTO.setName(appNames);
-            updateCommonApproval(document.getId(), approvals, documentDTO, 0);
-
-
-//            for (Approval approval : approvals) {
-//                approvalRepository.delete(approval);
-//            }
 
             // sno 부여 dno 초기화
             Long maxSno = documentRepository.findMaxSno(); // DB에서 임시저장 번호의 최대값을 가져옴
@@ -541,9 +498,7 @@ public class ApprovalService {
             }
             document.setSno(maxSno + 1); // 임시저장 번호 생성
             document.setDno(null); // 저장번호 null로
-//            document.setResult(null);
 
-//            updateCommonApproval(document.getId(), );
         } else {
             throw new ResourceNotFoundException("문서를 찾을 수 없습니다. : " + id);
         }
@@ -571,7 +526,6 @@ public class ApprovalService {
 
         for (Long docId : docIds) {
             Document document = documentService.findDocumentById(docId);
-//                    .orElse(null); //id로 Document 찾음
             if (document != null) {
                 myAppDocsRefer.add(document); //Document 리스트에 추가
             }
