@@ -24,7 +24,7 @@ function MyPage() {
     const imgRef = useRef();
     const {myAccount, setMyAccountInfo} = useStore(state => state);
 
-    const profileImg = "http://localhost:8080/member/image?imageName=" + myAccount.image;
+    const profileImg = "http://222.119.100.90:8080/member/image?imageName=" + myAccount.image;
 
     const resetInput = () => {
         setPassword("")
