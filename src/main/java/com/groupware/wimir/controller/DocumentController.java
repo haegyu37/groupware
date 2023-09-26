@@ -156,7 +156,6 @@ public class DocumentController {
         if (document != null) {
             List<Approval> approvals = approvalRepository.findByDocument(document);
             Map<Long, List<Map<String, Object>>> groupedApprovals = lineService.getGroupedApprovalsDoc(approvals);
-            System.out.println("그룹" + groupedApprovals);
 
             Long currentId = SecurityUtil.getCurrentMemberId();
             Map<String, Object> appInfoForCancel = lineService.appInfoForCancel(approvals, currentId);

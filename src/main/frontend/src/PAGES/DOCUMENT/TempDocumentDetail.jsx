@@ -31,7 +31,7 @@ function TempDocumentDetail() {
             .then((res) => {
                 const {document, groupedApprovals} = res.data
                 setDocumentData(document)
-                // setSignLine(groupedApprovals[document.sno])
+                setSignLine(groupedApprovals[document.id])
                 setIsCompleted(true)
             })
             .catch((err) => console.log(err))
