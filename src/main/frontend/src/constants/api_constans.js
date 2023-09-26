@@ -5,9 +5,8 @@ export const RENEW_TOKEN_API = "/auth/refresh"  // 토큰갱신
 
 // 계정관련 API
 export const CREATE_ID_API = "/admin/signup"   // 계정등록
-export const MY_INFO_CHANGE_API = "/member/edit"  //TODO 본인 비밀번호 + 사진 변경
-export const ACCOUNT_INFO_API ="/admin" //(+id) GET : 직원상세정보
-export const ACCOUNT_EDIT_API ="/admin/members/edit"  //TODO (+id/password) POST : 관리자 -> 임직원 정보 변경
+export const MY_INFO_CHANGE_API = "/member/edit"  //본인 비밀번호 + 사진 변경
+export const ACCOUNT_EDIT_API ="/admin/members/edit"  //(+id/password) POST : 관리자 -> 임직원 정보 변경
 export const ACCOUNT_DELETE_API ="/admin/delete" // (+id) DELETE : 계정삭제
 export const ACCOUNT_BLOCK_API="/admin/members/block" // POST : 계정 접속차단
 

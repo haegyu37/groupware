@@ -165,7 +165,8 @@ export const Wrapper = styled.div`
   align-items: center;
 `
 export const UpperContainer = styled.div`
-  width: 1200px;
+  width: 100%;
+  height: 79px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -196,11 +197,11 @@ export const TitleDivisionLine = styled(DivisionLine)`
 `
 export const LowerContainer = styled.div`
   max-width: 1200px;
+  width: calc(100% - 30px);
+  height: calc(100% - 80px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: calc(100% - 30px);
-  height: 100%;
   margin: 10px;
   padding: 10px;
   border: 3px solid #e3e3e3;
@@ -213,7 +214,7 @@ export const CategoryTitle = styled.div`
   padding: 20px;
 `
 export const EditorContainer = styled.div`
-  height: 750px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   margin: 10px 115px;

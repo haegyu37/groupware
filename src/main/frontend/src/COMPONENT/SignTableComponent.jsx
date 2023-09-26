@@ -6,9 +6,9 @@ function SignTableComponent({leftData, rightData, signRefer}) {
         <SignTableWrapper>
             <table>
                 <tbody>
-                {leftData.map((data) => {
+                {leftData.map((data, index) => {
                     return (
-                        <tr>
+                        <tr key={index}>
                             <WriterTitle>{data.title}</WriterTitle>
                             <WriterContents>{data.content}</WriterContents>
                         </tr>

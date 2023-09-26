@@ -1,12 +1,11 @@
 import SignTableComponent from "../../../COMPONENT/SignTableComponent";
 import useStore from "../../../store";
 
-
-function EditSignTable({documentData, signLine}) {
+function EditSignTable({documentData, signLine, formerSignLine}) {
     const {myAccount} = useStore(state => state)
-    const signTurn1 = signLine[1];
-    const signTurn2 = signLine[2];
-    const signRefer = signLine[3];
+    const signTurn1 = formerSignLine[1] || signLine.signTurn1;
+    const signTurn2 = formerSignLine[2] || signLine.signTurn2;
+    const signRefer = formerSignLine[3] || signLine.signRefer;
 
     const time = new Date();
     const toDay = {
@@ -30,12 +29,12 @@ function EditSignTable({documentData, signLine}) {
         {
             signTurn: "검 토",
             sign: "",
-            signName: signTurn1 ? `${signTurn1?.name} ${signTurn1?.position || ""}` : ""
+            signName: signTurn1 ? `${signTurn1.name} ${signTurn1.position}` : ""
         },
         {
             signTurn: "승 인",
             sign: "",
-            signName: signTurn2 ? `${signTurn2?.name} ${signTurn2?.position || ""}` : ""
+            signName: signTurn2 ? `${signTurn2.name} ${signTurn2.position}` : ""
         }
     ]
 

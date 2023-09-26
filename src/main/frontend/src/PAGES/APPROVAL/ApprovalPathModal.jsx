@@ -226,13 +226,14 @@ function ApprovalPathModal({showApprovalPathModal, handleApprovalPathModalClose}
                             <Title>결재선 정보</Title>
                             <BookmarkLine>
                                 <p>사용자 결재라인</p>
-                                <select value={bookmarkId || ""}
+                                <select defaultValue="default"
+                                        value={bookmarkId || "default"}
                                         onChange={(e) => {
                                             const id = e.target.value;
-                                            bookmarkInfo(id)
-                                            setBookmarkId(id)
+                                            bookmarkInfo(id);
+                                            setBookmarkId(id);
                                         }}>
-                                    <option value="" selected disabled>결재라인 선택</option>
+                                    <option value="default" disabled>결재라인 선택</option>
                                     {bookmarkList?.map((data, index) => {
                                         return (
                                             <option key={index} value={data.id}>

@@ -2,7 +2,10 @@ import useStore from "../../store";
 import SignTableComponent from "../../COMPONENT/SignTableComponent";
 
 function WriteSignTable() {
-    const {myAccount, signLine} = useStore(state => state)
+    const {myAccount, signLine, setSignLine} = useStore(state => state)
+    const signTurn1 = signLine.signTurn1;
+    const signTurn2 = signLine.signTurn2;
+    const signRefer = signLine.signRefer;
 
     const time = new Date();
     const toDay = {
@@ -26,18 +29,18 @@ function WriteSignTable() {
         {
             signTurn: "검 토",
             sign: "",
-            signName: signLine.signTurn1 ? `${signLine.signTurn1.name} ${signLine.signTurn1.position}` : ""
+            signName: signTurn1 ? `${signTurn1.name} ${signTurn1.position}` : ""
         },
         {
             signTurn: "승 인",
             sign: "",
-            signName: signLine.signTurn2 ? `${signLine.signTurn2.name} ${signLine.signTurn2.position}` : ""
+            signName: signTurn2 ? `${signTurn2.name} ${signTurn2.position}` : ""
         }
     ]
 
     return (
         <>
-            <SignTableComponent leftData={leftData} rightData={rightData} signRefer={signLine.signRefer}/>
+            <SignTableComponent leftData={leftData} rightData={rightData} signRefer={signRefer}/>
         </>
     )
 }
