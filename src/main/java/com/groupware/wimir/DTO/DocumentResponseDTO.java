@@ -14,8 +14,7 @@ import java.util.Map;
 @Setter
 public class DocumentResponseDTO {
     private Document document;
-//    private List<Approval> approval;
-    List<Map<String, Object>> groupedApprovals;
-//    private Map<Object, List<Map<String, Object>>> groupedApprovals;
+    //    List<Map<String, Object>> groupedApprovals;
+    private Map<Long, List<Map<String, Object>>> groupedApprovals;
     private Map<String, Object> appInfoForCancel;
 }

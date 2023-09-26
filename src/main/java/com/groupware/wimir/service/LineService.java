@@ -101,38 +101,36 @@ public class LineService {
         return groupedApprovals;
     }
 
-    public List<Map<String, Object>> getGroupedApprovalsDoc(List<Approval> approvals) {
-        Map<Long, List<Map<String, Object>>> groupedApprovals = new HashMap<>(); // lineId를 키로 사용하도록 변경
+    public Map<Long, List<Map<String, Object>>> getGroupedApprovalsDoc(List<Approval> approvals) {
+        Map<Long, List<Map<String, Object>>> groupedApprovals = new HashMap<>();
 
         for (Approval approval : approvals) {
             Document document = approval.getDocument();
 
             if (document != null) {
+                Long documentId = document.getId(); // Document 객체의 id를 키로 사용
                 Map<String, Object> approvalInfo = new HashMap<>();
 
-                // Retrieve member information
                 Member memberInfo = memberRepository.findById(approval.getMemberId()).orElse(null);
                 if (memberInfo != null) {
-                    approvalInfo.put("no", memberInfo.getNo()); //직원 사번
-                    approvalInfo.put("name", memberInfo.getName()); //직원 이름
-                    approvalInfo.put("team", memberInfo.getTeam()); //직원 부서
-                    approvalInfo.put("position", memberInfo.getPosition()); //직원 직급
-                    approvalInfo.put("lineId", approval.getLineId()); // 즐찾라인 아이디
-                    approvalInfo.put("lineName", approval.getName()); // 즐찾라인 이름
-                    approvalInfo.put("current", approval.getCurrent()); //현재 결재 순서인지
-                    approvalInfo.put("status", approval.getStatus()); //결재 결과
-                    approvalInfo.put("appDate", approval.getAppDate()); //결재일
+                    approvalInfo.put("no", memberInfo.getNo()); // 직원 사번
+                    approvalInfo.put("name", memberInfo.getName()); // 직원 이름
+                    approvalInfo.put("team", memberInfo.getTeam()); // 직원 부서
+                    approvalInfo.put("position", memberInfo.getPosition()); // 직원 직급
                 }
 
-                // 해당 lineId에 대한 리스트가 없으면 초기화하고 추가합니다
-                Long lineId = approval.getLineId();
-                groupedApprovals.putIfAbsent(lineId, new ArrayList<>());
-                groupedApprovals.get(lineId).add(approvalInfo);
+                approvalInfo.put("lineId", approval.getLineId()); // 즐찾라인 아이디
+                approvalInfo.put("lineName", approval.getName()); // 즐찾라인 이름
+                approvalInfo.put("current", approval.getCurrent()); // 현재 결재 순서인지
+                approvalInfo.put("status", approval.getStatus()); // 결재 결과
+                approvalInfo.put("appDate", approval.getAppDate()); // 결재일
+
+                groupedApprovals.putIfAbsent(documentId, new ArrayList<>());
+                groupedApprovals.get(documentId).add(approvalInfo);
             }
         }
 
-        // Map을 List로 변환하여 반환합니다
-        return groupedApprovals.values().stream().flatMap(List::stream).collect(Collectors.toList());
+        return groupedApprovals;
     }
     //취소를 위한 결재정보
     public Map<String, Object> appInfoForCancel(List<Approval> approvals, Long id) {
