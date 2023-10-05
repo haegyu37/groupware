@@ -117,6 +117,7 @@ public class ApprovalController {
         Long currentId = SecurityUtil.getCurrentMemberId();
         //id를 기준으로 Approval을 찾는 메소드
         List<Document> myAppDocs = approvalService.getApprovalsNow(currentId);
+        System.out.println("나" + currentId);
         return myAppDocs;
     }
 

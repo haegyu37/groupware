@@ -57,9 +57,9 @@ public class MemberController {
     //마이페이지
     @GetMapping("/me")
     public MemberResponseDTO getMyMemberInfo(@RequestHeader Map<String, String> headers) throws IOException {
-        System.out.println(headers.get("Authorization"));
+//        System.out.println(headers.get("Authorization"));
         Long currentId = SecurityUtil.getCurrentMemberId();
-        System.out.println("이름1" + currentId);
+//        System.out.println("이름1" + currentId);
         Member member = memberService.findMemberById(currentId);
         Profile profile = profileService.getMaxProfile(member);
         MemberResponseDTO memberResponseDTO = MemberResponseDTO.of(member);
@@ -67,7 +67,7 @@ public class MemberController {
         if (profile != null) {
             memberResponseDTO.setImage(profile.getImgName());
         }
-        System.out.println("내사진" + memberResponseDTO.getImage());
+//        System.out.println("내사진" + memberResponseDTO.getImage());
         return memberResponseDTO;
     }
 

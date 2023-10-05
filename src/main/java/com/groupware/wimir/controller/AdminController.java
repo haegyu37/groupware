@@ -165,17 +165,18 @@ public class AdminController {
     //접속차단 앤나 접속차단 해제
     @PostMapping("/members/block")
     public ResponseEntity<String> blockUser(@RequestBody MemberBlockDTO memberBlockDTO) {
-        try {
+//        try {
             if (memberBlockDTO.getAuthority().equals(Authority.BLOCK)) {
                 memberService.updateUserAuthorityToBlock(memberBlockDTO.getId());
                 return ResponseEntity.ok("사용자의 권한이 BLOCK으로 업데이트되었습니다.");
             } else {
                 memberService.updateBlockAuthorityToUser(memberBlockDTO.getId());
+                System.out.println("차단 해제됨");
                 return ResponseEntity.ok("사용자의 권한이 USER로 업데이트되었습니다.");
             }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
     }
 
     // 템플릿 생성 -> 관리자

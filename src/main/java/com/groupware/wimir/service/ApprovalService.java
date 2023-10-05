@@ -262,18 +262,19 @@ public class ApprovalService {
     //내 결재 리스트 근데 이제 내가 결재할 차례인 .. 그것들 리스트
     public List<Document> getApprovalsNow(Long id) {
         List<Approval> approvals = approvalRepository.findByMemberId(id);
+        System.out.println("대기문서2" + approvals);
         List<Approval> currentApprovals = approvals.stream()
                 .filter(approval -> approval != null && approval.getCurrent() != null && approval.getCurrent().equals("Y") && approval.getTemp() != 0)
                 .collect(Collectors.toList());
+        System.out.println("대기문서" + currentApprovals);
 
         List<Document> myAppDocs = new ArrayList<>();
-        for (Approval approval : approvals) {
+        for (Approval approval : currentApprovals) {
             if (approval.getTemp() != 0) {
                 Document doc = approval.getDocument();
                 myAppDocs.add(doc);
             }
         }
-
         return myAppDocs; // 리스트 반환
     }
 

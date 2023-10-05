@@ -48,7 +48,7 @@ function EditPage() {
                 setCategory(document?.template?.category)
                 setTitle(document?.title)
                 setContent(document?.content)
-                setFormerSignLine(groupedApprovals[document.dno])
+                setFormerSignLine(groupedApprovals[document.id])
             })
             .catch((err) => console.log(err))
     }, [id])

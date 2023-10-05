@@ -51,7 +51,7 @@ function DocumentDetail() {
                 // 문서 정보
                 setDocumentData(document)
                 // 결재라인
-                setSignLine(groupedApprovals[document.dno])
+                setSignLine(groupedApprovals[document.id])
                 // 결재상태
                 setApprovalStatus(appInfoForCancel)
                 setIsCompleted(true)

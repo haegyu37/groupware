@@ -49,24 +49,10 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponseDTO changeMemberPassword(String newPassword) {
-        Long currentMemberId = SecurityUtil.getCurrentMemberId();
-        Member member = memberRepository.findById(currentMemberId)
-                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
-
-        member.setPassword(passwordEncoder.encode(newPassword));
-        Member updatedMember = memberRepository.save(member);
-
-        return MemberResponseDTO.of(updatedMember);
-
-    }
-
-    @Transactional
     public MemberResponseDTO changeUserPasswordByAdmin(Long memberId, String newPassword) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
 
-        // Ensure newPassword is not null or empty
         if (newPassword == null || newPassword.isEmpty()) {
             throw new IllegalArgumentException("새 비밀번호를 입력해주세요");
         }
@@ -148,15 +134,14 @@ public class MemberService {
 
 
     //접속차단 해제
-    public Member updateBlockAuthorityToUser(Long id) {
-        Member member = memberRepository.findById(id)
+    @Transactional
+    public Member updateBlockAuthorityToUser(Long userId) {
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-
         member.setAuthority(Authority.USER);
-        memberRepository.save(member);
-        return member;
-
+        return memberRepository.save(member);
     }
+
 
     //검색
     @Transactional(readOnly = true)
